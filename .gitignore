@@ -1,0 +1,18 @@
+
+.env
+
+# Python Virtual Environments
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+
+# Local "Database" & File Storages
+temp_uploads/
+data/
+
+# IDE / Editor Settings
+.vscode/
+.idea/
+.DS_Store
