@@ -26,8 +26,8 @@ Unity-AI/
 │   │   ├── lib/
 │   │   └── types/
 │   └── public/
-├── backend/           # (TBD) API server
-├── docker-compose.yml # PostgreSQL for local dev
+├── backend/           # FastAPI backend server (Python 3.10+)
+├── docker-compose.yml # PostgreSQL for local dev (optional)
 ├── .env.example       # Environment variable template
 └── README.md
 ```
@@ -50,12 +50,35 @@ npm run dev
 
 The frontend runs at `http://localhost:3000`.
 
-### Environment Variables
-
-Copy the example env file and fill in your values:
+### Backend Development
 
 ```bash
-cp .env.example frontend/.env.local
+cd backend
+# Create virtual environment
+python -m venv venv
+# Activate virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Start the development server
+python -m uvicorn app.main:app --reload --port 8000
+```
+
+The backend runs at `http://localhost:8000`.
+
+### Environment Variables
+
+Copy the example env file or create a `.env` in the `backend` folder:
+
+```bash
+# In backend/.env:
+GROQ_API_KEY=your_groq_api_key
+MONGO_URI=your_mongodb_connection_string
 ```
 
 ## Tech Stack
@@ -65,10 +88,10 @@ cp .env.example frontend/.env.local
 | Frontend   | Next.js 16, React 19, TypeScript  |
 | Styling    | Tailwind CSS 4, Framer Motion     |
 | Icons      | Lucide React                      |
-| Backend    | TBD                               |
-| Database   | TBD (PostgreSQL planned)          |
-| AI         | Whisper API, LLM (Claude/GPT)     |
-| Vector DB  | TBD                               |
+| Backend    | FastAPI (Python)                  |
+| Database   | MongoDB Atlas (with JSON fallback)|
+| AI         | Groq Whisper API (Transcription), Groq LLaMA 3.3 (Notes & Chat) |
+| RAG        | Text-based segment retrieval      |
 
 ## Team
 

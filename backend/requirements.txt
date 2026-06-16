@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+motor
+pymongo
+dnspython
+groq
+pydub
+python-dotenv
+python-multipart
