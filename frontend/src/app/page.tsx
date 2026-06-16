@@ -101,7 +101,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-white leading-tight"
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight"
           >
             Transform Lectures into{' '}
             <span className="gradient-text">Interactive Study Sessions</span>
@@ -111,7 +111,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-6 text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed"
+            className="mt-6 text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed"
           >
             Upload your lecture recordings and let AI transcribe, generate structured notes, and
             power an intelligent tutor that answers your questions with precision.
