@@ -19,30 +19,26 @@ def transcribe_and_normalize(audio_path, lecture_id):
 
     normalized_data = {
         "lecture_id": lecture_id,
-        "duration": 0.0,
-        "language": "en",
+        "duration": duration,
+        "language": language,
         "segments": []
     }
 
-    if file_size <= MAX_SIZE_BYTES:
-        with open(audio_path, "rb") as audio_file:
-            response = client.audio.transcriptions.create(
-                file=(os.path.basename(audio_path), audio_file.read()),
-                model="whisper-large-v3",
-                response_format="verbose_json",
-            )
-        normalized_data["duration"] = getattr(response, "duration", 0.0)
-        normalized_data["language"] = getattr(response, "language", "en")
-        raw_segments = getattr(response, "segments", [])
-        
-        for seg in raw_segments:
-            normalized_data["segments"].append({
-                "id": seg.get("id") if isinstance(seg, dict) else getattr(seg, "id", None),
-                "start": seg.get("start") if isinstance(seg, dict) else getattr(seg, "start", 0.0),
-                "end": seg.get("end") if isinstance(seg, dict) else getattr(seg, "end", 0.0),
-                "text": (seg.get("text") if isinstance(seg, dict) else getattr(seg, "text", "")).strip(),
-            })
-        return normalized_data
+    for seg in raw_segments:
+        # Groq returns segments as dictionaries
+        seg_id = seg.get("id") if isinstance(seg, dict) else getattr(seg, "id", None)
+        start = seg.get("start") if isinstance(seg, dict) else getattr(seg, "start", 0.0)
+        end = seg.get("end") if isinstance(seg, dict) else getattr(seg, "end", 0.0)
+        text = seg.get("text") if isinstance(seg, dict) else getattr(seg, "text", "")
+
+        normalized_data["segments"].append({
+            "id": seg_id,
+            "start": start,
+            "end": end,
+            "text": text.strip(),
+        })
+
+    return normalized_data
 
     else:
         print("Large file encountered. Slicing audio track structurally using pydub...")
