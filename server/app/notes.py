@@ -1,141 +1,95 @@
-import os
+"""
+notes.py
+
+Generates structured, topic-organized notes from a normalized transcript JSON
+(the output of transcribe.py), using Groq (Llama 3.3 70B).
+"""
+
 import json
-from datetime import datetime
+import os
 from groq import Groq
 from dotenv import load_dotenv
 
 load_dotenv()
 
-def generate_notes_from_transcript(transcript: dict) -> dict:
-    """
-    Calls Groq to summarize the transcript segments into logical, structured study notes.
-    """
-    lecture_id = transcript.get("lecture_id", "lec-unknown")
-    segments = transcript.get("segments", [])
-    
-    if not segments:
-        return {
-            "id": f"note-{lecture_id}",
-            "lectureId": lecture_id,
-            "content": "No transcription segments available to generate notes.",
-            "sections": [],
-            "generatedAt": datetime.utcnow().isoformat() + "Z"
-        }
+client = Groq()  # reads GROQ_API_KEY from environment
+MODEL = "llama-3.3-70b-versatile"
 
-    api_key = os.getenv("GROQ_API_KEY")
-    if not api_key:
-        print("Warning: GROQ_API_KEY not found in environment. Falling back to rule-based note generator.")
-        return generate_fallback_notes(transcript)
-        
+
+def decide_chunking_strategy(transcript_json):
+    segments = transcript_json["segments"]
+    total_words = sum(len(seg["text"].split()) for seg in segments)
+    if total_words < 3000:
+        return {"chunking": "single_pass", "total_words": total_words}
+    else:
+        return {"chunking": "two_pass", "total_words": total_words}
+
+
+def generate_notes_single_pass(transcript_json):
+    segments = transcript_json["segments"]
+    lecture_id = transcript_json.get("lecture_id", "lec-unknown")
+
+    segments_text = "\n".join(
+        f"[{seg['start']:.1f}-{seg['end']:.1f}] {seg['text']}"
+        for seg in segments
+    )
+
+    prompt = f"""You are an expert at converting lecture transcripts into structured study notes.
+
+Below is a timestamped lecture transcript. Identify natural topic sections and produce structured notes.
+
+Pay special attention to any algorithms, code, pseudocode, formulas, equations, or step-by-step procedures that the speaker describes verbally — even if no visual diagram or code is shown, professors often narrate the actual steps out loud. Reconstruct these as clean, code-style pseudocode in the "technical_details" field. If a topic has no such content, leave "technical_details" as an empty string.
+
+TRANSCRIPT:
+{segments_text}
+
+Return ONLY valid JSON (no markdown, no explanation) in exactly this format:
+{{
+  "topics": [
+    {{
+      "title": "short topic title",
+      "start": <number>,
+      "end": <number>,
+      "summary": "1-2 sentence overview",
+      "key_points": ["point 1", "point 2", "point 3"],
+      "technical_details": "Reconstructed pseudocode/formulas, or empty string."
+    }}
+  ]
+}}
+
+Use the actual timestamps from the transcript segments above. Do not invent timestamps."""
+
+    response = client.chat.completions.create(
+        model=MODEL,
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.3,
+        response_format={"type": "json_object"},
+    )
+
+    raw_output = response.choices[0].message.content.strip()
+    raw_output = raw_output.removeprefix("```json").removesuffix("```").strip()
+
     try:
-        client = Groq(api_key=api_key)
-        
-        # Format transcript segments as context
-        transcript_text = "\n".join([
-            f"[{seg['startTime']:.1f}s - {seg['endTime']:.1f}s] {seg['text']}"
-            for seg in segments
-        ])
-        
-        system_prompt = (
-            "You are an expert academic tutor. Analyze the transcription of a lecture and generate "
-            "comprehensive, structured study notes. You must output a valid JSON object. "
-            "The JSON object must have exactly this structure:\n"
-            "{\n"
-            "  \"summary\": \"Brief 1-2 sentence overall summary of the lecture.\",\n"
-            "  \"sections\": [\n"
-            "    {\n"
-            "      \"title\": \"Section Title (e.g., Introduction to Calculus)\",\n"
-            "      \"content\": \"Detailed study notes in Markdown format for this section, summarizing key concepts, equations, and definitions. Use bullet points and headers where appropriate.\",\n"
-            "      \"startTimestamp\": 0.0,\n"
-            "      \"endTimestamp\": 60.0\n"
-            "    }\n"
-            "  ]\n"
-            "}\n"
-            "Divide the lecture into 3-5 logical chapters/sections based on time. Assign startTimestamp and endTimestamp "
-            "corresponding to when these topics were discussed in the transcript."
-        )
-        
-        user_prompt = f"Here is the lecture transcript:\n\n{transcript_text}"
-        
-        response = client.chat.completions.create(
-            model="llama3-8b-8192",
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt}
-            ],
-            response_format={"type": "json_object"},
-            temperature=0.2,
-        )
-        
-        result_json = json.loads(response.choices[0].message.content)
-        
-        # Build standard NoteSection objects
-        sections = []
-        for i, sec in enumerate(result_json.get("sections", [])):
-            sections.append({
-                "id": f"sec-{lecture_id}-{i}",
-                "title": sec.get("title", f"Section {i+1}"),
-                "content": sec.get("content", ""),
-                "startTimestamp": float(sec.get("startTimestamp", 0.0)),
-                "endTimestamp": float(sec.get("endTimestamp", 0.0)),
-                "orderIndex": i
-            })
-            
-        return {
-            "id": f"note-{lecture_id}",
-            "lectureId": lecture_id,
-            "content": result_json.get("summary", "Study notes generated from lecture."),
-            "sections": sections,
-            "generatedAt": datetime.utcnow().isoformat() + "Z"
-        }
-        
-    except Exception as e:
-        print(f"Error calling Groq for notes: {e}. Falling back to rule-based note generator.")
-        return generate_fallback_notes(transcript)
+        notes = json.loads(raw_output)
+    except json.JSONDecodeError as e:
+        print("ERROR: Failed to parse LLM output as JSON.")
+        print("Raw output was:", raw_output)
+        raise e
 
-def generate_fallback_notes(transcript: dict) -> dict:
-    """
-    Fall back to a programmatic rule-based notes partition when Groq is unavailable.
-    """
-    lecture_id = transcript.get("lecture_id", "lec-unknown")
-    segments = transcript.get("segments", [])
-    
-    section_count = min(3, len(segments))
-    if section_count <= 0:
-        return {
-            "id": f"note-{lecture_id}",
-            "lectureId": lecture_id,
-            "content": "No segments available.",
-            "sections": [],
-            "generatedAt": datetime.utcnow().isoformat() + "Z"
-        }
-        
-    segs_per_section = len(segments) // section_count
-    sections = []
-    
-    for i in range(section_count):
-        start_idx = i * segs_per_section
-        end_idx = len(segments) if i == section_count - 1 else (i + 1) * segs_per_section
-        section_segs = segments[start_idx:end_idx]
-        
-        start_time = section_segs[0]["startTime"]
-        end_time = section_segs[-1]["endTime"]
-        
-        text_content = "\n".join([f"* {s['text']}" for s in section_segs])
-        
-        sections.append({
-            "id": f"sec-{lecture_id}-{i}",
-            "title": f"Part {i+1}: Topic Overview",
-            "content": f"### Key Points Discussed\n\n{text_content}\n\n*Note: This section note was compiled automatically by the system.*",
-            "startTimestamp": start_time,
-            "endTimestamp": end_time,
-            "orderIndex": i
-        })
-        
-    return {
-        "id": f"note-{lecture_id}",
-        "lectureId": lecture_id,
-        "content": f"Study notes for lecture {lecture_id} covering the key concepts discussed by the speaker.",
-        "sections": sections,
-        "generatedAt": datetime.utcnow().isoformat() + "Z"
-    }
+    notes["lecture_id"] = lecture_id
+    return notes
+
+
+def generate_notes(transcript_json):
+    strategy = decide_chunking_strategy(transcript_json)
+    print(f"Chunking strategy: {strategy['chunking']} ({strategy['total_words']} words)")
+
+    if strategy["chunking"] == "single_pass":
+        return generate_notes_single_pass(transcript_json)
+    else:
+        print("WARNING: two_pass chunking not implemented yet. Falling back to single_pass.")
+        return generate_notes_single_pass(transcript_json)
+
+
+# Alias so app/main.py's import (generate_notes_from_transcript) works
+generate_notes_from_transcript = generate_notes
