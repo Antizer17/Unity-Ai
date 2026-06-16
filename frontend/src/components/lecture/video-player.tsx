@@ -42,7 +42,14 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
     useImperativeHandle(ref, () => ({
       seekTo: (seconds: number) => {
         if (playerRef.current) {
-          playerRef.current.seekTo(seconds, 'seconds');
+          if (typeof playerRef.current.seekTo === 'function') {
+            playerRef.current.seekTo(seconds, 'seconds');
+          } else {
+            const internal = (playerRef.current as any).getInternalPlayer?.();
+            if (internal && 'currentTime' in internal) {
+              internal.currentTime = seconds;
+            }
+          }
           setCurrentTime(seconds);
         }
       },
@@ -68,7 +75,14 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
       const rect = progressRef.current.getBoundingClientRect();
       const pct = (e.clientX - rect.left) / rect.width;
       const newTime = pct * duration;
-      playerRef.current.seekTo(newTime, 'seconds');
+      if (typeof playerRef.current.seekTo === 'function') {
+        playerRef.current.seekTo(newTime, 'seconds');
+      } else {
+        const internal = (playerRef.current as any).getInternalPlayer?.();
+        if (internal && 'currentTime' in internal) {
+          internal.currentTime = newTime;
+        }
+      }
       setCurrentTime(newTime);
     }, [duration]);
 
@@ -81,7 +95,14 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
     const skip = useCallback((seconds: number) => {
       if (!playerRef.current) return;
       const newTime = Math.max(0, Math.min(currentTime + seconds, duration));
-      playerRef.current.seekTo(newTime, 'seconds');
+      if (typeof playerRef.current.seekTo === 'function') {
+        playerRef.current.seekTo(newTime, 'seconds');
+      } else {
+        const internal = (playerRef.current as any).getInternalPlayer?.();
+        if (internal && 'currentTime' in internal) {
+          internal.currentTime = newTime;
+        }
+      }
       setCurrentTime(newTime);
     }, [duration, currentTime]);
 
