@@ -1,123 +1,177 @@
 """
 rag.py
 
-Retrieval-Augmented Generation (RAG) pipeline for the AI Lecture Tutor.
-Integrated from NaeemRagFeat branch (Person C - Naeem).
-
-Loads transcript JSON, performs keyword-based context retrieval from
-transcript segments, sends relevant context to Groq's LLM, and returns
-an answer with clickable timestamp references.
+Retrieval-Augmented Generation (RAG) pipeline for the AI Lecture Tutor using ChromaDB.
 """
 
 import os
 import json
+import chromadb
+from chromadb.utils import embedding_functions
 from groq import Groq
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Use the same data directory as main.py
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
+CHROMA_DIR = os.path.join(DATA_DIR, "chroma")
+os.makedirs(CHROMA_DIR, exist_ok=True)
 
+# Initialize ChromaDB Persistent Client
+chroma_client = chromadb.PersistentClient(path=CHROMA_DIR)
+
+# Default embedding function (all-MiniLM-L6-v2)
+embedding_fn = embedding_functions.DefaultEmbeddingFunction()
+
+def get_lecture_collection(lecture_id: str):
+    col_name = f"collection_{lecture_id.replace('-', '_')}"
+    return chroma_client.get_or_create_collection(
+        name=col_name,
+        embedding_function=embedding_fn
+    )
 
 def index_lecture_transcript(lecture_id: str):
     """
-    Placeholder for future vector-based indexing.
-    Currently, we read transcript JSON on-the-fly for keyword matching.
-    This function can be extended to build embeddings / ChromaDB index later.
+    Parses transcript and notes, generates embeddings, and stores in ChromaDB.
     """
     transcript_path = os.path.join(DATA_DIR, f"{lecture_id}_transcript.json")
-    if os.path.exists(transcript_path):
-        print(f"[OK] RAG: Successfully tracked transcript for lecture: {lecture_id}")
-        return True
-    else:
-        print(f"[WARN] RAG: Transcript file not found for lecture: {lecture_id}")
-        return False
+    notes_path = os.path.join(DATA_DIR, f"{lecture_id}_notes.json")
+    
+    documents = []
+    metadatas = []
+    ids = []
+    
+    # 1. Index Notes Topics (higher quality summaries)
+    if os.path.exists(notes_path):
+        try:
+            with open(notes_path, "r", encoding="utf-8") as f:
+                notes_data = json.load(f)
+                for i, topic in enumerate(notes_data.get("topics", [])):
+                    text = f"Topic: {topic.get('title', '')}\nSummary: {topic.get('summary', '')}"
+                    if topic.get("key_points"):
+                        text += "\nKey points: " + "; ".join(topic["key_points"])
+                    documents.append(text)
+                    metadatas.append({
+                        "type": "note",
+                        "start": float(topic.get("start", 0.0)),
+                        "end": float(topic.get("end", 0.0)),
+                        "label": topic.get("title", "")
+                    })
+                    ids.append(f"note_{i}")
+        except Exception as e:
+            print(f"[WARN] Failed to index notes for {lecture_id}: {e}")
 
+    # 2. Index Transcript Segments
+    if os.path.exists(transcript_path):
+        try:
+            with open(transcript_path, "r", encoding="utf-8") as f:
+                transcript_data = json.load(f)
+                segments = transcript_data.get("segments", [])
+                
+                chunk_text = ""
+                chunk_start = 0.0
+                chunk_end = 0.0
+                chunk_idx = 0
+                
+                start_field = "startTime" if segments and "startTime" in segments[0] else "start"
+                end_field = "endTime" if segments and "endTime" in segments[0] else "end"
+                
+                for i, seg in enumerate(segments):
+                    text = seg.get("text", "")
+                    start = float(seg.get(start_field, 0.0))
+                    end = float(seg.get(end_field, 0.0))
+                    
+                    if chunk_text == "":
+                        chunk_start = start
+                        
+                    chunk_text += text + " "
+                    chunk_end = end
+                    
+                    if (i + 1) % 3 == 0 or i == len(segments) - 1:
+                        documents.append(chunk_text.strip())
+                        
+                        minutes = int(chunk_start // 60)
+                        seconds = int(chunk_start % 60)
+                        
+                        metadatas.append({
+                            "type": "transcript",
+                            "start": chunk_start,
+                            "end": chunk_end,
+                            "label": f"[{minutes:02d}:{seconds:02d}] Transcript"
+                        })
+                        ids.append(f"transcript_{chunk_idx}")
+                        
+                        chunk_text = ""
+                        chunk_idx += 1
+                        
+        except Exception as e:
+            print(f"[WARN] Failed to index transcript for {lecture_id}: {e}")
+
+    if documents:
+        try:
+            collection = get_lecture_collection(lecture_id)
+            collection.upsert(
+                documents=documents,
+                metadatas=metadatas,
+                ids=ids
+            )
+            print(f"[OK] RAG: Successfully indexed {len(documents)} chunks in ChromaDB for {lecture_id}")
+            return True
+        except Exception as e:
+            print(f"[ERROR] RAG: ChromaDB upsert failed for {lecture_id}: {e}")
+            return False
+            
+    print(f"[WARN] RAG: No content found to index for {lecture_id}")
+    return False
 
 def query_ai_tutor(lecture_id: str, student_query: str) -> dict:
     """
-    Main RAG query function.
-    
-    1. Loads the transcript JSON for the given lecture
-    2. Performs keyword-based context retrieval from segments
-    3. Sends relevant context + student question to Groq LLM
-    4. Returns { answer, timestamps } with formatted time references
-    
-    Args:
-        lecture_id: The lecture to query against
-        student_query: The student's question
-        
-    Returns:
-        dict with 'answer' (str) and 'timestamps' (list of dicts with start, end, formatted)
+    Main RAG query function using ChromaDB.
     """
-    transcript_path = os.path.join(DATA_DIR, f"{lecture_id}_transcript.json")
-
-    # 1. Check if the lecture transcript exists
-    if not os.path.exists(transcript_path):
-        return {
-            "answer": f"I couldn't find any lecture data for ID '{lecture_id}'. Please upload and transcribe the lecture first.",
-            "timestamps": []
-        }
-
     try:
-        with open(transcript_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-
-        segments = data.get("segments", [])
+        collection = get_lecture_collection(lecture_id)
         
-        if not segments:
+        # Query ChromaDB for top 5 most relevant chunks
+        results = collection.query(
+            query_texts=[student_query],
+            n_results=5
+        )
+        
+        if not results["documents"] or not results["documents"][0]:
             return {
-                "answer": "The transcript for this lecture appears to be empty. Please re-upload the lecture.",
+                "answer": f"I couldn't find relevant information in the lecture for your question.",
                 "timestamps": []
             }
-
-        # 2. Extract context and grab timestamps relevant to the question
+            
+        retrieved_docs = results["documents"][0]
+        retrieved_metadatas = results["metadatas"][0]
+        
         context_text = ""
         matched_timestamps = []
-
-        # Keyword-based matching for hackathon speed
-        # Filter out short/common words to improve match quality
-        keywords = [
-            word.lower().strip("?,.!;:'\"()[]{}") 
-            for word in student_query.split() 
-            if len(word) > 3
-        ]
-
-        # Determine the correct field names (handle both conventions)
-        start_field = "startTime" if "startTime" in segments[0] else "start"
-        end_field = "endTime" if "endTime" in segments[0] else "end"
-
-        for seg in segments:
-            text_lower = seg["text"].lower()
-            seg_start = seg.get(start_field, 0.0)
-            seg_end = seg.get(end_field, 0.0)
-
-            # Include segment if it contains a keyword OR we haven't gathered enough context
-            if any(kw in text_lower for kw in keywords) or len(context_text) < 2000:
-                context_text += f"\n[{seg_start:.1f}s - {seg_end:.1f}s]: {seg['text']}"
-
-                # If it's a strong keyword match, save the timestamp for UI buttons
-                if any(kw in text_lower for kw in keywords) and len(matched_timestamps) < 3:
-                    minutes = int(seg_start // 60)
-                    seconds = int(seg_start % 60)
-                    formatted_time = f"[{minutes:02d}:{seconds:02d}]"
-
-                    matched_timestamps.append({
-                        "start": seg_start,
-                        "end": seg_end,
-                        "formatted": formatted_time
-                    })
-
-        # 3. Get Groq API key
+        
+        for i in range(len(retrieved_docs)):
+            doc = retrieved_docs[i]
+            meta = retrieved_metadatas[i]
+            
+            context_text += f"\n[{meta['start']:.1f}s - {meta['end']:.1f}s]: {doc}"
+            
+            minutes = int(meta['start'] // 60)
+            seconds = int(meta['start'] % 60)
+            formatted_time = f"[{minutes:02d}:{seconds:02d}]"
+            
+            matched_timestamps.append({
+                "start": meta["start"],
+                "end": meta["end"],
+                "formatted": formatted_time
+            })
+            
         api_key = os.getenv("GROQ_API_KEY")
         if not api_key:
             return {
-                "answer": "I'm unable to process your question right now because the AI service is not configured. Please ensure the GROQ_API_KEY is set in the server's .env file.",
+                "answer": "I'm unable to process your question right now because the AI service is not configured.",
                 "timestamps": matched_timestamps
             }
 
-        # 4. Groq LLM Query
         client = Groq(api_key=api_key)
 
         system_prompt = (
@@ -142,27 +196,20 @@ def query_ai_tutor(lecture_id: str, student_query: str) -> dict:
 
         return {
             "answer": response.choices[0].message.content,
-            "timestamps": matched_timestamps
+            "timestamps": matched_timestamps[:3]
         }
 
     except Exception as e:
         print(f"[ERROR] RAG processing failed: {str(e)}")
         return {
-            "answer": f"I encountered an error while processing your question. Please try again.",
+            "answer": f"I encountered an error while processing your question: {str(e)}",
             "timestamps": []
         }
-
 
 def query_general_tutor(student_query: str) -> dict:
     """
     General-purpose AI tutor for guest chat mode (no specific lecture context).
     Uses Groq LLM to answer general study questions.
-    
-    Args:
-        student_query: The student's question
-        
-    Returns:
-        dict with 'answer' (str) and empty 'timestamps' list
     """
     api_key = os.getenv("GROQ_API_KEY")
     if not api_key:
