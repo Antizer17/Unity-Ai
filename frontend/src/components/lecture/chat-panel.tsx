@@ -86,7 +86,7 @@ export function ChatPanel({
   };
 
   return (
-    <div id={id} className="flex flex-col h-full bg-[var(--bg-primary)]">
+    <div id={id} className="flex flex-col flex-1 h-full w-full bg-[var(--bg-primary)]">
       {/* Messages Feed */}
       <div
         ref={scrollRef}

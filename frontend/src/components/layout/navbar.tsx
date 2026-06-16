@@ -18,7 +18,7 @@ import { cn } from '@/lib/utils';
 import { mockUser } from '@/lib/mock-data';
 import { ThemeToggle } from './theme-toggle';
 
-export function Navbar() {
+export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
@@ -61,52 +61,63 @@ export function Navbar() {
           <div className="flex items-center gap-2 md:gap-4">
             <ThemeToggle />
             
-            {/* Desktop Profile */}
-            <div className="hidden md:block relative" ref={profileRef}>
-              <button
-                id="navbar-profile-btn"
-                onClick={() => setProfileOpen(!profileOpen)}
-                className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-[var(--color-surface)] transition-colors"
-              >
-                <Avatar name={mockUser.name} size="sm" />
-                <span className="text-sm font-medium text-[var(--text-primary)]">{mockUser.name}</span>
-              </button>
+            {/* Desktop Profile or Guest Actions */}
+            {!isGuest ? (
+              <div className="hidden md:block relative" ref={profileRef}>
+                <button
+                  id="navbar-profile-btn"
+                  onClick={() => setProfileOpen(!profileOpen)}
+                  className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-[var(--color-surface)] transition-colors"
+                >
+                  <Avatar name={mockUser.name} size="sm" />
+                  <span className="text-sm font-medium text-[var(--text-primary)]">{mockUser.name}</span>
+                </button>
 
-              <AnimatePresence>
-                {profileOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 5, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 5, scale: 0.95 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute right-0 mt-2 w-56 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-color)] shadow-xl py-1 overflow-hidden"
-                  >
-                    <div className="px-4 py-3 border-b border-[var(--border-color)] bg-[var(--bg-tertiary)]">
-                      <p className="text-sm font-medium text-[var(--text-primary)]">{mockUser.name}</p>
-                      <p className="text-xs text-[var(--text-muted)] truncate">{mockUser.email}</p>
-                    </div>
-                    <Link
-                      href="/profile"
-                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--color-surface)]"
+                <AnimatePresence>
+                  {profileOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 5, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 5, scale: 0.95 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 mt-2 w-56 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-color)] shadow-xl py-1 overflow-hidden"
                     >
-                      <User className="h-4 w-4" /> Profile
-                    </Link>
-                    <Link
-                      href="/settings"
-                      className="flex items-center gap-2 px-4 py-2.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--color-surface)]"
-                    >
-                      <Settings className="h-4 w-4" /> Settings
-                    </Link>
-                    <div className="h-px bg-[var(--border-color)] my-1" />
-                    <button
-                      className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-red-500 hover:bg-red-500/10"
-                    >
-                      <LogOut className="h-4 w-4" /> Logout
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+                      <div className="px-4 py-3 border-b border-[var(--border-color)] bg-[var(--bg-tertiary)]">
+                        <p className="text-sm font-medium text-[var(--text-primary)]">{mockUser.name}</p>
+                        <p className="text-xs text-[var(--text-muted)] truncate">{mockUser.email}</p>
+                      </div>
+                      <Link
+                        href="/profile"
+                        className="flex items-center gap-2 px-4 py-2.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--color-surface)]"
+                      >
+                        <User className="h-4 w-4" /> Profile
+                      </Link>
+                      <Link
+                        href="/settings"
+                        className="flex items-center gap-2 px-4 py-2.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--color-surface)]"
+                      >
+                        <Settings className="h-4 w-4" /> Settings
+                      </Link>
+                      <div className="h-px bg-[var(--border-color)] my-1" />
+                      <button
+                        className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-red-500 hover:bg-red-500/10"
+                      >
+                        <LogOut className="h-4 w-4" /> Logout
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <div className="hidden md:flex items-center gap-3">
+                <Link href="/login">
+                  <span className="text-sm font-medium hover:text-[var(--text-primary)] text-[var(--text-secondary)] px-3 transition-colors">Sign In</span>
+                </Link>
+                <Link href="/register">
+                  <span className="px-4 py-1.5 text-sm font-medium bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors shadow-sm">Get Started</span>
+                </Link>
+              </div>
+            )}
 
             {/* Mobile Hamburger */}
             <button
@@ -142,15 +153,22 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              <div className="pt-3 mt-3 border-t border-[var(--border-color)]">
-                <div className="flex items-center gap-3 px-3 py-2">
-                  <Avatar name={mockUser.name} size="sm" />
-                  <div>
-                    <p className="text-sm font-medium text-[var(--text-primary)]">{mockUser.name}</p>
-                    <p className="text-xs text-[var(--text-muted)]">{mockUser.email}</p>
+              {!isGuest ? (
+                <div className="pt-3 mt-3 border-t border-[var(--border-color)]">
+                  <div className="flex items-center gap-3 px-3 py-2">
+                    <Avatar name={mockUser.name} size="sm" />
+                    <div>
+                      <p className="text-sm font-medium text-[var(--text-primary)]">{mockUser.name}</p>
+                      <p className="text-xs text-[var(--text-muted)]">{mockUser.email}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="pt-3 mt-3 border-t border-[var(--border-color)] flex flex-col gap-3 px-3 pb-2">
+                  <Link href="/login" onClick={() => setMobileOpen(false)} className="text-sm font-medium text-[var(--text-primary)]">Sign In</Link>
+                  <Link href="/register" onClick={() => setMobileOpen(false)} className="text-sm font-medium text-indigo-500">Get Started</Link>
+                </div>
+              )}
             </div>
           </motion.div>
         )}

@@ -48,7 +48,7 @@ export default function GuestChatPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg-primary)]">
-      <Navbar />
+      <Navbar isGuest={true} />
       <main className="flex-1 w-full max-w-5xl mx-auto flex flex-col overflow-hidden pt-4 pb-4 px-4 sm:px-6 lg:px-8">
         <div className="flex-1 rounded-2xl border border-[var(--border-color)] overflow-hidden shadow-sm flex flex-col">
           <ChatPanel 
