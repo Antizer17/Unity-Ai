@@ -1,4 +1,4 @@
-"""
+﻿"""
 notes.py
 
 Generates structured, topic-organized notes from a normalized transcript JSON
@@ -75,12 +75,12 @@ def generate_notes_from_transcript(transcript: dict) -> dict:
 
     api_key = os.getenv("GROQ_API_KEY")
     if not api_key:
-        print("⚠️ GROQ_API_KEY not found. Falling back to rule-based note generator.")
+        print("[WARN] GROQ_API_KEY not found. Falling back to rule-based note generator.")
         return generate_fallback_notes(transcript)
 
     # Decide chunking strategy
     strategy = decide_chunking_strategy(transcript)
-    print(f"📝 Notes strategy: {strategy['chunking']} ({strategy['total_words']} words)")
+    print(f"[NOTES] Notes strategy: {strategy['chunking']} ({strategy['total_words']} words)")
 
     try:
         if strategy["chunking"] == "single_pass":
@@ -88,7 +88,7 @@ def generate_notes_from_transcript(transcript: dict) -> dict:
         else:
             return _generate_notes_two_pass(lecture_id, segments, api_key)
     except Exception as e:
-        print(f"❌ Error calling Groq for notes: {e}. Falling back to rule-based generator.")
+        print(f"[ERROR] Error calling Groq for notes: {e}. Falling back to rule-based generator.")
         return generate_fallback_notes(transcript)
 
 
@@ -168,7 +168,7 @@ def _generate_notes_single_pass(lecture_id: str, segments: list, api_key: str) -
             }
 
         except Exception as e:
-            print(f"⚠️ Model {model} failed: {e}")
+            print(f"[WARN] Model {model} failed: {e}")
             if model == FALLBACK_MODEL:
                 raise  # Re-raise if even the fallback fails
             print(f"   Trying fallback model: {FALLBACK_MODEL}...")
@@ -262,7 +262,7 @@ def generate_fallback_notes(transcript: dict) -> dict:
     }
 
 
-# ─── CLI Interface ─────────────────────────────────────────────────────────────
+# --- CLI Interface -------------------------------------------------------------
 
 def main():
     if len(sys.argv) < 2:

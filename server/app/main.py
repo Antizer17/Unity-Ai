@@ -1,10 +1,12 @@
-import os
+﻿import os
 import json
 import shutil
 from datetime import datetime
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from motor.motor_asyncio import AsyncIOMotorClient
 from app.transcribe import transcribe_and_normalize
 from app.notes import generate_notes_from_transcript
 from app.rag import index_lecture_transcript, query_ai_tutor, query_general_tutor
@@ -13,7 +15,42 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = FastAPI(title="AI Lecture Companion API - Cybernauts 2026")
+MONGO_URI = os.getenv("MONGO_URI")
+
+# --- MongoDB Lifespan (from feat/backend-integration - Person B) --------------
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Manages MongoDB connection lifecycle."""
+    if MONGO_URI:
+        try:
+            app.mongodb_client = AsyncIOMotorClient(MONGO_URI)
+            app.db = app.mongodb_client["lecture_companion"]
+            
+            # Test the connection
+            await app.mongodb_client.admin.command('ping')
+            print("[OK] SUCCESSFULLY CONNECTED TO MONGODB ATLAS")
+        except Exception as e:
+            print(f"[WARN] MongoDB connection failed: {e}")
+            print("   Continuing with JSON-file storage only.")
+            app.mongodb_client = None
+            app.db = None
+    else:
+        print("[INFO] MONGO_URI not set. Using JSON-file storage only.")
+        app.mongodb_client = None
+        app.db = None
+    
+    yield  # Application serves requests here
+    
+    # Shutdown: close MongoDB connection
+    if hasattr(app, 'mongodb_client') and app.mongodb_client:
+        app.mongodb_client.close()
+        print("[CLOSE] MongoDB connection closed.")
+
+
+# --- App Initialization -------------------------------------------------------
+
+app = FastAPI(title="AI Lecture Companion API - Cybernauts 2026", lifespan=lifespan)
 
 # Create persistent uploads directory if not exists and mount it
 os.makedirs("uploads", exist_ok=True)
@@ -27,6 +64,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+def get_db():
+    """Helper to safely get the MongoDB database instance."""
+    if hasattr(app, 'db') and app.db is not None:
+        return app.db
+    return None
 
 DATA_DIR = "data"
 LECTURES_FILE = os.path.join(DATA_DIR, "lectures.json")
@@ -225,34 +269,74 @@ def save_lectures_list(lectures: list):
 async def run_transcription_background(lecture_id: str, temp_file_path: str):
     """
     Background worker that runs transcription, note generation, and updates status.
+    Saves to both JSON files (local) and MongoDB Atlas (cloud persistence).
     """
     try:
         # 1. Run transcription pipeline
         transcript = transcribe_and_normalize(temp_file_path, lecture_id)
         
-        # 2. Save transcript to data folder
+        # 2. Save transcript to data folder (JSON)
         transcript_path = os.path.join(DATA_DIR, f"{lecture_id}_transcript.json")
         with open(transcript_path, "w") as f:
             json.dump(transcript, f, indent=2)
         
         # 2.5. Index transcript for RAG-based chat (from NaeemRagFeat)
         index_lecture_transcript(lecture_id)
+        
+        # 2.6. Save transcript to MongoDB (from feat/backend-integration - Person B)
+        db = get_db()
+        if db is not None:
+            try:
+                await db.transcripts.update_one(
+                    {"lecture_id": lecture_id},
+                    {"$set": transcript},
+                    upsert=True
+                )
+                print(f"[DB] MongoDB: Saved transcript for {lecture_id}")
+            except Exception as mongo_err:
+                print(f"[WARN] MongoDB transcript save failed: {mongo_err}")
             
         # 3. Run note generation pipeline
         notes = generate_notes_from_transcript(transcript)
         notes_path = os.path.join(DATA_DIR, f"{lecture_id}_notes.json")
         with open(notes_path, "w") as f:
             json.dump(notes, f, indent=2)
+        
+        # 3.5. Save notes to MongoDB
+        if db is not None:
+            try:
+                await db.notes.update_one(
+                    {"lectureId": lecture_id},
+                    {"$set": notes},
+                    upsert=True
+                )
+                print(f"[DB] MongoDB: Saved notes for {lecture_id}")
+            except Exception as mongo_err:
+                print(f"[WARN] MongoDB notes save failed: {mongo_err}")
             
-        # 4. Update status in lectures list
+        # 4. Update status in lectures list (JSON)
         lectures = load_lectures_list()
+        lecture_data = None
         for lec in lectures:
             if lec["id"] == lecture_id:
                 lec["status"] = "READY"
                 lec["duration"] = transcript.get("duration", 0.0)
                 lec["updatedAt"] = datetime.utcnow().isoformat() + "Z"
+                lecture_data = lec
                 break
         save_lectures_list(lectures)
+        
+        # 4.5. Save lecture metadata to MongoDB
+        if db is not None and lecture_data:
+            try:
+                await db.lectures.update_one(
+                    {"id": lecture_id},
+                    {"$set": lecture_data},
+                    upsert=True
+                )
+                print(f"[DB] MongoDB: Updated lecture status for {lecture_id}")
+            except Exception as mongo_err:
+                print(f"[WARN] MongoDB lecture save failed: {mongo_err}")
         
     except Exception as e:
         print(f"Background processing failed for {lecture_id}: {str(e)}")
@@ -264,6 +348,18 @@ async def run_transcription_background(lecture_id: str, temp_file_path: str):
                 lec["updatedAt"] = datetime.utcnow().isoformat() + "Z"
                 break
         save_lectures_list(lectures)
+        
+        # Also update failure in MongoDB
+        db = get_db()
+        if db is not None:
+            try:
+                await db.lectures.update_one(
+                    {"id": lecture_id},
+                    {"$set": {"status": "FAILED", "updatedAt": datetime.utcnow().isoformat() + "Z"}},
+                    upsert=True
+                )
+            except Exception:
+                pass
         
     finally:
         # 5. Clean up temporary media file
@@ -403,7 +499,7 @@ async def api_transcribe_lecture(
             os.remove(temp_file_path)
 
 
-# ─── RAG Chat Endpoints (from NaeemRagFeat - Person C) ─────────────────────────
+# --- RAG Chat Endpoints (from NaeemRagFeat - Person C) -------------------------
 
 @app.post("/api/chat")
 async def chat_with_tutor(request: ChatRequest):
@@ -439,7 +535,7 @@ async def chat_general(request: ChatRequest):
         raise HTTPException(status_code=500, detail=f"Chat failed: {str(e)}")
 
 
-# ─── Notes Regeneration Endpoint (from feat/backend-integration - Person B) ───
+# --- Notes Regeneration Endpoint (from feat/backend-integration - Person B) ---
 
 @app.post("/api/lectures/{lecture_id}/notes/regenerate")
 async def regenerate_notes(lecture_id: str):
@@ -458,7 +554,7 @@ async def regenerate_notes(lecture_id: str):
         with open(transcript_path, "r") as f:
             transcript = json.load(f)
 
-        print(f"🧠 Regenerating notes for {lecture_id}...")
+        print(f"[AI] Regenerating notes for {lecture_id}...")
         notes = generate_notes_from_transcript(transcript)
 
         notes_path = os.path.join(DATA_DIR, f"{lecture_id}_notes.json")

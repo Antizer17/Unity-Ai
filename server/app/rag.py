@@ -1,4 +1,4 @@
-"""
+﻿"""
 rag.py
 
 Retrieval-Augmented Generation (RAG) pipeline for the AI Lecture Tutor.
@@ -28,10 +28,10 @@ def index_lecture_transcript(lecture_id: str):
     """
     transcript_path = os.path.join(DATA_DIR, f"{lecture_id}_transcript.json")
     if os.path.exists(transcript_path):
-        print(f"✅ RAG: Successfully tracked transcript for lecture: {lecture_id}")
+        print(f"[OK] RAG: Successfully tracked transcript for lecture: {lecture_id}")
         return True
     else:
-        print(f"⚠️ RAG: Transcript file not found for lecture: {lecture_id}")
+        print(f"[WARN] RAG: Transcript file not found for lecture: {lecture_id}")
         return False
 
 
@@ -146,7 +146,7 @@ def query_ai_tutor(lecture_id: str, student_query: str) -> dict:
         }
 
     except Exception as e:
-        print(f"❌ RAG processing failed: {str(e)}")
+        print(f"[ERROR] RAG processing failed: {str(e)}")
         return {
             "answer": f"I encountered an error while processing your question. Please try again.",
             "timestamps": []
@@ -196,7 +196,7 @@ def query_general_tutor(student_query: str) -> dict:
         }
 
     except Exception as e:
-        print(f"❌ General tutor query failed: {str(e)}")
+        print(f"[ERROR] General tutor query failed: {str(e)}")
         return {
             "answer": "I encountered an error processing your question. Please try again.",
             "timestamps": []

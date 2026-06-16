@@ -1,4 +1,4 @@
-"""
+﻿"""
 transcribe.py
 
 Transcribes an audio/video lecture file using Groq's Whisper API
@@ -46,11 +46,11 @@ def transcribe_and_normalize(audio_path, lecture_id):
     file_size = os.path.getsize(audio_path)
 
     if file_size <= MAX_SIZE_BYTES:
-        # ── Small file: Single-pass transcription ──
+        # -- Small file: Single-pass transcription --
         return _transcribe_single_pass(client, audio_path, lecture_id)
     else:
-        # ── Large file: Chunked transcription ──
-        print(f"🔪 Large file detected ({file_size / (1024*1024):.1f}MB). Splitting into chunks...")
+        # -- Large file: Chunked transcription --
+        print(f"[SPLIT] Large file detected ({file_size / (1024*1024):.1f}MB). Splitting into chunks...")
         return _transcribe_chunked(client, audio_path, lecture_id)
 
 
@@ -79,7 +79,7 @@ def _transcribe_chunked(client, audio_path, lecture_id):
     try:
         from pydub import AudioSegment
     except ImportError:
-        print("⚠️ pydub not installed. Attempting single-pass transcription for large file...")
+        print("[WARN] pydub not installed. Attempting single-pass transcription for large file...")
         print("   Install pydub for proper large file support: pip install pydub")
         return _transcribe_single_pass(client, audio_path, lecture_id)
 
@@ -95,7 +95,7 @@ def _transcribe_chunked(client, audio_path, lecture_id):
     chunk_length_ms = 10 * 60 * 1000
     chunks = [audio[i:i + chunk_length_ms] for i in range(0, len(audio), chunk_length_ms)]
 
-    print(f"📦 Split into {len(chunks)} chunks of ~10 minutes each")
+    print(f"[CHUNKS] Split into {len(chunks)} chunks of ~10 minutes each")
 
     all_segments = []
     segment_global_counter = 0
@@ -110,7 +110,7 @@ def _transcribe_chunked(client, audio_path, lecture_id):
         buffer.seek(0)
 
         try:
-            print(f"  🎙️ Transcribing chunk {idx + 1}/{len(chunks)}...")
+            print(f"  [MIC] Transcribing chunk {idx + 1}/{len(chunks)}...")
             response = client.audio.transcriptions.create(
                 file=buffer,
                 model="whisper-large-v3",
@@ -137,7 +137,7 @@ def _transcribe_chunked(client, audio_path, lecture_id):
             cumulative_time_offset += chunk_duration
 
         except Exception as e:
-            print(f"  ❌ Error processing chunk {idx + 1}: {e}")
+            print(f"  [ERROR] Error processing chunk {idx + 1}: {e}")
             continue
 
     total_duration = cumulative_time_offset
