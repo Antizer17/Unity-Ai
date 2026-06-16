@@ -106,7 +106,7 @@ export default function LectureDetailPage({
     setCurrentTime(seconds);
   };
 
-  const handleSendMessage = (content: string) => {
+  const handleSendMessage = async (content: string) => {
     const userMsg: ChatMessage = {
       id: `msg-${Date.now()}`,
       role: 'user',
@@ -115,22 +115,54 @@ export default function LectureDetailPage({
     };
     setChatMessages((prev) => [...prev, userMsg]);
 
-    // Simulate assistant reply backed by the actual transcription segments if available
-    setTimeout(() => {
+    try {
+      // Call the real RAG-powered chat API
+      const res = await api.chat.sendMessage(id, content);
+      
+      if (res.success && res.data) {
+        const { answer, timestamps } = res.data;
+        
+        // Build citations from the RAG timestamps
+        const citations = timestamps?.map((ts: { start: number; end: number; formatted: string }, idx: number) => ({
+          segmentId: `rag-${idx}`,
+          text: `Referenced at ${ts.formatted}`,
+          startTime: ts.start,
+          endTime: ts.end,
+        }));
+
+        const assistantMsg: ChatMessage = {
+          id: `msg-${Date.now()}-reply`,
+          role: 'assistant',
+          content: answer,
+          citations: citations?.length ? citations : undefined,
+          createdAt: new Date().toISOString(),
+        };
+        setChatMessages((prev) => [...prev, assistantMsg]);
+      } else {
+        // Fallback if API returns an error
+        const errorMsg: ChatMessage = {
+          id: `msg-${Date.now()}-error`,
+          role: 'assistant',
+          content: res.error || "I'm having trouble connecting to the AI service. Please try again.",
+          createdAt: new Date().toISOString(),
+        };
+        setChatMessages((prev) => [...prev, errorMsg]);
+      }
+    } catch {
+      // Network error fallback — use local transcript matching
       let matchingSegment = null;
       if (transcript?.segments) {
         matchingSegment = transcript.segments.find((s) =>
           s.text.toLowerCase().includes(content.toLowerCase())
         );
-        // If not found, use a random segment or the first segment
         if (!matchingSegment && transcript.segments.length > 0) {
           matchingSegment = transcript.segments[Math.floor(Math.random() * transcript.segments.length)];
         }
       }
 
       const replyText = matchingSegment
-        ? `Based on the lecture at ${formatDuration(matchingSegment.startTime)}, the discussion mentions:\n\n> "${matchingSegment.text}"\n\nThis relates directly to your question about "${content}". Is there anything specific from this part you would like to explore further?`
-        : `That's an interesting question about "${content}". Since the transcription details are still loading or unavailable, I'll save this question and look up the context as soon as processing completes!`;
+        ? `Based on the lecture at ${formatDuration(matchingSegment.startTime)}, the discussion mentions:\n\n> "${matchingSegment.text}"\n\n*Note: This response was generated offline using local transcript data.*`
+        : `I couldn't reach the AI service to answer your question about "${content}". Please check that the backend server is running and try again.`;
 
       const assistantMsg: ChatMessage = {
         id: `msg-${Date.now()}-reply`,
@@ -147,7 +179,7 @@ export default function LectureDetailPage({
         createdAt: new Date().toISOString(),
       };
       setChatMessages((prev) => [...prev, assistantMsg]);
-    }, 1200);
+    }
   };
 
   if (loading && !lecture) {

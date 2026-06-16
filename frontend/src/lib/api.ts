@@ -171,8 +171,7 @@ export const chatApi = {
   async createSession(
     lectureId: string
   ): Promise<ApiResponse<ChatSession>> {
-    void lectureId;
-    await delay();
+    // Sessions are managed client-side for now
     return {
       success: true,
       data: {
@@ -184,26 +183,60 @@ export const chatApi = {
     };
   },
 
+  /**
+   * Send a message to the RAG-powered AI tutor for a specific lecture.
+   * Calls POST /api/chat with { lecture_id, question }.
+   */
   async sendMessage(
-    sessionId: string,
+    lectureId: string,
     content: string
-  ): Promise<ApiResponse<ChatMessage>> {
-    void sessionId;
-    void content;
-    await delay(1200);
-    // Return a mock assistant response
-    return {
-      success: true,
-      data: mockChatMessages[1], // reuse an existing assistant message
-    };
+  ): Promise<ApiResponse<{ answer: string; timestamps: Array<{ start: number; end: number; formatted: string }> }>> {
+    return apiFetch<{ answer: string; timestamps: Array<{ start: number; end: number; formatted: string }> }>(
+      '/chat',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          lecture_id: lectureId,
+          question: content,
+        }),
+      }
+    );
+  },
+
+  /**
+   * Send a message to the general-purpose AI tutor (no specific lecture context).
+   * Used by the guest chat page.
+   * Calls POST /api/chat/general with { lecture_id: "general", question }.
+   */
+  async sendGeneralMessage(
+    content: string
+  ): Promise<ApiResponse<{ answer: string; timestamps: Array<{ start: number; end: number; formatted: string }> }>> {
+    return apiFetch<{ answer: string; timestamps: Array<{ start: number; end: number; formatted: string }> }>(
+      '/chat/general',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          lecture_id: 'general',
+          question: content,
+        }),
+      }
+    );
   },
 
   async getHistory(
     sessionId: string
   ): Promise<ApiResponse<ChatSession>> {
     void sessionId;
-    await delay();
-    return { success: true, data: mockChatSession };
+    // Chat history is managed client-side for now
+    return {
+      success: true,
+      data: {
+        id: sessionId,
+        lectureId: '',
+        messages: [],
+        createdAt: new Date().toISOString(),
+      },
+    };
   },
 };
 

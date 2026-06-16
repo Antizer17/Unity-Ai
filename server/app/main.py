@@ -7,6 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.transcribe import transcribe_and_normalize
 from app.notes import generate_notes_from_transcript
+from app.rag import index_lecture_transcript, query_ai_tutor, query_general_tutor
+from app.schema import ChatRequest
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -232,6 +234,9 @@ async def run_transcription_background(lecture_id: str, temp_file_path: str):
         transcript_path = os.path.join(DATA_DIR, f"{lecture_id}_transcript.json")
         with open(transcript_path, "w") as f:
             json.dump(transcript, f, indent=2)
+        
+        # 2.5. Index transcript for RAG-based chat (from NaeemRagFeat)
+        index_lecture_transcript(lecture_id)
             
         # 3. Run note generation pipeline
         notes = generate_notes_from_transcript(transcript)
@@ -396,3 +401,71 @@ async def api_transcribe_lecture(
     finally:
         if os.path.exists(temp_file_path):
             os.remove(temp_file_path)
+
+
+# ─── RAG Chat Endpoints (from NaeemRagFeat - Person C) ─────────────────────────
+
+@app.post("/api/chat")
+async def chat_with_tutor(request: ChatRequest):
+    """
+    RAG-powered chat endpoint. Accepts a lecture_id and question,
+    retrieves relevant transcript segments, and generates an AI answer.
+    Returns { answer, timestamps } with clickable timestamp references.
+    """
+    try:
+        response = query_ai_tutor(
+            lecture_id=request.lecture_id,
+            student_query=request.question
+        )
+        if "error" in response:
+            raise HTTPException(status_code=400, detail=response["error"])
+        return {"success": True, "data": response}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Chat failed: {str(e)}")
+
+
+@app.post("/api/chat/general")
+async def chat_general(request: ChatRequest):
+    """
+    General-purpose AI tutor chat (no specific lecture context).
+    Used by the guest chat page for anonymous users.
+    """
+    try:
+        response = query_general_tutor(student_query=request.question)
+        return {"success": True, "data": response}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Chat failed: {str(e)}")
+
+
+# ─── Notes Regeneration Endpoint (from feat/backend-integration - Person B) ───
+
+@app.post("/api/lectures/{lecture_id}/notes/regenerate")
+async def regenerate_notes(lecture_id: str):
+    """
+    Re-generates notes for a lecture by re-running the notes pipeline
+    against the saved transcript.
+    """
+    transcript_path = os.path.join(DATA_DIR, f"{lecture_id}_transcript.json")
+    if not os.path.exists(transcript_path):
+        raise HTTPException(
+            status_code=404,
+            detail="Lecture transcript not found. Please transcribe the lecture first."
+        )
+
+    try:
+        with open(transcript_path, "r") as f:
+            transcript = json.load(f)
+
+        print(f"🧠 Regenerating notes for {lecture_id}...")
+        notes = generate_notes_from_transcript(transcript)
+
+        notes_path = os.path.join(DATA_DIR, f"{lecture_id}_notes.json")
+        with open(notes_path, "w") as f:
+            json.dump(notes, f, indent=2)
+
+        return {"success": True, "data": notes}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Notes regeneration failed: {str(e)}")
