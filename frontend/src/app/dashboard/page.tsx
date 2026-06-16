@@ -1,128 +1,132 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
-  BookOpen,
-  Clock,
-  FileText,
   MessageSquare,
-  Upload,
-  TrendingUp,
+  Sparkles,
+  BookOpen,
+  BrainCircuit,
+  Lightbulb,
+  ArrowRight
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { LectureCard } from '@/components/lecture/lecture-card';
-import { mockLectures, mockStats, mockUser } from '@/lib/mock-data';
+import { cn } from '@/lib/utils';
+import { mockUser } from '@/lib/mock-data';
 
-const statCards = [
+const quickPrompts = [
   {
-    label: 'Total Lectures',
-    value: mockStats.totalLectures,
+    title: 'Summarize my last lecture',
     icon: BookOpen,
-    gradient: 'from-indigo-500 to-violet-500',
-    change: '+3 this week',
+    color: 'text-indigo-500',
+    bg: 'bg-indigo-500/10'
   },
   {
-    label: 'Hours Studied',
-    value: mockStats.hoursStudied,
-    icon: Clock,
-    gradient: 'from-cyan-500 to-blue-500',
-    change: '+5.2 hrs',
+    title: 'Quiz me on Advanced Calculus',
+    icon: BrainCircuit,
+    color: 'text-cyan-500',
+    bg: 'bg-cyan-500/10'
   },
   {
-    label: 'Notes Generated',
-    value: mockStats.notesGenerated,
-    icon: FileText,
-    gradient: 'from-emerald-500 to-teal-500',
-    change: '+2 notes',
+    title: 'Explain Thermodynamics simply',
+    icon: Lightbulb,
+    color: 'text-amber-500',
+    bg: 'bg-amber-500/10'
   },
   {
-    label: 'Chat Sessions',
-    value: mockStats.chatSessions,
+    title: 'Review my generated notes',
     icon: MessageSquare,
-    gradient: 'from-amber-500 to-orange-500',
-    change: '+8 chats',
-  },
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-500/10'
+  }
 ];
 
 export default function DashboardPage() {
-  const recentLectures = mockLectures.slice(0, 4);
+  const [input, setInput] = useState('');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value);
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`;
+    }
+  };
 
   return (
-    <div className="p-6 lg:p-8 space-y-8">
-      {/* Welcome Header */}
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] p-6 w-full max-w-4xl mx-auto">
+      {/* Welcome Greeting */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+        className="text-center mb-12"
       >
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">
-            Welcome back, {mockUser.name.split(' ')[0]}! 👋
-          </h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Here&apos;s what&apos;s happening with your study sessions
-          </p>
+        <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-[var(--color-surface)] border border-[var(--border-color)] mb-6 shadow-sm">
+          <Sparkles className="h-10 w-10 text-indigo-500" />
         </div>
-        <Link href="/lectures/upload">
-          <Button id="dashboard-upload-btn" icon={<Upload className="h-4 w-4" />}>
-            Upload Lecture
-          </Button>
-        </Link>
+        <h1 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] tracking-tight mb-4">
+          What do you want to study today?
+        </h1>
+        <p className="text-lg text-[var(--text-secondary)]">
+          Welcome back, {mockUser.name.split(' ')[0]}. I&apos;m ready to help you learn.
+        </p>
       </motion.div>
 
-      {/* Stats Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {statCards.map((stat, i) => (
-          <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            id={`dashboard-stat-${stat.label.toLowerCase().replace(/\s+/g, '-')}`}
-            className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md p-5 hover:border-white/20 transition-all"
+      {/* Main Input Area */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="w-full max-w-3xl mb-12"
+      >
+        <div className="relative rounded-3xl border border-[var(--border-color)] bg-[var(--bg-secondary)] shadow-lg focus-within:ring-2 focus-within:ring-indigo-500/50 transition-all overflow-hidden group">
+          <div className="flex items-end px-4 py-4 min-h-[64px]">
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={handleInput}
+              placeholder="Ask me anything about your lectures..."
+              className="flex-1 max-h-[200px] bg-transparent text-[var(--text-primary)] placeholder-[var(--text-muted)] px-2 py-1 text-lg resize-none focus:outline-none custom-scrollbar"
+              rows={1}
+            />
+            <button
+              disabled={!input.trim()}
+              className={cn(
+                'p-2.5 rounded-full shrink-0 transition-all duration-200 ml-2',
+                input.trim()
+                  ? 'bg-indigo-500 text-white hover:bg-indigo-600 shadow-md'
+                  : 'bg-[var(--color-surface)] text-[var(--text-muted)] cursor-not-allowed'
+              )}
+            >
+              <ArrowRight className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Quick Suggestions */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="w-full max-w-3xl grid grid-cols-1 sm:grid-cols-2 gap-4"
+      >
+        {quickPrompts.map((prompt, i) => (
+          <button
+            key={i}
+            onClick={() => setInput(prompt.title)}
+            className="flex items-center gap-4 p-4 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-secondary)] hover:bg-[var(--color-surface)] transition-colors text-left group"
           >
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">
-                  {stat.label}
-                </p>
-                <p className="text-2xl font-bold text-white mt-2">{stat.value}</p>
-              </div>
-              <div
-                className={`p-2.5 rounded-xl bg-gradient-to-br ${stat.gradient} bg-opacity-20`}
-              >
-                <stat.icon className="h-5 w-5 text-white" />
-              </div>
+            <div className={cn('p-2.5 rounded-xl shrink-0', prompt.bg, prompt.color)}>
+              <prompt.icon className="h-5 w-5" />
             </div>
-            <div className="flex items-center gap-1 mt-3 text-xs text-emerald-400">
-              <TrendingUp className="h-3 w-3" />
-              {stat.change}
+            <div>
+              <p className="text-sm font-medium text-[var(--text-primary)] group-hover:text-indigo-500 transition-colors">
+                {prompt.title}
+              </p>
             </div>
-          </motion.div>
+          </button>
         ))}
-      </div>
-
-      {/* Recent Lectures */}
-      <div>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-white">Recent Lectures</h2>
-          <Link
-            href="/lectures"
-            id="dashboard-view-all-lectures"
-            className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
-          >
-            View All →
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          {recentLectures.map((lecture, i) => (
-            <LectureCard key={lecture.id} lecture={lecture} index={i} />
-          ))}
-        </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

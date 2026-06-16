@@ -40,9 +40,9 @@ export function NotesPanel({
       <div id={id} className="p-6 space-y-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="animate-pulse space-y-2">
-            <div className="h-5 bg-white/5 rounded-lg w-3/4" />
-            <div className="h-3 bg-white/5 rounded-lg w-full" />
-            <div className="h-3 bg-white/5 rounded-lg w-5/6" />
+            <div className="h-5 bg-[var(--color-surface)] rounded-lg w-3/4" />
+            <div className="h-3 bg-[var(--color-surface)] rounded-lg w-full" />
+            <div className="h-3 bg-[var(--color-surface)] rounded-lg w-5/6" />
           </div>
         ))}
       </div>
@@ -52,8 +52,8 @@ export function NotesPanel({
   return (
     <div id={id} className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-white/10">
-        <h3 className="text-sm font-semibold text-white">Structured Notes</h3>
+      <div className="flex items-center justify-between p-4 border-b border-[var(--border-color)]">
+        <h3 className="text-sm font-semibold text-[var(--text-primary)]">Structured Notes</h3>
         <Button
           id={`${id}-regenerate-btn`}
           variant="ghost"
@@ -79,8 +79,8 @@ export function NotesPanel({
               className={cn(
                 'rounded-xl border transition-all duration-200',
                 isExpanded
-                  ? 'bg-indigo-500/5 border-indigo-500/20'
-                  : 'bg-white/5 border-white/10 hover:border-white/20'
+                  ? 'bg-indigo-500/10 border-indigo-500/30'
+                  : 'bg-[var(--bg-secondary)] border-[var(--border-color)] hover:border-[var(--text-muted)]'
               )}
             >
               <button
@@ -90,12 +90,12 @@ export function NotesPanel({
               >
                 <ChevronRight
                   className={cn(
-                    'h-4 w-4 text-slate-400 transition-transform shrink-0',
+                    'h-4 w-4 text-[var(--text-muted)] transition-transform shrink-0',
                     isExpanded && 'rotate-90'
                   )}
                 />
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-medium text-white truncate">
+                  <h4 className="text-sm font-medium text-[var(--text-primary)] truncate">
                     {section.title}
                   </h4>
                 </div>
@@ -127,9 +127,9 @@ export function NotesPanel({
                     className="overflow-hidden"
                   >
                     <div className="px-4 pb-4 pl-10">
-                      <div className="prose prose-sm prose-invert prose-slate max-w-none">
+                      <div className="prose prose-sm dark:prose-invert max-w-none">
                         {section.content.split('\n').map((line, li) => (
-                          <p key={li} className="text-xs text-slate-300 leading-relaxed my-1">
+                          <p key={li} className="text-xs text-[var(--text-secondary)] leading-relaxed my-1">
                             {line}
                           </p>
                         ))}
@@ -144,9 +144,9 @@ export function NotesPanel({
       </div>
 
       {regenerating && (
-        <div className="flex items-center justify-center gap-2 p-4 border-t border-white/10">
+        <div className="flex items-center justify-center gap-2 p-4 border-t border-[var(--border-color)]">
           <Spinner size="sm" />
-          <span className="text-xs text-slate-400">Regenerating notes…</span>
+          <span className="text-xs text-[var(--text-muted)]">Regenerating notes…</span>
         </div>
       )}
     </div>

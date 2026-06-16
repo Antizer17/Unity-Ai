@@ -13,11 +13,11 @@ export interface CardProps extends HTMLMotionProps<'div'> {
 
 const variantStyles: Record<CardVariant, string> = {
   default:
-    'bg-white/5 border border-white/10 backdrop-blur-md',
+    'bg-[var(--color-surface)] border border-[var(--border-color)] backdrop-blur-md shadow-sm',
   interactive:
-    'bg-white/5 border border-white/10 backdrop-blur-md cursor-pointer',
+    'bg-[var(--color-surface)] border border-[var(--border-color)] backdrop-blur-md cursor-pointer hover:border-[var(--text-muted)] transition-colors shadow-sm',
   highlighted:
-    'bg-gradient-to-br from-indigo-500/10 to-violet-500/10 border border-indigo-500/20 backdrop-blur-md',
+    'bg-gradient-to-br from-indigo-500/10 to-violet-500/10 border border-indigo-500/20 backdrop-blur-md shadow-sm',
 };
 
 export function Card({
@@ -29,7 +29,7 @@ export function Card({
 }: CardProps) {
   return (
     <motion.div
-      whileHover={variant === 'interactive' ? { scale: 1.02, y: -2 } : undefined}
+      whileHover={variant === 'interactive' ? { scale: 1.01, y: -2 } : undefined}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       className={cn(
         'rounded-2xl',
@@ -49,11 +49,11 @@ export function CardHeader({ className, children }: { className?: string; childr
 }
 
 export function CardTitle({ className, children }: { className?: string; children: React.ReactNode }) {
-  return <h3 className={cn('text-lg font-semibold text-white', className)}>{children}</h3>;
+  return <h3 className={cn('text-lg font-semibold text-[var(--text-primary)]', className)}>{children}</h3>;
 }
 
 export function CardDescription({ className, children }: { className?: string; children: React.ReactNode }) {
-  return <p className={cn('text-sm text-slate-400 mt-1', className)}>{children}</p>;
+  return <p className={cn('text-sm text-[var(--text-secondary)] mt-1', className)}>{children}</p>;
 }
 
 export function CardContent({ className, children }: { className?: string; children: React.ReactNode }) {

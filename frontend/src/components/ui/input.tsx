@@ -20,14 +20,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-sm font-medium text-slate-300"
+            className="block text-sm font-medium text-[var(--text-secondary)]"
           >
             {label}
           </label>
         )}
         <div className="relative">
           {icon && (
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-[var(--text-muted)]">
               {icon}
             </div>
           )}
@@ -35,12 +35,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={inputId}
             className={cn(
-              'w-full rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500',
+              'w-full rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-[var(--text-primary)] placeholder-[var(--text-muted)]',
               'px-4 py-2.5 text-sm',
-              'backdrop-blur-sm',
               'transition-all duration-200',
               'focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50',
-              'hover:border-white/20',
+              'hover:border-[var(--text-muted)]',
               'disabled:opacity-50 disabled:cursor-not-allowed',
               icon && 'pl-10',
               rightIcon && 'pr-10',
@@ -50,13 +49,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightIcon && (
-            <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400">
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3 text-[var(--text-muted)]">
               {rightIcon}
             </div>
           )}
         </div>
-        {error && <p className="text-xs text-red-400">{error}</p>}
-        {hint && !error && <p className="text-xs text-slate-500">{hint}</p>}
+        {error && <p className="text-xs text-red-500">{error}</p>}
+        {hint && !error && <p className="text-xs text-[var(--text-muted)]">{hint}</p>}
       </div>
     );
   }

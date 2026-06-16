@@ -2,9 +2,10 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Send, Clock, Sparkles, User } from 'lucide-react';
-import { cn, formatTimestamp } from '@/lib/utils';
-import type { ChatMessage, Citation } from '@/types';
+import { Send, Paperclip, Copy, RotateCw, ThumbsUp, ThumbsDown, Sparkles, User } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import { cn } from '@/lib/utils';
+import type { ChatMessage } from '@/types';
 
 export interface ChatPanelProps {
   messages: ChatMessage[];
@@ -14,45 +15,27 @@ export interface ChatPanelProps {
   id?: string;
 }
 
-function CitationChip({
-  citation,
-  onClick,
-}: {
-  citation: Citation;
-  onClick?: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 hover:bg-cyan-500/20 transition-colors"
-    >
-      <Clock className="h-2.5 w-2.5" />
-      {formatTimestamp(citation.startTime)}
-    </button>
-  );
-}
-
 function TypingIndicator() {
   return (
-    <div className="flex items-center gap-3 px-4 py-3">
-      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center shrink-0">
+    <div className="flex items-center gap-3 py-4">
+      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center shrink-0 shadow-sm">
         <Sparkles className="h-4 w-4 text-white" />
       </div>
-      <div className="flex items-center gap-1 px-4 py-2 rounded-2xl bg-white/5">
+      <div className="flex items-center gap-1.5 px-3 py-2">
         <motion.span
-          animate={{ opacity: [0.3, 1, 0.3] }}
+          animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1, 0.8] }}
           transition={{ duration: 1.2, repeat: Infinity, delay: 0 }}
-          className="w-2 h-2 rounded-full bg-indigo-400"
+          className="w-2 h-2 rounded-full bg-[var(--text-muted)]"
         />
         <motion.span
-          animate={{ opacity: [0.3, 1, 0.3] }}
+          animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1, 0.8] }}
           transition={{ duration: 1.2, repeat: Infinity, delay: 0.2 }}
-          className="w-2 h-2 rounded-full bg-indigo-400"
+          className="w-2 h-2 rounded-full bg-[var(--text-muted)]"
         />
         <motion.span
-          animate={{ opacity: [0.3, 1, 0.3] }}
+          animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1, 0.8] }}
           transition={{ duration: 1.2, repeat: Infinity, delay: 0.4 }}
-          className="w-2 h-2 rounded-full bg-indigo-400"
+          className="w-2 h-2 rounded-full bg-[var(--text-muted)]"
         />
       </div>
     </div>
@@ -62,31 +45,40 @@ function TypingIndicator() {
 export function ChatPanel({
   messages,
   onSendMessage,
-  onTimestampClick,
   loading = false,
   id = 'chat-panel',
 }: ChatPanelProps) {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Auto-scroll on new messages
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, isTyping]);
 
+  const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value);
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`;
+    }
+  };
+
   const handleSend = () => {
     if (!input.trim()) return;
     onSendMessage?.(input.trim());
     setInput('');
     setIsTyping(true);
-    // Simulate bot typing
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+    }
     setTimeout(() => setIsTyping(false), 2000);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -94,113 +86,125 @@ export function ChatPanel({
   };
 
   return (
-    <div id={id} className="flex flex-col h-full">
-      {/* Messages */}
+    <div id={id} className="flex flex-col h-full bg-[var(--bg-primary)]">
+      {/* Messages Feed */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-4"
+        className="flex-1 overflow-y-auto custom-scrollbar px-4 py-6 md:px-8 space-y-6"
       >
         {messages.length === 0 && !loading && (
-          <div className="flex flex-col items-center justify-center h-full text-center px-4">
-            <div className="p-4 rounded-2xl bg-indigo-500/10 mb-4">
-              <Sparkles className="h-8 w-8 text-indigo-400" />
+          <div className="flex flex-col items-center justify-center h-full text-center px-4 max-w-md mx-auto">
+            <div className="p-4 rounded-full bg-[var(--color-surface)] border border-[var(--border-color)] mb-6 shadow-sm">
+              <Sparkles className="h-8 w-8 text-indigo-500" />
             </div>
-            <h4 className="text-sm font-medium text-white mb-1">
-              AI Study Assistant
-            </h4>
-            <p className="text-xs text-slate-400 max-w-xs">
-              Ask me anything about this lecture. I&apos;ll find the answers in the transcript and cite my sources.
+            <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-2">
+              How can I help you study?
+            </h2>
+            <p className="text-sm text-[var(--text-secondary)]">
+              Ask questions about the lecture, request a summary, or let me quiz you on the material.
             </p>
           </div>
         )}
 
-        {messages.map((msg, i) => (
-          <motion.div
-            key={msg.id}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.02 }}
-            className={cn(
-              'flex gap-3',
-              msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'
-            )}
-          >
-            {/* Avatar */}
-            <div
+        <div className="max-w-3xl mx-auto space-y-6">
+          {messages.map((msg, i) => (
+            <motion.div
+              key={msg.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.02 }}
               className={cn(
-                'h-8 w-8 rounded-full flex items-center justify-center shrink-0',
-                msg.role === 'user'
-                  ? 'bg-gradient-to-br from-cyan-500 to-blue-500'
-                  : 'bg-gradient-to-br from-indigo-500 to-violet-500'
+                'flex gap-4 w-full',
+                msg.role === 'user' ? 'justify-end' : 'justify-start'
               )}
             >
-              {msg.role === 'user' ? (
-                <User className="h-4 w-4 text-white" />
-              ) : (
-                <Sparkles className="h-4 w-4 text-white" />
-              )}
-            </div>
-
-            {/* Bubble */}
-            <div
-              className={cn(
-                'max-w-[80%] rounded-2xl px-4 py-3 text-sm',
-                msg.role === 'user'
-                  ? 'bg-indigo-500/20 text-white rounded-tr-sm'
-                  : 'bg-white/5 text-slate-200 rounded-tl-sm border border-white/5'
-              )}
-            >
-              <div className="whitespace-pre-wrap leading-relaxed">{msg.content}</div>
-
-              {/* Citations */}
-              {msg.citations && msg.citations.length > 0 && (
-                <div className="mt-3 pt-2 border-t border-white/10 space-y-1.5">
-                  <p className="text-[10px] uppercase text-slate-500 font-medium tracking-wider">
-                    Sources
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {msg.citations.map((c) => (
-                      <CitationChip
-                        key={c.segmentId}
-                        citation={c}
-                        onClick={() => onTimestampClick?.(c.startTime)}
-                      />
-                    ))}
-                  </div>
+              {msg.role === 'assistant' && (
+                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center shrink-0 shadow-sm mt-1">
+                  <Sparkles className="h-4 w-4 text-white" />
                 </div>
               )}
-            </div>
-          </motion.div>
-        ))}
 
-        {isTyping && <TypingIndicator />}
+              <div className="flex flex-col gap-2 max-w-[80%]">
+                <div
+                  className={cn(
+                    'px-5 py-3.5 text-[15px] leading-relaxed',
+                    msg.role === 'user'
+                      ? 'bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-primary)] rounded-3xl rounded-tr-sm'
+                      : 'bg-transparent text-[var(--text-primary)] rounded-3xl rounded-tl-sm'
+                  )}
+                >
+                  {msg.role === 'assistant' ? (
+                    <div className="prose prose-sm dark:prose-invert max-w-none">
+                      <ReactMarkdown>{msg.content}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    <div className="whitespace-pre-wrap">{msg.content}</div>
+                  )}
+                </div>
+
+                {/* Assistant Micro-Actions */}
+                {msg.role === 'assistant' && (
+                  <div className="flex items-center gap-1 text-[var(--text-muted)] ml-2 mt-1">
+                    <button className="p-1.5 hover:bg-[var(--color-surface)] hover:text-[var(--text-primary)] rounded-md transition-colors" title="Copy">
+                      <Copy className="h-3.5 w-3.5" />
+                    </button>
+                    <button className="p-1.5 hover:bg-[var(--color-surface)] hover:text-[var(--text-primary)] rounded-md transition-colors" title="Regenerate">
+                      <RotateCw className="h-3.5 w-3.5" />
+                    </button>
+                    <div className="w-px h-3.5 bg-[var(--border-color)] mx-1" />
+                    <button className="p-1.5 hover:bg-[var(--color-surface)] hover:text-[var(--text-primary)] rounded-md transition-colors" title="Helpful">
+                      <ThumbsUp className="h-3.5 w-3.5" />
+                    </button>
+                    <button className="p-1.5 hover:bg-[var(--color-surface)] hover:text-[var(--text-primary)] rounded-md transition-colors" title="Not Helpful">
+                      <ThumbsDown className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {msg.role === 'user' && (
+                <div className="h-8 w-8 rounded-full bg-slate-300 dark:bg-slate-700 flex items-center justify-center shrink-0 shadow-sm mt-1">
+                  <User className="h-4 w-4 text-slate-600 dark:text-slate-300" />
+                </div>
+              )}
+            </motion.div>
+          ))}
+          {isTyping && <TypingIndicator />}
+        </div>
       </div>
 
-      {/* Input */}
-      <div className="p-4 border-t border-white/10">
-        <div className="flex items-center gap-2">
-          <input
-            id={`${id}-input`}
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Ask about this lecture…"
-            className="flex-1 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
-          />
-          <button
-            id={`${id}-send-btn`}
-            onClick={handleSend}
-            disabled={!input.trim()}
-            className={cn(
-              'p-2.5 rounded-xl transition-all duration-200',
-              input.trim()
-                ? 'bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40'
-                : 'bg-white/5 text-slate-500 cursor-not-allowed'
-            )}
-          >
-            <Send className="h-4 w-4" />
-          </button>
+      {/* Input Area */}
+      <div className="p-4 md:px-8 pb-6 md:pb-8 bg-gradient-to-t from-[var(--bg-primary)] via-[var(--bg-primary)] to-transparent sticky bottom-0 w-full">
+        <div className="max-w-3xl mx-auto relative rounded-3xl border border-[var(--border-color)] bg-[var(--bg-secondary)] shadow-sm focus-within:ring-1 focus-within:ring-[var(--border-color)] transition-all">
+          <div className="flex items-end px-3 py-3">
+            <button className="p-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--color-surface)] rounded-full transition-colors shrink-0 mb-0.5">
+              <Paperclip className="h-5 w-5" />
+            </button>
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={handleInput}
+              onKeyDown={handleKeyDown}
+              placeholder="Message Unity-AI..."
+              className="flex-1 max-h-[200px] bg-transparent text-[var(--text-primary)] placeholder-[var(--text-muted)] px-3 py-2 text-[15px] resize-none focus:outline-none custom-scrollbar"
+              rows={1}
+            />
+            <button
+              onClick={handleSend}
+              disabled={!input.trim()}
+              className={cn(
+                'p-2 rounded-full shrink-0 mb-0.5 transition-all duration-200',
+                input.trim()
+                  ? 'bg-[var(--text-primary)] text-[var(--bg-primary)] hover:opacity-80'
+                  : 'bg-[var(--color-surface)] text-[var(--text-muted)] cursor-not-allowed'
+              )}
+            >
+              <Send className="h-4 w-4" />
+            </button>
+          </div>
+          <div className="px-4 pb-2 text-center text-xs text-[var(--text-muted)]">
+            Unity-AI can make mistakes. Consider verifying important information.
+          </div>
         </div>
       </div>
     </div>

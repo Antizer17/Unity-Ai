@@ -59,7 +59,7 @@ export function Modal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
             onClick={onClose}
           />
 
@@ -71,20 +71,20 @@ export function Modal({
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             className={cn(
               'relative w-full rounded-2xl',
-              'bg-slate-900/90 backdrop-blur-xl border border-white/10',
-              'shadow-2xl shadow-black/20',
+              'bg-[var(--bg-primary)] border border-[var(--border-color)]',
+              'shadow-2xl shadow-black/10 dark:shadow-black/40',
               sizeStyles[size],
               className
             )}
           >
             {/* Header */}
             {title && (
-              <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-                <h2 className="text-lg font-semibold text-white">{title}</h2>
+              <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-color)]">
+                <h2 className="text-lg font-semibold text-[var(--text-primary)]">{title}</h2>
                 <button
                   id={id ? `${id}-close` : 'modal-close-btn'}
                   onClick={onClose}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                  className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--color-surface)] transition-colors"
                 >
                   <X className="h-4 w-4" />
                 </button>

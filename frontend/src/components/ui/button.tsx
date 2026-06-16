@@ -32,7 +32,7 @@ function ButtonSpinner({ className }: { className?: string }) {
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
-export type ButtonSize = 'sm' | 'md' | 'lg';
+export type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -50,19 +50,20 @@ const variantStyles: Record<ButtonVariant, string> = {
   primary:
     'bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:from-indigo-400 hover:to-violet-400 focus:ring-indigo-500 active:scale-[0.97]',
   secondary:
-    'bg-white/10 backdrop-blur-sm text-white border border-white/10 hover:bg-white/20 hover:border-white/20 focus:ring-white/30 active:scale-[0.97]',
+    'bg-[var(--color-surface)] text-[var(--text-primary)] border border-[var(--border-color)] hover:bg-[var(--border-color)] focus:ring-[var(--border-color)] active:scale-[0.97]',
   outline:
-    'border border-indigo-500/50 text-indigo-400 hover:bg-indigo-500/10 hover:border-indigo-400 focus:ring-indigo-500 active:scale-[0.97]',
+    'border border-indigo-500/50 text-indigo-500 dark:text-indigo-400 hover:bg-indigo-500/10 hover:border-indigo-400 focus:ring-indigo-500 active:scale-[0.97]',
   ghost:
-    'text-slate-300 hover:bg-white/5 hover:text-white focus:ring-white/20 active:scale-[0.97]',
+    'text-[var(--text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--text-primary)] focus:ring-[var(--color-surface)] active:scale-[0.97]',
   danger:
-    'bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/30 focus:ring-red-500 active:scale-[0.97]',
+    'bg-red-500/10 text-red-500 dark:text-red-400 border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/30 focus:ring-red-500 active:scale-[0.97]',
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
   sm: 'text-xs px-3 py-1.5',
   md: 'text-sm px-4 py-2.5',
   lg: 'text-base px-6 py-3',
+  icon: 'h-9 w-9 p-0 flex items-center justify-center',
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────

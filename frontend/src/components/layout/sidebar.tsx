@@ -5,19 +5,37 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
+  MessageSquare,
+  Plus,
   LayoutDashboard,
-  BookOpen,
-  Upload,
   Settings,
-  ChevronLeft,
+  MoreHorizontal,
   ChevronRight,
+  ChevronLeft
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
-const sidebarLinks = [
+const historyGroups = [
+  {
+    title: 'Today',
+    items: [
+      { id: '1', title: 'Calculus III: Multiple Integrals', href: '/lectures/1' },
+      { id: '2', title: 'Physics: Thermodynamics', href: '/lectures/2' },
+    ]
+  },
+  {
+    title: 'Previous 7 Days',
+    items: [
+      { id: '3', title: 'Data Structures: Trees', href: '/lectures/3' },
+      { id: '4', title: 'Machine Learning basics', href: '/lectures/4' },
+      { id: '5', title: 'History of Art: Renaissance', href: '/lectures/5' },
+    ]
+  }
+];
+
+const bottomLinks = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/lectures', label: 'My Lectures', icon: BookOpen },
-  { href: '/lectures/upload', label: 'Upload', icon: Upload },
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
 
@@ -28,62 +46,59 @@ export function Sidebar() {
   return (
     <motion.aside
       id="sidebar"
-      animate={{ width: collapsed ? 72 : 240 }}
+      animate={{ width: collapsed ? 0 : 260 }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-      className="hidden lg:flex flex-col h-[calc(100vh-4rem)] sticky top-16 border-r border-white/10 bg-slate-950/50 backdrop-blur-sm"
+      className={cn(
+        "hidden md:flex flex-col h-[calc(100vh-4rem)] sticky top-16 border-r border-[var(--border-color)] bg-[var(--bg-secondary)] overflow-hidden",
+        collapsed && "border-r-0"
+      )}
     >
-      <div className="flex-1 py-6 px-3 space-y-1">
-        {sidebarLinks.map((link) => {
-          const isActive = pathname === link.href || pathname.startsWith(link.href + '/');
-          return (
-            <Link
-              key={link.href}
-              href={link.href}
-              id={`sidebar-link-${link.label.toLowerCase()}`}
-              className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
-                isActive
-                  ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
-              )}
-            >
-              <link.icon className={cn('h-5 w-5 shrink-0', isActive && 'text-indigo-400')} />
-              {!collapsed && (
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  {link.label}
-                </motion.span>
-              )}
-              {isActive && !collapsed && (
-                <motion.div
-                  layoutId="sidebar-active"
-                  className="ml-auto h-1.5 w-1.5 rounded-full bg-indigo-400"
-                />
-              )}
-            </Link>
-          );
-        })}
+      <div className="p-3 w-[260px]">
+        <Button className="w-full justify-start text-sm h-10 px-3 bg-[var(--bg-primary)] border border-[var(--border-color)] text-[var(--text-primary)] hover:bg-[var(--color-surface)] shadow-sm" variant="secondary" onClick={() => window.location.href='/dashboard'}>
+          <Plus className="h-4 w-4 mr-2" />
+          New chat
+        </Button>
       </div>
 
-      {/* Collapse Toggle */}
-      <div className="p-3 border-t border-white/10">
-        <button
-          id="sidebar-collapse-btn"
-          onClick={() => setCollapsed(!collapsed)}
-          className="flex items-center justify-center w-full p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-colors"
-        >
-          {collapsed ? (
-            <ChevronRight className="h-4 w-4" />
-          ) : (
-            <>
-              <ChevronLeft className="h-4 w-4" />
-              <span className="ml-2 text-xs">Collapse</span>
-            </>
-          )}
-        </button>
+      <div className="flex-1 overflow-y-auto custom-scrollbar px-3 w-[260px] space-y-6 mt-4 pb-4">
+        {historyGroups.map((group) => (
+          <div key={group.title}>
+            <h3 className="px-2 text-xs font-semibold text-[var(--text-muted)] mb-2 uppercase tracking-wider">
+              {group.title}
+            </h3>
+            <div className="space-y-0.5">
+              {group.items.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.id}
+                    href={item.href}
+                    className={cn(
+                      "flex items-center group px-2 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--color-surface)] transition-colors",
+                      isActive && "bg-[var(--color-surface)] text-[var(--text-primary)] font-medium"
+                    )}
+                  >
+                    <MessageSquare className="h-4 w-4 mr-2 shrink-0 opacity-70 group-hover:opacity-100" />
+                    <span className="truncate">{item.title}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="p-3 border-t border-[var(--border-color)] w-[260px] space-y-1">
+        {bottomLinks.map(link => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className="flex items-center gap-2 px-2 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--color-surface)] transition-colors"
+          >
+            <link.icon className="h-4 w-4" />
+            {link.label}
+          </Link>
+        ))}
       </div>
     </motion.aside>
   );

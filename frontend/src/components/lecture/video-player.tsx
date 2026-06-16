@@ -119,7 +119,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
     return (
       <div
         id={id}
-        className="relative rounded-2xl overflow-hidden bg-black/50 border border-white/10 group"
+        className="relative rounded-2xl overflow-hidden bg-black/90 border border-[var(--border-color)] group"
       >
         {/* Media element */}
         {type === 'video' ? (
@@ -131,7 +131,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
             onClick={togglePlay}
           />
         ) : (
-          <div className="w-full aspect-video bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
+          <div className="w-full aspect-video bg-gradient-to-br from-slate-900 to-black flex items-center justify-center">
             <audio ref={mediaRef as React.RefObject<HTMLAudioElement>} src={src} />
             <div className="text-center">
               <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center">
