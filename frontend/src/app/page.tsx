@@ -68,17 +68,12 @@ export default function LandingPage() {
               </span>
             </Link>
             <div className="flex items-center gap-2 sm:gap-3">
-              <Link href="/chat" className="hidden sm:block">
+              <Link href="/dashboard" className="hidden sm:block">
                 <Button id="landing-guest-chat-btn" variant="outline" size="sm" className="border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10">
-                  Try Guest Chat
+                  Dashboard
                 </Button>
               </Link>
-              <Link href="/login">
-                <Button id="landing-login-btn" variant="ghost" size="sm">
-                  Sign In
-                </Button>
-              </Link>
-              <Link href="/register">
+              <Link href="/dashboard">
                 <Button id="landing-register-btn" variant="primary" size="sm">
                   Get Started
                 </Button>
@@ -126,18 +121,21 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Link href="/register">
-              <Button id="hero-get-started-btn" size="lg" icon={<ArrowRight className="h-5 w-5" />}>
-                Get Started Free
-              </Button>
-            </Link>
-            <Link href="/chat">
-              <Button id="hero-guest-chat-btn" variant="outline" size="lg" className="border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10" icon={<MessageSquareText className="h-4 w-4" />}>
-                Try Guest Chat
-              </Button>
-            </Link>
+            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link href="/dashboard">
+                <Button id="landing-hero-cta" variant="primary" size="lg" className="h-12 px-8 text-base shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)]">
+                  Start Uploading
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="/dashboard">
+                <Button variant="outline" size="lg" className="h-12 px-8 text-base border-white/10 hover:bg-white/5">
+                  <Play className="mr-2 h-4 w-4" />
+                  View Demo
+                </Button>
+              </Link>
+            </div>
           </motion.div>
 
           {/* Hero visual */}
