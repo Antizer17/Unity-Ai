@@ -103,6 +103,7 @@ export default function LectureDetailPage({
 
   const handleTimestampClick = (seconds: number) => {
     playerRef.current?.seekTo(seconds);
+    playerRef.current?.play();
     setCurrentTime(seconds);
   };
 

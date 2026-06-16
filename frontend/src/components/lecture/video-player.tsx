@@ -15,6 +15,7 @@ import { cn, formatDuration } from '@/lib/utils';
 
 export interface VideoPlayerHandle {
   seekTo: (seconds: number) => void;
+  play: () => void;
 }
 
 export interface VideoPlayerProps {
@@ -45,6 +46,9 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
           setCurrentTime(seconds);
         }
       },
+      play: () => {
+        setPlaying(true);
+      }
     }));
 
     const togglePlay = useCallback((e?: React.MouseEvent) => {
