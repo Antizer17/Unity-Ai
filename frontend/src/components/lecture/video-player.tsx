@@ -47,10 +47,20 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
       if (!mediaRef.current) return;
       if (playing) {
         mediaRef.current.pause();
+        setPlaying(false);
       } else {
-        mediaRef.current.play();
+        const playPromise = mediaRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => setPlaying(true))
+            .catch((error) => {
+              console.error("Video play error:", error);
+              setPlaying(false);
+            });
+        } else {
+          setPlaying(true);
+        }
       }
-      setPlaying(!playing);
     }, [playing]);
 
     const toggleMute = useCallback(() => {
@@ -129,6 +139,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
             poster={poster}
             className="w-full aspect-video bg-slate-900"
             onClick={togglePlay}
+            onError={(e) => console.warn("Video failed to load:", e)}
           />
         ) : (
           <div className="w-full aspect-video bg-gradient-to-br from-slate-900 to-black flex items-center justify-center">
