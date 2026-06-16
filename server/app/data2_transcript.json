@@ -1,0 +1,193 @@
+{
+  "lecture_id": "2",
+  "duration": 247.524618052,
+  "language": "English",
+  "segments": [
+    {
+      "id": 0,
+      "start": 0.96,
+      "end": 8.48,
+      "text": "welcome to CSE 221 algorithms introduction to algorithms is our topic"
+    },
+    {
+      "id": 1,
+      "start": 8.48,
+      "end": 15.28,
+      "text": "today my name is Mohin Mustakim I will be the instructor for this session so"
+    },
+    {
+      "id": 2,
+      "start": 15.28,
+      "end": 21.96,
+      "text": "let us review what is algorithm definition means to us algorithm is a"
+    },
+    {
+      "id": 3,
+      "start": 21.96,
+      "end": 29.359999,
+      "text": "finite set of statements that guarantees an optimal solution in finite interval"
+    },
+    {
+      "id": 4,
+      "start": 29.359999,
+      "end": 36.98,
+      "text": "of time so you can understand we will have a set of statements with full"
+    },
+    {
+      "id": 5,
+      "start": 36.98,
+      "end": 42.859997,
+      "text": "guarantees that it will reach to a specific optimal solution in a finite"
+    },
+    {
+      "id": 6,
+      "start": 42.859997,
+      "end": 49.28,
+      "text": "interval in algorithmic thinking and problem-solving skills are very vital"
+    },
+    {
+      "id": 7,
+      "start": 49.28,
+      "end": 55.28,
+      "text": "for making some efficient solutions in real-life problems the algorithm word is"
+    },
+    {
+      "id": 8,
+      "start": 55.28,
+      "end": 70.44371,
+      "text": "first initiated by Al Khurizmi who is also been known as the grandfather of the computer science So what we are actually thinking of the glance of an algorithm"
+    },
+    {
+      "id": 9,
+      "start": 70.44371,
+      "end": 77.54371,
+      "text": "An algorithm is a finite set of instructions or logic written in order to accomplish a"
+    },
+    {
+      "id": 10,
+      "start": 77.54371,
+      "end": 80.64371,
+      "text": "certain predefined task."
+    },
+    {
+      "id": 11,
+      "start": 80.64371,
+      "end": 89.103714,
+      "text": "means if you divide several pieces of task with set of instructions and logics those are being"
+    },
+    {
+      "id": 12,
+      "start": 89.103714,
+      "end": 96.703705,
+      "text": "ordered in a pair and can be constructed sequentially to achieve the goal that you"
+    },
+    {
+      "id": 13,
+      "start": 96.703705,
+      "end": 104.68371,
+      "text": "actually wanted and algorithm is not like the pure programming of code like we have already seen in"
+    },
+    {
+      "id": 14,
+      "start": 104.68371,
+      "end": 112.24371,
+      "text": "our Java or Python programs the sequence of learning of programs those are not being"
+    },
+    {
+      "id": 15,
+      "start": 112.24371,
+      "end": 131.14742,
+      "text": "glanced an algorithm algorithm is basically a program type structure which can be translated into different languages different coding languages so it can be expressed either with a formal high description in"
+    },
+    {
+      "id": 16,
+      "start": 131.14742,
+      "end": 136.54742,
+      "text": "English or you can also use some mathematical notations some graphical"
+    },
+    {
+      "id": 17,
+      "start": 136.54742,
+      "end": 144.12741,
+      "text": "notations also like pseudo codes and flowcharts so one of the example is a"
+    },
+    {
+      "id": 18,
+      "start": 144.12741,
+      "end": 150.06741,
+      "text": "flowchart is like this so you can introduce the algorithm in that way this"
+    },
+    {
+      "id": 19,
+      "start": 150.06741,
+      "end": 156.36742,
+      "text": "flowchart is performing a print statement which prints the numbers"
+    },
+    {
+      "id": 20,
+      "start": 156.36742,
+      "end": 162.30742,
+      "text": "plus one print i plus one that means it will print the number from"
+    },
+    {
+      "id": 21,
+      "start": 162.30742,
+      "end": 170.34741,
+      "text": "two three four five this will print the numbers and also we have in pseudocode"
+    },
+    {
+      "id": 22,
+      "start": 170.34741,
+      "end": 178.9674,
+      "text": "the pseudocode is actually written for for the sum of hundred numbers and the"
+    },
+    {
+      "id": 23,
+      "start": 178.9674,
+      "end": 195.13112,
+      "text": "numbers are being summarized from one to three to a hundred so algorithm is being being developed like that algorithm is being if you first set the number in one then it will be set to the"
+    },
+    {
+      "id": 24,
+      "start": 195.69112,
+      "end": 202.57112,
+      "text": "total number zero the sum is set to the zero this will be initialized and the number counting will"
+    },
+    {
+      "id": 25,
+      "start": 202.57112,
+      "end": 209.69112,
+      "text": "be looped till hundred uh the sum of total is being added to the number and the number is being"
+    },
+    {
+      "id": 26,
+      "start": 209.69112,
+      "end": 217.21112,
+      "text": "incremented by 1 until it reached to the 100. So after the while statement been executed"
+    },
+    {
+      "id": 27,
+      "start": 218.25113,
+      "end": 226.25113,
+      "text": "false it will end the while loop and also display the total and the program is being terminated."
+    },
+    {
+      "id": 28,
+      "start": 226.25113,
+      "end": 235.37112,
+      "text": "So this is a plain pseudo code represented in definite English language, a high level descriptive"
+    },
+    {
+      "id": 29,
+      "start": 235.37112,
+      "end": 240.77112,
+      "text": "language and this is a sample flowchart program these are all graphical program"
+    },
+    {
+      "id": 30,
+      "start": 240.77112,
+      "end": 247.49112,
+      "text": "that is being designated as an algorithm of some tasks"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "topics": [
+    {
+      "title": "Introduction to Algorithms",
+      "start": 1.0,
+      "end": 15.3,
+      "summary": "Introduction to the course and instructor",
+      "key_points": [
+        "Course title: Algorithms",
+        "Instructor: Mohin Mustakim"
+      ],
+      "technical_details": ""
+    },
+    {
+      "title": "Definition of Algorithm",
+      "start": 15.3,
+      "end": 49.3,
+      "summary": "Algorithm is a finite set of statements that guarantees an optimal solution in a finite interval of time",
+      "key_points": [
+        "Algorithm definition",
+        "Finite set of statements",
+        "Guarantees optimal solution"
+      ],
+      "technical_details": ""
+    },
+    {
+      "title": "Algorithmic Thinking and Problem-Solving",
+      "start": 49.3,
+      "end": 70.4,
+      "summary": "Algorithmic thinking and problem-solving skills are vital for making efficient solutions",
+      "key_points": [
+        "Algorithmic thinking",
+        "Problem-solving skills",
+        "Efficient solutions"
+      ],
+      "technical_details": ""
+    },
+    {
+      "title": "Characteristics of Algorithm",
+      "start": 70.4,
+      "end": 131.1,
+      "summary": "Algorithm is a finite set of instructions or logic to accomplish a task",
+      "key_points": [
+        "Finite set of instructions",
+        "Logic to accomplish a task"
+      ],
+      "technical_details": ""
+    },
+    {
+      "title": "Representation of Algorithm",
+      "start": 131.1,
+      "end": 156.4,
+      "summary": "Algorithm can be expressed in different languages, mathematical notations, and graphical notations",
+      "key_points": [
+        "Different languages",
+        "Mathematical notations",
+        "Graphical notations"
+      ],
+      "technical_details": ""
+    },
+    {
+      "title": "Example of Algorithm",
+      "start": 156.4,
+      "end": 217.2,
+      "summary": "Example of an algorithm using flowchart and pseudocode",
+      "key_points": [
+        "Flowchart example",
+        "Pseudocode example"
+      ],
+      "technical_details": "1. Set number to 1\n2. Set sum to 0\n3. Loop until number reaches 100\n4. Add number to sum\n5. Increment number by 1"
+    },
+    {
+      "title": "Conclusion",
+      "start": 217.2,
+      "end": 247.5,
+      "summary": "Algorithm can be represented in different ways, including pseudocode and flowcharts",
+      "key_points": [
+        "Pseudocode representation",
+        "Flowchart representation"
+      ],
+      "technical_details": ""
+    }
+  ],
+  "lecture_id": "2"
+}

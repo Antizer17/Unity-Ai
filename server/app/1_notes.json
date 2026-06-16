@@ -1,0 +1,60 @@
+{
+  "topics": [
+    {
+      "title": "Introduction to the Course",
+      "start": 0.0,
+      "end": 25.2,
+      "summary": "The instructor introduces herself and welcomes students to the web development course. She has taught over a million students worldwide and is the lead instructor at the London App Brewery.",
+      "key_points": [
+        "Instructor introduction",
+        "Teaching experience",
+        "London App Brewery"
+      ]
+    },
+    {
+      "title": "Course Content and Structure",
+      "start": 25.2,
+      "end": 70.4,
+      "summary": "The course offers over 55 hours of HD video content, step-by-step tutorials, and interactive coding exercises, covering every aspect of web development from HTML to React. It is project-based, allowing students to learn by building real-world websites and web applications.",
+      "key_points": [
+        "Course content",
+        "Project-based learning",
+        "Web development topics"
+      ]
+    },
+    {
+      "title": "Course Projects and Outcomes",
+      "start": 70.4,
+      "end": 104.7,
+      "summary": "Students will build various projects, including a product website, games, and a to-do list app, using HTML, CSS, Bootstrap, Node, React, and the MERN stack. These projects are suitable for showing off at job interviews.",
+      "key_points": [
+        "Project examples",
+        "Technologies used",
+        "Job interview preparation"
+      ]
+    },
+    {
+      "title": "Target Audience and Prerequisites",
+      "start": 104.7,
+      "end": 133.6,
+      "summary": "The course assumes no prior programming experience and is suitable for complete beginners. Advanced developers can start at a level that suits them best by reviewing the curriculum.",
+      "key_points": [
+        "No prior experience required",
+        "Beginner-friendly",
+        "Advanced developers can start at their level"
+      ]
+    },
+    {
+      "title": "Course Value and Testimonials",
+      "start": 133.6,
+      "end": 179.4,
+      "summary": "The course offers the same curriculum as a 12-week in-person programming bootcamp, but at a lower cost and with more flexibility. Past students have rated the course highly, with over a million students having rated it five stars.",
+      "key_points": [
+        "Cost-effective",
+        "Flexible learning",
+        "Highly-rated by past students"
+      ]
+    }
+  ],
+  "lecture_id": "1"
+}

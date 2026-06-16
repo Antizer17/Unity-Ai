@@ -1,0 +1,277 @@
+{
+  "lecture_id": "1",
+  "duration": 188.05693824399998,
+  "language": "English",
+  "segments": [
+    {
+      "id": 0,
+      "start": 0,
+      "end": 11.04,
+      "text": "Hello and welcome to the world's best web development course. My name is Angela. I'm"
+    },
+    {
+      "id": 1,
+      "start": 11.04,
+      "end": 17.04,
+      "text": "a senior developer and the lead instructor at the London App Brewery, London's highest-rated"
+    },
+    {
+      "id": 2,
+      "start": 17.04,
+      "end": 25.16,
+      "text": "programming bootcamp. To date, I've taught over a million students worldwide, in person and online."
+    },
+    {
+      "id": 3,
+      "start": 25.16,
+      "end": 31.96,
+      "text": "And today I'm so excited that I have the privilege to be your instructor on this course."
+    },
+    {
+      "id": 4,
+      "start": 31.96,
+      "end": 40.28,
+      "text": "You're going to get access to over 55 hours of HD video content, step-by-step tutorials,"
+    },
+    {
+      "id": 5,
+      "start": 40.28,
+      "end": 44.96,
+      "text": "interactive coding exercises, quizzes, and much, much more."
+    },
+    {
+      "id": 6,
+      "start": 44.96,
+      "end": 52.24,
+      "text": "This course is created with the same curriculum as our 12-week in-person programming bootcamp."
+    },
+    {
+      "id": 7,
+      "start": 52.24,
+      "end": 58.4,
+      "text": "So that means you can look forward to the same professional level content covering every"
+    },
+    {
+      "id": 8,
+      "start": 58.4,
+      "end": 62.9,
+      "text": "aspect of web development from HTML to react."
+    },
+    {
+      "id": 9,
+      "start": 62.9,
+      "end": 70.4,
+      "text": "This is the only course you need to become a professional full stack web developer."
+    },
+    {
+      "id": 10,
+      "start": 70.4,
+      "end": 74.88,
+      "text": "And the best part, the course is completely project based."
+    },
+    {
+      "id": 11,
+      "start": 74.88,
+      "end": 79.74,
+      "text": "So that means you're going to learn everything you need to know while building beautiful"
+    },
+    {
+      "id": 12,
+      "start": 79.74,
+      "end": 83.18,
+      "text": "real-world websites and web applications."
+    },
+    {
+      "id": 13,
+      "start": 83.18,
+      "end": 85.64,
+      "text": "You'll build a beautiful product website"
+    },
+    {
+      "id": 14,
+      "start": 85.64,
+      "end": 88.94,
+      "text": "using HTML, CSS, and Bootstrap."
+    },
+    {
+      "id": 15,
+      "start": 88.94,
+      "end": 99.38612,
+      "text": "You build games and musical apps like this drum kit You learn about Node React and the Mern stack to build classic developer projects like a to list app"
+    },
+    {
+      "id": 16,
+      "start": 99.38612,
+      "end": 102.00613,
+      "text": "and a project manager that's perfect"
+    },
+    {
+      "id": 17,
+      "start": 102.00613,
+      "end": 104.66612,
+      "text": "for showing off at your next interview."
+    },
+    {
+      "id": 18,
+      "start": 104.66612,
+      "end": 106.62613,
+      "text": "If you're curious, take a look"
+    },
+    {
+      "id": 19,
+      "start": 106.62613,
+      "end": 109.606125,
+      "text": "at the downloadable curriculum to learn more."
+    },
+    {
+      "id": 20,
+      "start": 109.606125,
+      "end": 111.966125,
+      "text": "Now, this course assumes absolutely"
+    },
+    {
+      "id": 21,
+      "start": 111.966125,
+      "end": 114.98612,
+      "text": "no prior programming experience."
+    },
+    {
+      "id": 22,
+      "start": 114.98612,
+      "end": 117.38612,
+      "text": "So if you're a complete beginner,"
+    },
+    {
+      "id": 23,
+      "start": 117.38612,
+      "end": 119.966125,
+      "text": "I'll be there every step of the way,"
+    },
+    {
+      "id": 24,
+      "start": 119.966125,
+      "end": 123.16612,
+      "text": "taking you from programming fundamentals"
+    },
+    {
+      "id": 25,
+      "start": 123.16612,
+      "end": 125.326126,
+      "text": "all the way through to intermediate"
+    },
+    {
+      "id": 26,
+      "start": 125.326126,
+      "end": 127.08612,
+      "text": "and more advanced concept."
+    },
+    {
+      "id": 27,
+      "start": 127.08612,
+      "end": 129.04613,
+      "text": "Now, if you're an advanced developer,"
+    },
+    {
+      "id": 28,
+      "start": 129.04613,
+      "end": 131.06613,
+      "text": "then take a look at the curriculum"
+    },
+    {
+      "id": 29,
+      "start": 131.06613,
+      "end": 133.62613,
+      "text": "and start at the level that suits you best."
+    },
+    {
+      "id": 30,
+      "start": 133.62613,
+      "end": 138.46613,
+      "text": "So instead of spending $12,000 on our in-person bootcamp"
+    },
+    {
+      "id": 31,
+      "start": 138.46613,
+      "end": 140.72612,
+      "text": "and having to take time off work,"
+    },
+    {
+      "id": 32,
+      "start": 140.72612,
+      "end": 144.46613,
+      "text": "you're gonna get access to exactly the same curriculum"
+    },
+    {
+      "id": 33,
+      "start": 144.46613,
+      "end": 148.08612,
+      "text": "that has years of design and testing behind it."
+    },
+    {
+      "id": 34,
+      "start": 148.08612,
+      "end": 150.40613,
+      "text": "So you won't just know what to do,"
+    },
+    {
+      "id": 35,
+      "start": 150.40613,
+      "end": 153.00613,
+      "text": "but also why you're doing it."
+    },
+    {
+      "id": 36,
+      "start": 153.00613,
+      "end": 155.52612,
+      "text": "Now don't just take my word for it."
+    },
+    {
+      "id": 37,
+      "start": 155.52612,
+      "end": 158.64612,
+      "text": "Check out what my past students had to say about the course."
+    },
+    {
+      "id": 38,
+      "start": 163.94614,
+      "end": 165.68613,
+      "text": "Your time is precious."
+    },
+    {
+      "id": 39,
+      "start": 165.68613,
+      "end": 169.74612,
+      "text": "That's why you deserve the best course money can buy."
+    },
+    {
+      "id": 40,
+      "start": 169.74612,
+      "end": 172.04613,
+      "text": "So what are you still waiting for?"
+    },
+    {
+      "id": 41,
+      "start": 172.04613,
+      "end": 173.46613,
+      "text": "Join the course today"
+    },
+    {
+      "id": 42,
+      "start": 173.46613,
+      "end": 176.50613,
+      "text": "and find out why over a million students"
+    },
+    {
+      "id": 43,
+      "start": 176.50613,
+      "end": 179.44614,
+      "text": "have rated my courses five stars"
+    },
+    {
+      "id": 44,
+      "start": 179.44614,
+      "end": 183.24612,
+      "text": "and see what you can do by mastering web development."
+    }
+  ]
+}
