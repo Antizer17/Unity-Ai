@@ -1,4 +1,4 @@
-﻿"""
+"""
 rag.py
 
 Retrieval-Augmented Generation (RAG) pipeline for the AI Lecture Tutor.
@@ -132,7 +132,7 @@ def query_ai_tutor(lecture_id: str, student_query: str) -> dict:
         user_prompt = f"Lecture Content:\n{context_text}\n\nStudent Question: {student_query}"
 
         response = client.chat.completions.create(
-            model="llama3-8b-8192",
+            model="llama-3.3-70b-versatile",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
@@ -182,7 +182,7 @@ def query_general_tutor(student_query: str) -> dict:
         )
 
         response = client.chat.completions.create(
-            model="llama3-8b-8192",
+            model="llama-3.3-70b-versatile",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": student_query}
