@@ -107,6 +107,25 @@ export default function LectureDetailPage({
     setCurrentTime(seconds);
   };
 
+  const handleRegenerateNotes = async () => {
+    // Optimistic UI update: hide notes, show processing status
+    setNotes(null);
+    setLecture((prev) => prev ? { ...prev, status: 'PROCESSING' } : null);
+
+    try {
+      const res = await api.notes.regenerate(id);
+      if (res.success && res.data) {
+        setNotes(res.data);
+        setLecture((prev) => prev ? { ...prev, status: 'READY' } : null);
+      } else {
+        setLecture((prev) => prev ? { ...prev, status: 'FAILED' } : null);
+      }
+    } catch (e) {
+      console.error("Failed to regenerate notes", e);
+      setLecture((prev) => prev ? { ...prev, status: 'FAILED' } : null);
+    }
+  };
+
   const handleSendMessage = async (content: string) => {
     const userMsg: ChatMessage = {
       id: `msg-${Date.now()}`,
@@ -316,7 +335,7 @@ export default function LectureDetailPage({
                 <NotesPanel
                   sections={notes.sections}
                   onTimestampClick={handleTimestampClick}
-                  onRegenerate={() => {}}
+                  onRegenerate={handleRegenerateNotes}
                   id="lecture-notes-panel"
                 />
               ) : lecture?.status === 'PROCESSING' ? (
