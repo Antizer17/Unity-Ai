@@ -118,8 +118,8 @@ export function Sidebar({ isGuest = false }: { isGuest?: boolean }) {
         ) : (
           <div className="space-y-4">
             <div>
-              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">Get responses tailored to you</h4>
-              <p className="text-xs text-[var(--text-muted)] leading-relaxed">Log in to get answers based on saved chats, plus upload files and create notes.</p>
+              <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-1">Anonymous Chat</h4>
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed">You are chatting as a guest. Log in to get answers based on saved chats, plus upload files and create notes.</p>
             </div>
             <Link href="/login" className="block w-full">
               <Button variant="outline" className="w-full justify-center bg-[var(--bg-primary)] hover:bg-[var(--color-surface)] border-[var(--border-color)]">

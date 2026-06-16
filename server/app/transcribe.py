@@ -41,23 +41,31 @@ def transcribe_and_normalize(audio_path, lecture_id):
         "lecture_id": lecture_id,
         "duration": duration,
         "language": language,
+        "fullText": "",
         "segments": []
     }
 
+    all_texts = []
     for seg in raw_segments:
         # Groq returns segments as dictionaries
         seg_id = seg.get("id") if isinstance(seg, dict) else getattr(seg, "id", None)
+        # Ensure we have a string ID
+        seg_str_id = f"seg-{seg_id}" if seg_id is not None else f"seg-{len(normalized_data['segments'])}"
         start = seg.get("start") if isinstance(seg, dict) else getattr(seg, "start", 0.0)
         end = seg.get("end") if isinstance(seg, dict) else getattr(seg, "end", 0.0)
         text = seg.get("text") if isinstance(seg, dict) else getattr(seg, "text", "")
 
+        cleaned_text = text.strip()
+        all_texts.append(cleaned_text)
+
         normalized_data["segments"].append({
-            "id": seg_id,
-            "start": start,
-            "end": end,
-            "text": text.strip(),
+            "id": seg_str_id,
+            "startTime": start,
+            "endTime": end,
+            "text": cleaned_text,
         })
 
+    normalized_data["fullText"] = " ".join(all_texts)
     return normalized_data
 
 

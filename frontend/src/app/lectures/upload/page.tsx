@@ -2,12 +2,13 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Sparkles } from 'lucide-react';
+import { ArrowLeft, Sparkles, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { UploadZone } from '@/components/lecture/upload-zone';
 import { Badge } from '@/components/ui/badge';
+import { api } from '@/lib/api';
 
 export default function UploadPage() {
   const [title, setTitle] = useState('');
@@ -15,15 +16,32 @@ export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!file || !title.trim()) return;
 
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    setSubmitted(true);
-    setSubmitting(false);
+    setError(null);
+
+    const formData = new FormData();
+    formData.append('title', title.trim());
+    formData.append('description', description.trim());
+    formData.append('file', file);
+
+    try {
+      const res = await api.lectures.create(formData);
+      if (res.success) {
+        setSubmitted(true);
+      } else {
+        setError(res.error || 'Failed to upload and process lecture.');
+      }
+    } catch (err: any) {
+      setError(err.message || 'An unexpected network error occurred.');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -87,6 +105,13 @@ export default function UploadPage() {
               id="upload-zone"
             />
           </div>
+
+          {error && (
+            <div className="rounded-xl border border-red-500/10 bg-red-500/5 p-4 text-sm text-red-400 flex items-center gap-2">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
 
           <Button
             id="upload-submit-btn"

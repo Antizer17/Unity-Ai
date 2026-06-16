@@ -139,7 +139,7 @@ export function ChatPanel({
               <div className="flex flex-col gap-2 max-w-[80%]">
                 <div
                   className={cn(
-                    'px-5 py-3.5 text-[15px] leading-relaxed',
+                    'px-5 py-3.5 text-base leading-relaxed',
                     msg.role === 'user'
                       ? 'bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-primary)] rounded-3xl rounded-tr-sm'
                       : 'bg-transparent text-[var(--text-primary)] rounded-3xl rounded-tl-sm'
@@ -186,7 +186,7 @@ export function ChatPanel({
       </div>
 
       {/* Input Area */}
-      <div className="p-4 md:px-8 pb-6 md:pb-8 bg-gradient-to-t from-[var(--bg-primary)] via-[var(--bg-primary)] to-transparent sticky bottom-0 w-full">
+      <div className="p-4 md:px-8 pb-4 md:pb-4 bg-gradient-to-t from-[var(--bg-primary)] via-[var(--bg-primary)] to-transparent sticky bottom-0 w-full">
         <div className="max-w-3xl mx-auto relative rounded-3xl border border-[var(--border-color)] bg-[var(--bg-secondary)] shadow-sm focus-within:ring-1 focus-within:ring-[var(--border-color)] transition-all">
           <div className="flex items-end px-3 py-3">
             <div className="relative" ref={uploadMenuRef}>
@@ -240,15 +240,15 @@ export function ChatPanel({
                 )}
               </AnimatePresence>
             </div>
-            <textarea
-              ref={textareaRef}
-              value={input}
-              onChange={handleInput}
-              onKeyDown={handleKeyDown}
-              placeholder="Message Unity-AI..."
-              className="flex-1 max-h-[200px] bg-transparent text-[var(--text-primary)] placeholder-[var(--text-muted)] px-3 py-2 text-[15px] resize-none focus:outline-none custom-scrollbar"
-              rows={1}
-            />
+              <textarea
+                ref={textareaRef}
+                value={input}
+                onChange={handleInput}
+                onKeyDown={handleKeyDown}
+                placeholder="Message Unity-AI..."
+                className="flex-1 max-h-[200px] bg-transparent text-[var(--text-primary)] placeholder-[var(--text-muted)] px-3 py-2 text-base resize-none focus:outline-none custom-scrollbar"
+                rows={1}
+              />
             <button
               onClick={handleSend}
               disabled={!input.trim()}

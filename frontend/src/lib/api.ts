@@ -28,20 +28,35 @@ function delay(ms = 500): Promise<void> {
 
 /** Generic fetch wrapper (will replace mock data later) */
 async function apiFetch<T>(
-  _endpoint: string,
-  _options?: RequestInit
+  endpoint: string,
+  options?: RequestInit
 ): Promise<ApiResponse<T>> {
-  // TODO: Replace with real fetch call
-  // const res = await fetch(`${BASE_URL}${endpoint}`, {
-  //   headers: { 'Content-Type': 'application/json', ...options?.headers },
-  //   ...options,
-  // });
-  // const data = await res.json();
-  // return data;
-  void _endpoint;
-  void _options;
-  void BASE_URL;
-  throw new Error('Not implemented — use specific mock methods below');
+  try {
+    const isFormData = options?.body instanceof FormData;
+    const res = await fetch(`${BASE_URL}${endpoint}`, {
+      headers: {
+        ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+        ...options?.headers,
+      },
+      ...options,
+    });
+    
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      return {
+        success: false,
+        error: errData.detail || `HTTP error! status: ${res.status}`,
+      };
+    }
+    
+    const data = await res.json();
+    return data;
+  } catch (err: any) {
+    return {
+      success: false,
+      error: err.message || 'Network error occurred',
+    };
+  }
 }
 
 // ─── Auth API ─────────────────────────────────────────────────────────────────
@@ -89,42 +104,42 @@ export const lecturesApi = {
     page = 1,
     pageSize = 10
   ): Promise<PaginatedResponse<Lecture>> {
-    await delay();
+    const res = await apiFetch<Lecture[]>('/lectures');
+    if (res.success && res.data) {
+      return {
+        success: true,
+        data: res.data,
+        items: res.data,
+        total: res.data.length,
+        page,
+        pageSize,
+      };
+    }
     return {
-      success: true,
-      data: mockLectures,
-      items: mockLectures,
-      total: mockLectures.length,
+      success: false,
+      items: [],
+      total: 0,
       page,
       pageSize,
+      error: res.error,
     };
   },
 
   async getById(id: string): Promise<ApiResponse<Lecture>> {
-    await delay();
-    const lecture = mockLectures.find((l) => l.id === id) ?? mockLectures[0];
-    return { success: true, data: lecture };
+    return apiFetch<Lecture>(`/lectures/${id}`);
   },
 
   async create(formData: FormData): Promise<ApiResponse<Lecture>> {
-    void formData;
-    await delay(1500);
-    return {
-      success: true,
-      data: {
-        ...mockLectures[0],
-        id: `lec-${Date.now()}`,
-        status: 'UPLOADING',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    };
+    return apiFetch<Lecture>('/lectures', {
+      method: 'POST',
+      body: formData,
+    });
   },
 
   async delete(id: string): Promise<ApiResponse<null>> {
-    void id;
-    await delay();
-    return { success: true, data: null };
+    return apiFetch<null>(`/lectures/${id}`, {
+      method: 'DELETE',
+    });
   },
 };
 
@@ -132,9 +147,7 @@ export const lecturesApi = {
 
 export const transcriptsApi = {
   async getByLectureId(lectureId: string): Promise<ApiResponse<Transcript>> {
-    void lectureId;
-    await delay();
-    return { success: true, data: mockTranscript };
+    return apiFetch<Transcript>(`/lectures/${lectureId}/transcript`);
   },
 };
 
@@ -142,18 +155,13 @@ export const transcriptsApi = {
 
 export const notesApi = {
   async getByLectureId(lectureId: string): Promise<ApiResponse<Note>> {
-    void lectureId;
-    await delay();
-    return { success: true, data: mockNotes };
+    return apiFetch<Note>(`/lectures/${lectureId}/notes`);
   },
 
   async regenerate(lectureId: string): Promise<ApiResponse<Note>> {
-    void lectureId;
-    await delay(2000);
-    return {
-      success: true,
-      data: { ...mockNotes, generatedAt: new Date().toISOString() },
-    };
+    return apiFetch<Note>(`/lectures/${lectureId}/notes/regenerate`, {
+      method: 'POST',
+    });
   },
 };
 

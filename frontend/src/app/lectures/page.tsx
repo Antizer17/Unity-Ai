@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Search, Upload, BookOpen } from 'lucide-react';
+import { Search, Upload, BookOpen, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { LectureCard } from '@/components/lecture/lecture-card';
-import { mockLectures } from '@/lib/mock-data';
-import type { LectureStatus } from '@/types';
+import { Spinner } from '@/components/ui/spinner';
+import { api } from '@/lib/api';
+import type { Lecture, LectureStatus } from '@/types';
 
 type FilterTab = 'all' | 'PROCESSING' | 'READY';
 
@@ -18,10 +19,32 @@ const tabs: { key: FilterTab; label: string }[] = [
 ];
 
 export default function LecturesPage() {
+  const [lectures, setLectures] = useState<Lecture[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
 
-  const filtered = mockLectures.filter((lec) => {
+  useEffect(() => {
+    async function fetchLectures() {
+      try {
+        setLoading(true);
+        const res = await api.lectures.getAll();
+        if (res.success && res.data) {
+          setLectures(res.data);
+        } else {
+          setError(res.error || 'Failed to fetch lectures');
+        }
+      } catch (err: any) {
+        setError(err.message || 'An unexpected error occurred');
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchLectures();
+  }, []);
+
+  const filtered = lectures.filter((lec) => {
     const matchesSearch =
       lec.title.toLowerCase().includes(search.toLowerCase()) ||
       lec.description.toLowerCase().includes(search.toLowerCase());
@@ -52,7 +75,7 @@ export default function LecturesPage() {
         <div>
           <h1 className="text-2xl font-bold text-white">My Lectures</h1>
           <p className="text-sm text-slate-400 mt-1">
-            {mockLectures.length} lectures in your library
+            {loading ? 'Loading library…' : `${lectures.length} lectures in your library`}
           </p>
         </div>
         <Link href="/lectures/upload">
@@ -94,8 +117,20 @@ export default function LecturesPage() {
         </div>
       </div>
 
-      {/* Lectures Grid */}
-      {filtered.length > 0 ? (
+      {/* Lectures Content */}
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-20 gap-3">
+          <Spinner className="h-8 w-8 text-indigo-500" />
+          <p className="text-sm text-slate-400">Loading your lectures…</p>
+        </div>
+      ) : error ? (
+        <div className="rounded-2xl border border-red-500/10 bg-red-500/5 p-8 text-center max-w-md mx-auto">
+          <AlertCircle className="h-10 w-10 text-red-400 mx-auto mb-3" />
+          <h3 className="text-lg font-medium text-white mb-1">Could not load lectures</h3>
+          <p className="text-sm text-slate-400 mb-6">{error}</p>
+          <Button onClick={() => window.location.reload()}>Retry</Button>
+        </div>
+      ) : filtered.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filtered.map((lecture, i) => (
             <LectureCard key={lecture.id} lecture={lecture} index={i} />
