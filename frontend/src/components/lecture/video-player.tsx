@@ -26,6 +26,9 @@ export interface VideoPlayerProps {
 
 const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
   ({ src, type = 'video', poster, id = 'video-player' }, ref) => {
+    const [isMounted, setIsMounted] = useState(false);
+    useEffect(() => setIsMounted(true), []);
+
     const playerRef = useRef<ReactPlayer>(null);
     const progressRef = useRef<HTMLDivElement>(null);
     const [playing, setPlaying] = useState(false);
@@ -91,7 +94,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
         {/* Media element */}
         {type === 'video' ? (
           <div className="w-full aspect-video bg-slate-900 pointer-events-none">
-            {src && (
+            {isMounted && src && (
               <ReactPlayer
                 ref={playerRef}
                 url={src}
@@ -113,7 +116,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
           </div>
         ) : (
           <div className="w-full aspect-video bg-gradient-to-br from-slate-900 to-black flex items-center justify-center">
-            {src && (
+            {isMounted && src && (
               <ReactPlayer
                 ref={playerRef}
                 url={src}
