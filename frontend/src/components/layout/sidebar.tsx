@@ -20,16 +20,15 @@ const historyGroups = [
   {
     title: 'Today',
     items: [
-      { id: '1', title: 'Calculus III: Multiple Integrals', href: '/lectures/1' },
-      { id: '2', title: 'Physics: Thermodynamics', href: '/lectures/2' },
+      { id: '1', title: 'But what is a neural network?', href: '/lectures/lec-001' },
+      { id: '2', title: 'Quantum Computers Explained', href: '/lectures/lec-002' },
     ]
   },
   {
     title: 'Previous 7 Days',
     items: [
-      { id: '3', title: 'Data Structures: Trees', href: '/lectures/3' },
-      { id: '4', title: 'Machine Learning basics', href: '/lectures/4' },
-      { id: '5', title: 'History of Art: Renaissance', href: '/lectures/5' },
+      { id: '3', title: 'Data Structures: Tries', href: '/lectures/lec-003' },
+      { id: '4', title: 'Machine Learning with Python', href: '/lectures/lec-004' },
     ]
   }
 ];
