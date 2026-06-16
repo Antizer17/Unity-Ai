@@ -5,3 +5,4 @@ groq
 pydub
 python-dotenv
 python-multipart
+yt-dlp

@@ -10,6 +10,7 @@ import {
   SkipBack,
   SkipForward,
 } from 'lucide-react';
+import ReactPlayer from 'react-player';
 import { cn, formatDuration } from '@/lib/utils';
 
 export interface VideoPlayerHandle {
@@ -25,7 +26,7 @@ export interface VideoPlayerProps {
 
 const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
   ({ src, type = 'video', poster, id = 'video-player' }, ref) => {
-    const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
+    const playerRef = useRef<ReactPlayer>(null);
     const progressRef = useRef<HTMLDivElement>(null);
     const [playing, setPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -36,64 +37,42 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
 
     useImperativeHandle(ref, () => ({
       seekTo: (seconds: number) => {
-        if (mediaRef.current) {
-          mediaRef.current.currentTime = seconds;
+        if (playerRef.current) {
+          playerRef.current.seekTo(seconds, 'seconds');
           setCurrentTime(seconds);
         }
       },
     }));
 
     const togglePlay = useCallback(() => {
-      if (!mediaRef.current) return;
-      if (playing) {
-        mediaRef.current.pause();
-        setPlaying(false);
-      } else {
-        const playPromise = mediaRef.current.play();
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => setPlaying(true))
-            .catch((error) => {
-              console.error("Video play error:", error);
-              setPlaying(false);
-            });
-        } else {
-          setPlaying(true);
-        }
-      }
+      setPlaying(!playing);
     }, [playing]);
 
     const toggleMute = useCallback(() => {
-      if (!mediaRef.current) return;
-      mediaRef.current.muted = !muted;
       setMuted(!muted);
     }, [muted]);
 
     const handleSeek = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-      if (!progressRef.current || !mediaRef.current) return;
+      if (!progressRef.current || !playerRef.current) return;
       const rect = progressRef.current.getBoundingClientRect();
       const pct = (e.clientX - rect.left) / rect.width;
       const newTime = pct * duration;
-      mediaRef.current.currentTime = newTime;
+      playerRef.current.seekTo(newTime, 'seconds');
       setCurrentTime(newTime);
     }, [duration]);
 
     const handleVolumeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
       const v = parseFloat(e.target.value);
       setVolume(v);
-      if (mediaRef.current) {
-        mediaRef.current.volume = v;
-        setMuted(v === 0);
-      }
+      setMuted(v === 0);
     }, []);
 
     const skip = useCallback((seconds: number) => {
-      if (!mediaRef.current) return;
-      mediaRef.current.currentTime = Math.max(
-        0,
-        Math.min(mediaRef.current.currentTime + seconds, duration)
-      );
-    }, [duration]);
+      if (!playerRef.current) return;
+      const newTime = Math.max(0, Math.min(currentTime + seconds, duration));
+      playerRef.current.seekTo(newTime, 'seconds');
+      setCurrentTime(newTime);
+    }, [duration, currentTime]);
 
     const handleFullscreen = useCallback(() => {
       const container = document.getElementById(id);
@@ -101,28 +80,6 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
         container.requestFullscreen();
       }
     }, [id]);
-
-    useEffect(() => {
-      const media = mediaRef.current;
-      if (!media) return;
-
-      const onTimeUpdate = () => setCurrentTime(media.currentTime);
-      const onLoadedMetadata = () => {
-        setDuration(media.duration);
-        setLoaded(true);
-      };
-      const onEnded = () => setPlaying(false);
-
-      media.addEventListener('timeupdate', onTimeUpdate);
-      media.addEventListener('loadedmetadata', onLoadedMetadata);
-      media.addEventListener('ended', onEnded);
-
-      return () => {
-        media.removeEventListener('timeupdate', onTimeUpdate);
-        media.removeEventListener('loadedmetadata', onLoadedMetadata);
-        media.removeEventListener('ended', onEnded);
-      };
-    }, [src]);
 
     const progressPct = duration > 0 ? (currentTime / duration) * 100 : 0;
 
@@ -133,19 +90,45 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
       >
         {/* Media element */}
         {type === 'video' ? (
-          <video
-            ref={mediaRef as React.RefObject<HTMLVideoElement>}
-            src={src}
-            poster={poster}
-            className="w-full aspect-video bg-slate-900"
-            onClick={togglePlay}
-            onError={(e) => console.warn("Video failed to load:", e)}
-          />
+          <div className="w-full aspect-video bg-slate-900 pointer-events-none">
+            {src && (
+              <ReactPlayer
+                ref={playerRef}
+                url={src}
+                width="100%"
+                height="100%"
+                playing={playing}
+                volume={volume}
+                muted={muted}
+                onProgress={({ playedSeconds }) => setCurrentTime(playedSeconds)}
+                onDuration={(d) => { setDuration(d); setLoaded(true); }}
+                onEnded={() => setPlaying(false)}
+                config={{
+                  file: { attributes: { poster } },
+                  youtube: { playerVars: { showinfo: 0, controls: 0, disablekb: 1, modestbranding: 1 } }
+                }}
+              />
+            )}
+            <div className="absolute inset-0 pointer-events-auto" onClick={togglePlay} />
+          </div>
         ) : (
           <div className="w-full aspect-video bg-gradient-to-br from-slate-900 to-black flex items-center justify-center">
-            <audio ref={mediaRef as React.RefObject<HTMLAudioElement>} src={src} />
-            <div className="text-center">
-              <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center">
+            {src && (
+              <ReactPlayer
+                ref={playerRef}
+                url={src}
+                width="0"
+                height="0"
+                playing={playing}
+                volume={volume}
+                muted={muted}
+                onProgress={({ playedSeconds }) => setCurrentTime(playedSeconds)}
+                onDuration={(d) => { setDuration(d); setLoaded(true); }}
+                onEnded={() => setPlaying(false)}
+              />
+            )}
+            <div className="text-center" onClick={togglePlay}>
+              <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center cursor-pointer">
                 {playing ? (
                   <Pause className="h-10 w-10 text-white" />
                 ) : (

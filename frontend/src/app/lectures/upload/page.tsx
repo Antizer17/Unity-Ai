@@ -13,14 +13,18 @@ import { api } from '@/lib/api';
 export default function UploadPage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [uploadMode, setUploadMode] = useState<'file' | 'link'>('file');
   const [file, setFile] = useState<File | null>(null);
+  const [url, setUrl] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!file || !title.trim()) return;
+    if (!title.trim()) return;
+    if (uploadMode === 'file' && !file) return;
+    if (uploadMode === 'link' && !url.trim()) return;
 
     setSubmitting(true);
     setError(null);
@@ -28,7 +32,11 @@ export default function UploadPage() {
     const formData = new FormData();
     formData.append('title', title.trim());
     formData.append('description', description.trim());
-    formData.append('file', file);
+    if (uploadMode === 'file' && file) {
+      formData.append('file', file);
+    } else if (uploadMode === 'link' && url) {
+      formData.append('url', url.trim());
+    }
 
     try {
       const res = await api.lectures.create(formData);
@@ -96,14 +104,50 @@ export default function UploadPage() {
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-slate-300">
-              Lecture File
-            </label>
-            <UploadZone
-              onFileSelect={(f) => setFile(f)}
-              id="upload-zone"
-            />
+          <div className="space-y-3">
+            <div className="flex bg-white/5 rounded-xl p-1 border border-white/10">
+              <button
+                type="button"
+                onClick={() => setUploadMode('file')}
+                className={cn(
+                  "flex-1 text-sm font-medium py-2 rounded-lg transition-all",
+                  uploadMode === 'file' ? "bg-indigo-500 text-white shadow-lg" : "text-slate-400 hover:text-white"
+                )}
+              >
+                Upload File
+              </button>
+              <button
+                type="button"
+                onClick={() => setUploadMode('link')}
+                className={cn(
+                  "flex-1 text-sm font-medium py-2 rounded-lg transition-all",
+                  uploadMode === 'link' ? "bg-indigo-500 text-white shadow-lg" : "text-slate-400 hover:text-white"
+                )}
+              >
+                Web Link
+              </button>
+            </div>
+
+            {uploadMode === 'file' ? (
+              <UploadZone
+                onFileSelect={(f) => setFile(f)}
+                id="upload-zone"
+              />
+            ) : (
+              <div className="space-y-1.5">
+                <Input
+                  id="upload-url"
+                  label=""
+                  placeholder="Paste YouTube or Web Link..."
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  required={uploadMode === 'link'}
+                />
+                <p className="text-xs text-slate-500 px-1">
+                  Supported: YouTube, Vimeo, Twitch, and direct media URLs.
+                </p>
+              </div>
+            )}
           </div>
 
           {error && (
@@ -118,7 +162,7 @@ export default function UploadPage() {
             type="submit"
             size="lg"
             loading={submitting}
-            disabled={!file || !title.trim()}
+            disabled={(uploadMode === 'file' && !file) || (uploadMode === 'link' && !url) || !title.trim()}
             className="w-full"
             icon={<Sparkles className="h-4 w-4" />}
           >

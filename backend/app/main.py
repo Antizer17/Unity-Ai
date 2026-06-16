@@ -79,6 +79,18 @@ def seed_initial_data():
                 "userId": "user-001",
                 "createdAt": "2026-06-14T11:00:00Z",
                 "updatedAt": "2026-06-14T11:00:00Z"
+            },
+            {
+                "id": "lec-004",
+                "title": "Machine Learning with Python",
+                "description": "Learn the basics of ML using scikit-learn. Covers regression, classification, and evaluating model performance.",
+                "fileUrl": "https://www.youtube.com/watch?v=7eh4d6sabA0",
+                "thumbnailUrl": None,
+                "duration": 300.0,
+                "status": "READY",
+                "userId": "user-001",
+                "createdAt": "2026-06-10T10:00:00Z",
+                "updatedAt": "2026-06-10T10:00:00Z"
             }
         ]
         with open(LECTURES_FILE, "w") as f:
@@ -229,12 +241,25 @@ def save_lectures_list(lectures: list):
     with open(LECTURES_FILE, "w") as f:
         json.dump(lectures, f, indent=2)
 
-async def run_transcription_background(lecture_id: str, temp_file_path: str):
+async def run_transcription_background(lecture_id: str, temp_file_path: str, url: str = None):
     """
     Background worker that runs transcription, note generation, and updates status.
     Saves to both JSON files (local) and MongoDB Atlas (cloud persistence).
     """
     try:
+        if url:
+            print(f"[AI] Downloading audio from {url} via yt-dlp...")
+            import yt_dlp
+            ydl_opts = {
+                'format': 'bestaudio/best',
+                'outtmpl': temp_file_path,
+                'quiet': True,
+                # Fix for yt-dlp ffmpeg requirement if not installed, we fallback to just downloading the native audio
+                'postprocessors': [] 
+            }
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([url])
+
         # 1. Run transcription pipeline
         transcript = transcribe_and_normalize(temp_file_path, lecture_id)
         
@@ -311,20 +336,28 @@ async def create_lecture(
     background_tasks: BackgroundTasks,
     title: str = Form(...),
     description: str = Form(""),
-    file: UploadFile = File(...)
+    file: UploadFile = File(None),
+    url: str = Form(None)
 ):
     """
     Upload a lecture, save it, and queue a background task for processing.
     """
+    if not file and not url:
+        raise HTTPException(status_code=400, detail="Must provide either a file or a web link")
+
     lecture_id = f"lec-{int(datetime.utcnow().timestamp())}"
     temp_dir = "temp_uploads"
     os.makedirs(temp_dir, exist_ok=True)
-    temp_file_path = os.path.join(temp_dir, f"{lecture_id}_{file.filename}")
-
+    
     try:
-        # 1. Stream the incoming file to disk
-        with open(temp_file_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+        if file:
+            temp_file_path = os.path.join(temp_dir, f"{lecture_id}_{file.filename}")
+            with open(temp_file_path, "wb") as buffer:
+                shutil.copyfileobj(file.file, buffer)
+            file_url = f"/temp_uploads/{lecture_id}_{file.filename}"
+        elif url:
+            temp_file_path = os.path.join(temp_dir, f"{lecture_id}_audio.m4a")
+            file_url = url
 
         # 2. Add metadata to our local store
         now_str = datetime.utcnow().isoformat() + "Z"
@@ -332,7 +365,7 @@ async def create_lecture(
             "id": lecture_id,
             "title": title,
             "description": description,
-            "fileUrl": f"/temp_uploads/{lecture_id}_{file.filename}",
+            "fileUrl": file_url,
             "thumbnailUrl": None,
             "duration": 0.0,  # Updated after transcription completes
             "status": "PROCESSING",
@@ -346,7 +379,7 @@ async def create_lecture(
         save_lectures_list(lectures)
 
         # 3. Schedule the background task for transcription and note generation
-        background_tasks.add_task(run_transcription_background, lecture_id, temp_file_path)
+        background_tasks.add_task(run_transcription_background, lecture_id, temp_file_path, url)
 
         return {"success": True, "data": new_lecture}
 
