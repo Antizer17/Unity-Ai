@@ -308,7 +308,7 @@ def get_lecture_details(lecture_id: str):
 async def create_lecture(
     background_tasks: BackgroundTasks,
     title: str = Form(...),
-    description: str = Form(...),
+    description: str = Form(""),
     file: UploadFile = File(...)
 ):
     """

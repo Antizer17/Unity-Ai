@@ -43,9 +43,18 @@ async function apiFetch<T>(
     
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
+      let errMsg = errData.detail || `HTTP error! status: ${res.status}`;
+      
+      // FastAPI returns validation errors as an array of objects
+      if (Array.isArray(errMsg)) {
+        errMsg = errMsg.map((e: any) => `${e.loc?.join('.') || 'field'}: ${e.msg}`).join(', ');
+      } else if (typeof errMsg === 'object') {
+        errMsg = JSON.stringify(errMsg);
+      }
+
       return {
         success: false,
-        error: errData.detail || `HTTP error! status: ${res.status}`,
+        error: errMsg,
       };
     }
     
