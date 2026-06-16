@@ -205,7 +205,10 @@ export default function LectureDetailPage({
   }
 
   const isReady = lecture?.status === 'READY';
-  const displayFileUrl = lecture?.fileUrl || undefined;
+  let displayFileUrl = lecture?.fileUrl || undefined;
+  if (displayFileUrl && displayFileUrl.startsWith('/')) {
+    displayFileUrl = `http://localhost:8000${displayFileUrl}`;
+  }
 
   return (
     <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">

@@ -21,6 +21,9 @@ app = FastAPI(title="AI Lecture Companion API - Cybernauts 2026")
 os.makedirs("uploads", exist_ok=True)
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
+os.makedirs("temp_uploads", exist_ok=True)
+app.mount("/temp_uploads", StaticFiles(directory="temp_uploads"), name="temp_uploads")
+
 # CRITICAL FOR HACKATHONS: Allow React Frontend to talk to FastAPI without CORS blocks
 app.add_middleware(
     CORSMiddleware,
@@ -45,7 +48,7 @@ def seed_initial_data():
                 "id": "lec-001",
                 "title": "Introduction to Neural Networks",
                 "description": "A comprehensive overview of artificial neural networks, covering perceptrons, activation functions, backpropagation, and gradient descent. This lecture lays the foundation for understanding modern deep learning architectures.",
-                "fileUrl": "",
+                "fileUrl": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
                 "thumbnailUrl": None,
                 "duration": 200.0,
                 "status": "READY",
@@ -57,7 +60,7 @@ def seed_initial_data():
                 "id": "lec-002",
                 "title": "Quantum Computing Fundamentals",
                 "description": "Explore the basics of quantum computing including qubits, superposition, entanglement, and quantum gates. Includes practical examples of quantum algorithms like Grover's search.",
-                "fileUrl": "",
+                "fileUrl": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
                 "thumbnailUrl": None,
                 "duration": 60.0,
                 "status": "READY",
@@ -69,7 +72,7 @@ def seed_initial_data():
                 "id": "lec-003",
                 "title": "Advanced Data Structures: B-Trees & Tries",
                 "description": "Deep dive into B-Trees, Tries, and their applications in databases and search engines. Covers insertion, deletion, and search complexity analysis.",
-                "fileUrl": "",
+                "fileUrl": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
                 "thumbnailUrl": None,
                 "duration": 60.0,
                 "status": "READY",
