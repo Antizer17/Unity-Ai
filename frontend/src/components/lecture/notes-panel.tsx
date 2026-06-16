@@ -11,6 +11,7 @@ import type { NoteSection } from '@/types';
 
 export interface NotesPanelProps {
   sections: NoteSection[];
+  currentTime?: number;
   loading?: boolean;
   onTimestampClick?: (seconds: number) => void;
   onRegenerate?: () => void;
@@ -19,6 +20,7 @@ export interface NotesPanelProps {
 
 export function NotesPanel({
   sections,
+  currentTime = 0,
   loading = false,
   onTimestampClick,
   onRegenerate,
@@ -26,6 +28,22 @@ export function NotesPanel({
 }: NotesPanelProps) {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [regenerating, setRegenerating] = useState(false);
+  const activeRef = React.useRef<HTMLDivElement>(null);
+
+  const activeSectionId = sections.find(
+    (s) => currentTime >= s.startTimestamp && currentTime < s.endTimestamp
+  )?.id;
+
+  React.useEffect(() => {
+    if (activeSectionId) {
+      setExpandedSection(activeSectionId);
+      setTimeout(() => {
+        if (activeRef.current) {
+          activeRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+    }
+  }, [activeSectionId]);
 
   const handleRegenerate = async () => {
     setRegenerating(true);
@@ -70,16 +88,21 @@ export function NotesPanel({
       <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-3">
         {sections.map((section, index) => {
           const isExpanded = expandedSection === section.id;
+          const isActive = activeSectionId === section.id;
+          
           return (
             <motion.div
               key={section.id}
+              ref={isActive ? activeRef : undefined}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
               className={cn(
-                'rounded-xl border transition-all duration-200',
-                isExpanded
-                  ? 'bg-indigo-500/10 border-indigo-500/30'
+                'rounded-xl border transition-all duration-300',
+                isActive
+                  ? 'bg-indigo-500/10 border-indigo-500/50 shadow-[0_0_15px_rgba(99,102,241,0.15)] scale-[1.02]'
+                  : isExpanded
+                  ? 'bg-indigo-500/5 border-indigo-500/30'
                   : 'bg-[var(--bg-secondary)] border-[var(--border-color)] hover:border-[var(--text-muted)]'
               )}
             >

@@ -283,6 +283,7 @@ export default function LectureDetailPage({
             src={displayFileUrl}
             type="video"
             id="lecture-video-player"
+            onTimeUpdate={setCurrentTime}
           />
 
           {/* Lecture description */}
@@ -334,6 +335,7 @@ export default function LectureDetailPage({
               notes ? (
                 <NotesPanel
                   sections={notes.sections}
+                  currentTime={currentTime}
                   onTimestampClick={handleTimestampClick}
                   onRegenerate={handleRegenerateNotes}
                   id="lecture-notes-panel"
