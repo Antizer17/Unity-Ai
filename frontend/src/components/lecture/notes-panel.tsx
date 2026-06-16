@@ -83,10 +83,10 @@ export function NotesPanel({
                   : 'bg-[var(--bg-secondary)] border-[var(--border-color)] hover:border-[var(--text-muted)]'
               )}
             >
-              <button
+              <div
                 id={`${id}-section-${section.id}`}
                 onClick={() => setExpandedSection(isExpanded ? null : section.id)}
-                className="flex items-center gap-3 w-full p-3 text-left"
+                className="flex items-center gap-3 w-full p-3 text-left cursor-pointer hover:bg-[var(--color-surface)] rounded-xl transition-colors"
               >
                 <ChevronRight
                   className={cn(
@@ -108,14 +108,14 @@ export function NotesPanel({
                       e.stopPropagation();
                       onTimestampClick?.(section.startTimestamp);
                     }}
-                    className="flex items-center gap-1"
+                    className="flex items-center gap-1 hover:opacity-80"
                     id={`${id}-timestamp-${section.id}`}
                   >
                     <Clock className="h-3 w-3" />
                     {formatTimestamp(section.startTimestamp)}
                   </button>
                 </Badge>
-              </button>
+              </div>
 
               <AnimatePresence>
                 {isExpanded && (
