@@ -33,7 +33,9 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
 
     const isYouTube = src ? src.includes('youtube.com') || src.includes('youtu.be') : false;
 
-    const playerRef = useRef<ReactPlayer>(null);
+    const Player = ReactPlayer as any;
+
+    const playerRef = useRef<any>(null);
     const nativeRef = useRef<HTMLMediaElement>(null);
     const progressRef = useRef<HTMLDivElement>(null);
     
@@ -179,7 +181,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
         {type === 'video' ? (
           <div className="w-full aspect-video bg-slate-900 pointer-events-none">
             {isMounted && src && isYouTube ? (
-              <ReactPlayer
+              <Player
                 ref={playerRef}
                 url={src}
                 width="100%"
@@ -187,7 +189,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
                 playing={playing}
                 volume={volume}
                 muted={muted}
-                onProgress={({ playedSeconds }) => setCurrentTime(playedSeconds)}
+                onProgress={(state: any) => setCurrentTime(state.playedSeconds)}
                 onReady={() => {
                   if (playerRef.current) {
                     setDuration(playerRef.current.getDuration());
@@ -199,7 +201,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
                 onEnded={() => setPlaying(false)}
                 config={{
                   youtube: { playerVars: { showinfo: 0, controls: 0, disablekb: 1, modestbranding: 1 } }
-                }}
+                } as any}
               />
             ) : isMounted && src ? (
               <video
@@ -220,7 +222,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
         ) : (
           <div className="w-full aspect-video bg-gradient-to-br from-slate-900 to-black flex items-center justify-center relative">
             {isMounted && src && isYouTube ? (
-              <ReactPlayer
+              <Player
                 ref={playerRef}
                 url={src}
                 width="0"
@@ -228,7 +230,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
                 playing={playing}
                 volume={volume}
                 muted={muted}
-                onProgress={({ playedSeconds }) => setCurrentTime(playedSeconds)}
+                onProgress={(state: any) => setCurrentTime(state.playedSeconds)}
                 onReady={() => {
                   if (playerRef.current) {
                     setDuration(playerRef.current.getDuration());
