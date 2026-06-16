@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { UploadZone } from '@/components/lecture/upload-zone';
 import { Badge } from '@/components/ui/badge';
 import { api } from '@/lib/api';
+import { cn } from '@/lib/utils';
 
 export default function UploadPage() {
   const [title, setTitle] = useState('');
