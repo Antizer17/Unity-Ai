@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
   MessageSquare,
@@ -91,31 +92,31 @@ export default function DashboardPage() {
                 
                 {/* Upload Menu (visible on hover) */}
                 <div className="absolute bottom-full left-0 mb-2 w-56 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-color)] shadow-xl p-2 z-50 flex flex-col gap-1 opacity-0 invisible group-hover/upload:opacity-100 group-hover/upload:visible transition-all pointer-events-none group-hover/upload:pointer-events-auto">
-                  <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left transition-colors">
+                  <Link href="/lectures/upload" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left transition-colors">
                     <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>
                     </div>
                     <span className="text-sm font-medium text-[var(--text-primary)]">Video Lecture</span>
-                  </button>
-                  <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left transition-colors">
+                  </Link>
+                  <Link href="/lectures/upload" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left transition-colors">
                     <div className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
                     </div>
                     <span className="text-sm font-medium text-[var(--text-primary)]">Audio Recording</span>
-                  </button>
-                  <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left transition-colors">
+                  </Link>
+                  <Link href="/lectures/upload" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left transition-colors">
                     <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
                     </div>
                     <span className="text-sm font-medium text-[var(--text-primary)]">Document / PDF</span>
-                  </button>
+                  </Link>
                   <div className="h-px w-full bg-[var(--border-color)] my-1" />
-                  <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left transition-colors">
+                  <Link href="/lectures/upload" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left transition-colors">
                     <div className="p-1.5 rounded-lg bg-slate-500/10 text-slate-400">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
                     </div>
                     <span className="text-sm font-medium text-[var(--text-primary)]">Web Link</span>
-                  </button>
+                  </Link>
                 </div>
               </div>
 
