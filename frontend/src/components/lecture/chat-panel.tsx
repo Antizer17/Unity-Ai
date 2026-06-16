@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Send, Paperclip, Copy, RotateCw, ThumbsUp, ThumbsDown, Sparkles, User } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Send, Paperclip, Copy, RotateCw, ThumbsUp, ThumbsDown, Sparkles, User, Video, Mic, FileText, Globe } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '@/lib/utils';
 import type { ChatMessage } from '@/types';
@@ -50,8 +50,20 @@ export function ChatPanel({
 }: ChatPanelProps) {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [uploadMenuOpen, setUploadMenuOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const uploadMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (uploadMenuRef.current && !uploadMenuRef.current.contains(e.target as Node)) {
+        setUploadMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -177,9 +189,57 @@ export function ChatPanel({
       <div className="p-4 md:px-8 pb-6 md:pb-8 bg-gradient-to-t from-[var(--bg-primary)] via-[var(--bg-primary)] to-transparent sticky bottom-0 w-full">
         <div className="max-w-3xl mx-auto relative rounded-3xl border border-[var(--border-color)] bg-[var(--bg-secondary)] shadow-sm focus-within:ring-1 focus-within:ring-[var(--border-color)] transition-all">
           <div className="flex items-end px-3 py-3">
-            <button className="p-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--color-surface)] rounded-full transition-colors shrink-0 mb-0.5">
-              <Paperclip className="h-5 w-5" />
-            </button>
+            <div className="relative" ref={uploadMenuRef}>
+              <button 
+                onClick={() => setUploadMenuOpen(!uploadMenuOpen)}
+                className={cn(
+                  "p-2 rounded-full transition-colors shrink-0 mb-0.5",
+                  uploadMenuOpen 
+                    ? "bg-[var(--color-surface)] text-[var(--text-primary)]" 
+                    : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--color-surface)]"
+                )}
+              >
+                <Paperclip className="h-5 w-5" />
+              </button>
+
+              <AnimatePresence>
+                {uploadMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute bottom-full left-0 mb-2 w-56 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-color)] shadow-xl p-2 z-50 flex flex-col gap-1"
+                  >
+                    <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left group transition-colors">
+                      <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 group-hover:bg-indigo-500/20 transition-colors">
+                        <Video className="h-4 w-4" />
+                      </div>
+                      <span className="text-sm font-medium text-[var(--text-primary)]">Video Lecture</span>
+                    </button>
+                    <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left group transition-colors">
+                      <div className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 group-hover:bg-cyan-500/20 transition-colors">
+                        <Mic className="h-4 w-4" />
+                      </div>
+                      <span className="text-sm font-medium text-[var(--text-primary)]">Audio Recording</span>
+                    </button>
+                    <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left group transition-colors">
+                      <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500/20 transition-colors">
+                        <FileText className="h-4 w-4" />
+                      </div>
+                      <span className="text-sm font-medium text-[var(--text-primary)]">Document / PDF</span>
+                    </button>
+                    <div className="h-px w-full bg-[var(--border-color)] my-1" />
+                    <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left group transition-colors">
+                      <div className="p-1.5 rounded-lg bg-slate-500/10 text-slate-400 group-hover:bg-slate-500/20 transition-colors">
+                        <Globe className="h-4 w-4" />
+                      </div>
+                      <span className="text-sm font-medium text-[var(--text-primary)]">Web Link</span>
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
             <textarea
               ref={textareaRef}
               value={input}
