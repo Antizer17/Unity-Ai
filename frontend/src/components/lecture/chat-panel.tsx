@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Paperclip, Copy, RotateCw, ThumbsUp, ThumbsDown, Sparkles, User, Video, Mic, FileText, Globe } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -157,17 +158,17 @@ export function ChatPanel({
                 {/* Assistant Micro-Actions */}
                 {msg.role === 'assistant' && (
                   <div className="flex items-center gap-1 text-[var(--text-muted)] ml-2 mt-1">
-                    <button className="p-1.5 hover:bg-[var(--color-surface)] hover:text-[var(--text-primary)] rounded-md transition-colors" title="Copy">
+                    <button onClick={() => navigator.clipboard.writeText(msg.content)} className="p-1.5 hover:bg-[var(--color-surface)] hover:text-[var(--text-primary)] rounded-md transition-colors" title="Copy">
                       <Copy className="h-3.5 w-3.5" />
                     </button>
-                    <button className="p-1.5 hover:bg-[var(--color-surface)] hover:text-[var(--text-primary)] rounded-md transition-colors" title="Regenerate">
+                    <button onClick={() => onSendMessage?.("Please regenerate your previous response.")} className="p-1.5 hover:bg-[var(--color-surface)] hover:text-[var(--text-primary)] rounded-md transition-colors" title="Regenerate">
                       <RotateCw className="h-3.5 w-3.5" />
                     </button>
                     <div className="w-px h-3.5 bg-[var(--border-color)] mx-1" />
-                    <button className="p-1.5 hover:bg-[var(--color-surface)] hover:text-[var(--text-primary)] rounded-md transition-colors" title="Helpful">
+                    <button onClick={() => alert("Thanks for the feedback!")} className="p-1.5 hover:bg-[var(--color-surface)] hover:text-[var(--text-primary)] rounded-md transition-colors" title="Helpful">
                       <ThumbsUp className="h-3.5 w-3.5" />
                     </button>
-                    <button className="p-1.5 hover:bg-[var(--color-surface)] hover:text-[var(--text-primary)] rounded-md transition-colors" title="Not Helpful">
+                    <button onClick={() => alert("Thanks for the feedback! We'll try to improve.")} className="p-1.5 hover:bg-[var(--color-surface)] hover:text-[var(--text-primary)] rounded-md transition-colors" title="Not Helpful">
                       <ThumbsDown className="h-3.5 w-3.5" />
                     </button>
                   </div>
@@ -211,31 +212,31 @@ export function ChatPanel({
                     transition={{ duration: 0.15 }}
                     className="absolute bottom-full left-0 mb-2 w-56 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-color)] shadow-xl p-2 z-50 flex flex-col gap-1"
                   >
-                    <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left group transition-colors">
+                    <Link href="/lectures/upload" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left group transition-colors">
                       <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 group-hover:bg-indigo-500/20 transition-colors">
                         <Video className="h-4 w-4" />
                       </div>
                       <span className="text-sm font-medium text-[var(--text-primary)]">Video Lecture</span>
-                    </button>
-                    <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left group transition-colors">
+                    </Link>
+                    <Link href="/lectures/upload" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left group transition-colors">
                       <div className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 group-hover:bg-cyan-500/20 transition-colors">
                         <Mic className="h-4 w-4" />
                       </div>
                       <span className="text-sm font-medium text-[var(--text-primary)]">Audio Recording</span>
-                    </button>
-                    <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left group transition-colors">
+                    </Link>
+                    <Link href="/lectures/upload" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left group transition-colors">
                       <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500/20 transition-colors">
                         <FileText className="h-4 w-4" />
                       </div>
                       <span className="text-sm font-medium text-[var(--text-primary)]">Document / PDF</span>
-                    </button>
+                    </Link>
                     <div className="h-px w-full bg-[var(--border-color)] my-1" />
-                    <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left group transition-colors">
+                    <Link href="/lectures/upload" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--color-surface)] text-left group transition-colors">
                       <div className="p-1.5 rounded-lg bg-slate-500/10 text-slate-400 group-hover:bg-slate-500/20 transition-colors">
                         <Globe className="h-4 w-4" />
                       </div>
                       <span className="text-sm font-medium text-[var(--text-primary)]">Web Link</span>
-                    </button>
+                    </Link>
                   </motion.div>
                 )}
               </AnimatePresence>

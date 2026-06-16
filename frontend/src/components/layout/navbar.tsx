@@ -110,11 +110,11 @@ export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
               </div>
             ) : (
               <div className="hidden md:flex items-center gap-3">
-                <Link href="/login">
-                  <span className="text-sm font-medium hover:text-[var(--text-primary)] text-[var(--text-secondary)] px-3 transition-colors">Sign In</span>
+                <Link href="/dashboard">
+                  <span className="text-sm font-medium hover:text-[var(--text-primary)] text-[var(--text-secondary)] px-3 transition-colors">Dashboard</span>
                 </Link>
-                <Link href="/register">
-                  <span className="px-4 py-1.5 text-sm font-medium bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors shadow-sm">Get Started</span>
+                <Link href="/dashboard">
+                  <span className="px-4 py-1.5 text-sm font-medium bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors shadow-sm">Start Learning</span>
                 </Link>
               </div>
             )}
@@ -165,8 +165,8 @@ export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
                 </div>
               ) : (
                 <div className="pt-3 mt-3 border-t border-[var(--border-color)] flex flex-col gap-3 px-3 pb-2">
-                  <Link href="/login" onClick={() => setMobileOpen(false)} className="text-sm font-medium text-[var(--text-primary)]">Sign In</Link>
-                  <Link href="/register" onClick={() => setMobileOpen(false)} className="text-sm font-medium text-indigo-500">Get Started</Link>
+                  <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="text-sm font-medium text-[var(--text-primary)]">Dashboard</Link>
+                  <Link href="/dashboard" onClick={() => setMobileOpen(false)} className="text-sm font-medium text-indigo-500">Start Learning</Link>
                 </div>
               )}
             </div>

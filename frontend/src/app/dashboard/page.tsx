@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
   MessageSquare,
@@ -42,6 +43,7 @@ const quickPrompts = [
 ];
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [input, setInput] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -130,6 +132,7 @@ export default function DashboardPage() {
               />
               <button
                 disabled={!input.trim()}
+                onClick={() => router.push('/chat')}
                 className={cn(
                   'p-2.5 rounded-full shrink-0 transition-all duration-200 ml-2 mb-0.5',
                   input.trim()
@@ -153,7 +156,7 @@ export default function DashboardPage() {
         {quickPrompts.map((prompt, i) => (
           <button
             key={i}
-            onClick={() => setInput(prompt.title)}
+            onClick={() => router.push('/chat')}
             className="flex items-center gap-4 p-4 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-secondary)] hover:bg-[var(--color-surface)] transition-colors text-left group"
           >
             <div className={cn('p-2.5 rounded-xl shrink-0', prompt.bg, prompt.color)}>
