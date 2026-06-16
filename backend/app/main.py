@@ -280,9 +280,8 @@ async def run_transcription_background(lecture_id: str, temp_file_path: str):
         
 
     finally:
-        # 5. Clean up temporary media file
-        if os.path.exists(temp_file_path):
-            os.remove(temp_file_path)
+        # 5. Keep the temporary media file so the frontend can play it!
+        pass
 
 @app.get("/")
 def health_check():

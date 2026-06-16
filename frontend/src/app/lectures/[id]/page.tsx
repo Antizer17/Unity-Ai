@@ -318,12 +318,19 @@ export default function LectureDetailPage({
                   onRegenerate={() => {}}
                   id="lecture-notes-panel"
                 />
-              ) : !isReady ? (
+              ) : lecture?.status === 'PROCESSING' ? (
                 <div className="flex flex-col items-center justify-center h-full p-6 text-center gap-3">
                   <Sparkles className="h-8 w-8 text-indigo-400 animate-pulse" />
                   <h4 className="text-sm font-medium text-white">Generating Notes</h4>
                   <p className="text-xs text-slate-500 max-w-[250px]">
                     We are converting the lecture audio into structured study notes. This will take a moment.
+                  </p>
+                </div>
+              ) : lecture?.status === 'FAILED' ? (
+                <div className="flex flex-col items-center justify-center h-full p-6 text-center gap-3">
+                  <h4 className="text-sm font-medium text-red-400">Processing Failed</h4>
+                  <p className="text-xs text-slate-500 max-w-[250px]">
+                    We couldn't generate notes for this lecture. The transcription service might be down.
                   </p>
                 </div>
               ) : (
@@ -350,12 +357,19 @@ export default function LectureDetailPage({
                   onSegmentClick={handleTimestampClick}
                   id="lecture-transcript-panel"
                 />
-              ) : !isReady ? (
+              ) : lecture?.status === 'PROCESSING' ? (
                 <div className="flex flex-col items-center justify-center h-full p-6 text-center gap-3">
                   <Spinner className="h-6 w-6 text-indigo-400" />
                   <h4 className="text-sm font-medium text-white">Transcribing Audio</h4>
                   <p className="text-xs text-slate-500 max-w-[250px]">
                     Whisper is currently transcribing the lecture audio with exact timestamps.
+                  </p>
+                </div>
+              ) : lecture?.status === 'FAILED' ? (
+                <div className="flex flex-col items-center justify-center h-full p-6 text-center gap-3">
+                  <h4 className="text-sm font-medium text-red-400">Transcription Failed</h4>
+                  <p className="text-xs text-slate-500 max-w-[250px]">
+                    We couldn't transcribe this lecture. The API connection might have failed.
                   </p>
                 </div>
               ) : (
