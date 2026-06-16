@@ -47,9 +47,13 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
       },
     }));
 
-    const togglePlay = useCallback(() => {
-      setPlaying(!playing);
-    }, [playing]);
+    const togglePlay = useCallback((e?: React.MouseEvent) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      setPlaying(p => !p);
+    }, []);
 
     const toggleMute = useCallback(() => {
       setMuted(!muted);
@@ -110,6 +114,8 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
                     setLoaded(true);
                   }
                 }}
+                onPlay={() => setPlaying(true)}
+                onPause={() => setPlaying(false)}
                 onEnded={() => setPlaying(false)}
                 config={{
                   file: { attributes: { poster } },
@@ -137,6 +143,8 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
                     setLoaded(true);
                   }
                 }}
+                onPlay={() => setPlaying(true)}
+                onPause={() => setPlaying(false)}
                 onEnded={() => setPlaying(false)}
               />
             )}
