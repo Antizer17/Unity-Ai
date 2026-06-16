@@ -71,7 +71,12 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
         if (isYouTube && playerRef.current) {
           setPlaying(true);
         } else if (nativeRef.current) {
-          nativeRef.current.play().catch(e => console.error(e));
+          const playPromise = nativeRef.current.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(e => {
+              if (e.name !== 'AbortError') console.error('Play error:', e);
+            });
+          }
           setPlaying(true);
         }
       }
@@ -85,8 +90,16 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
       setPlaying(p => {
         const next = !p;
         if (!isYouTube && nativeRef.current) {
-          if (next) nativeRef.current.play().catch(console.error);
-          else nativeRef.current.pause();
+          if (next) {
+            const playPromise = nativeRef.current.play();
+            if (playPromise !== undefined) {
+              playPromise.catch(e => {
+                if (e.name !== 'AbortError') console.error('Toggle play error:', e);
+              });
+            }
+          } else {
+            nativeRef.current.pause();
+          }
         }
         return next;
       });
