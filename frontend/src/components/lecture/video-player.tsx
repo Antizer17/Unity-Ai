@@ -192,6 +192,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
                 onPlay={() => setPlaying(true)}
                 onPause={() => setPlaying(false)}
                 onEnded={() => setPlaying(false)}
+                onError={(e: any) => { if (e?.name !== 'AbortError') console.warn('ReactPlayer error:', e); }}
               />
             ) : isMounted && src ? (
               <video
@@ -231,6 +232,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
                 onPlay={() => setPlaying(true)}
                 onPause={() => setPlaying(false)}
                 onEnded={() => setPlaying(false)}
+                onError={(e: any) => { if (e?.name !== 'AbortError') console.warn('ReactPlayer error:', e); }}
               />
             ) : isMounted && src ? (
               <audio
