@@ -67,7 +67,12 @@ export default function LandingPage() {
                 Unity-AI
               </span>
             </Link>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Link href="/chat" className="hidden sm:block">
+                <Button id="landing-guest-chat-btn" variant="outline" size="sm" className="border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10">
+                  Try Guest Chat
+                </Button>
+              </Link>
               <Link href="/login">
                 <Button id="landing-login-btn" variant="ghost" size="sm">
                   Sign In
@@ -128,9 +133,9 @@ export default function LandingPage() {
                 Get Started Free
               </Button>
             </Link>
-            <Link href="#features">
-              <Button id="hero-learn-more-btn" variant="outline" size="lg" icon={<Play className="h-4 w-4" />}>
-                Learn More
+            <Link href="/chat">
+              <Button id="hero-guest-chat-btn" variant="outline" size="lg" className="border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10" icon={<MessageSquareText className="h-4 w-4" />}>
+                Try Guest Chat
               </Button>
             </Link>
           </motion.div>
