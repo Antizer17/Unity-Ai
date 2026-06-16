@@ -104,7 +104,12 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
                 volume={volume}
                 muted={muted}
                 onProgress={({ playedSeconds }) => setCurrentTime(playedSeconds)}
-                onDuration={(d) => { setDuration(d); setLoaded(true); }}
+                onReady={() => {
+                  if (playerRef.current) {
+                    setDuration(playerRef.current.getDuration());
+                    setLoaded(true);
+                  }
+                }}
                 onEnded={() => setPlaying(false)}
                 config={{
                   file: { attributes: { poster } },
@@ -126,7 +131,12 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
                 volume={volume}
                 muted={muted}
                 onProgress={({ playedSeconds }) => setCurrentTime(playedSeconds)}
-                onDuration={(d) => { setDuration(d); setLoaded(true); }}
+                onReady={() => {
+                  if (playerRef.current) {
+                    setDuration(playerRef.current.getDuration());
+                    setLoaded(true);
+                  }
+                }}
                 onEnded={() => setPlaying(false)}
               />
             )}
