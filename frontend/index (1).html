@@ -1,0 +1,1058 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Lecture Companion — Cybernauts</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  :root {
+    --ink: #14171c;
+    --ink-soft: #1d2127;
+    --ink-line: rgba(255, 255, 255, 0.08);
+    --paper: #f6f1e7;
+    --paper-line: rgba(20, 23, 28, 0.1);
+    --bone: #ece6d8;
+    --graphite: #2a2730;
+    --paper-soft: rgba(42, 39, 48, 0.62);
+    --amber: #e8a23d;
+    --teal: #2f7a6e;
+    --teal-bright: #5fbfaf;
+    --rose: #c0463c;
+    --rose-bright: #ff8478;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--graphite);
+    font-family: "Inter", system-ui, sans-serif;
+  }
+
+  button { font-family: inherit; }
+
+  :focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+  #app { display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* ---------- Topbar ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 24px;
+    background: var(--ink);
+    border-bottom: 1px solid var(--ink-line);
+    color: #ede9e0;
+    flex-wrap: wrap;
+  }
+  .brand { display: flex; flex-direction: column; line-height: 1.15; }
+  .brand strong { font-family: "Lora", serif; font-size: 19px; font-weight: 600; }
+  .brand span {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--amber);
+  }
+  .topbar-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .lecture-select {
+    background: var(--ink-soft);
+    color: #ede9e0;
+    border: 1px solid var(--ink-line);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 13px;
+    max-width: 220px;
+  }
+  .api-field {
+    display: flex; align-items: center; gap: 6px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; color: rgba(237, 233, 224, 0.55);
+  }
+  .api-field input {
+    background: var(--ink-soft);
+    border: 1px solid var(--ink-line);
+    color: #ede9e0;
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-family: inherit;
+    font-size: 11px;
+    width: 165px;
+  }
+  .btn-primary {
+    background: var(--amber);
+    color: #1c1206;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .btn-primary:hover { filter: brightness(1.05); }
+
+  .global-error {
+    background: rgba(192, 70, 60, 0.15);
+    color: var(--rose-bright);
+    border-bottom: 1px solid rgba(192, 70, 60, 0.4);
+    padding: 10px 24px;
+    font-size: 13px;
+  }
+  .global-error[hidden] { display: none; }
+
+  /* ---------- Stage ---------- */
+  .stage-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(300px, 420px);
+    min-height: 0;
+  }
+  @media (max-width: 880px) {
+    .stage-grid { grid-template-columns: 1fr; }
+  }
+
+  .video-stage {
+    background: var(--ink);
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+  }
+  .video-stage video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 10px;
+  }
+  .video-empty-note {
+    color: rgba(237, 233, 224, 0.55);
+    font-size: 13px;
+    margin: 0;
+  }
+
+  .status-pill {
+    align-self: flex-start;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--ink-line);
+    color: #ede9e0;
+    display: inline-flex;
+    align-items: center;
+  }
+  .status-pill.pill-processing { color: var(--amber); border-color: rgba(232, 162, 61, 0.5); }
+  .status-pill.pill-ready { color: var(--teal-bright); border-color: rgba(95, 191, 175, 0.5); }
+  .status-pill.pill-failed { color: var(--rose-bright); border-color: rgba(255, 132, 120, 0.5); }
+  .status-pill.pill-processing::before {
+    content: "";
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--amber);
+    margin-right: 6px;
+    animation: pulseDot 1.2s ease-in-out infinite;
+  }
+  @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  .lecture-meta { font-size: 13px; color: rgba(237, 233, 224, 0.7); margin: 0; }
+
+  /* ---------- Notes margin ---------- */
+  .notes-margin {
+    background: var(--paper);
+    border-left: 1px solid var(--paper-line);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .margin-tabs { display: flex; gap: 4px; padding: 14px 16px 0; }
+  .margin-tabs button {
+    background: none; border: none; cursor: pointer;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 8px 4px; margin-right: 12px;
+    color: var(--paper-soft);
+    border-bottom: 2px solid transparent;
+  }
+  .margin-tabs button.active { color: var(--graphite); border-bottom-color: var(--amber); }
+
+  .notes-list { flex: 1; overflow-y: auto; padding: 4px 0 16px; }
+  .topic-row {
+    display: block; width: 100%; text-align: left;
+    background: none; border: none;
+    border-bottom: 1px solid var(--paper-line);
+    padding: 14px 18px 14px 20px;
+    position: relative;
+    cursor: pointer;
+    color: inherit;
+  }
+  .topic-row::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--amber);
+    transform: scaleY(0); transform-origin: top;
+    transition: transform 420ms ease;
+  }
+  .topic-row.active { background: rgba(232, 162, 61, 0.12); }
+  .topic-row.active::before { transform: scaleY(1); }
+  .topic-row .ts {
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    color: var(--teal); display: block; margin-bottom: 4px;
+  }
+  .topic-row h3 {
+    font-family: "Lora", serif; font-size: 16px; font-weight: 600; margin: 0 0 4px;
+  }
+  .topic-row .summary {
+    font-size: 13px; color: var(--paper-soft); margin: 0 0 6px; line-height: 1.45;
+  }
+  .topic-row .key-points { margin: 0 0 6px 16px; padding: 0; font-size: 12.5px; }
+  .topic-row .key-points li { margin-bottom: 2px; }
+  .topic-row .tech {
+    background: var(--bone); border-radius: 6px; padding: 8px 10px;
+    font-family: "JetBrains Mono", monospace; font-size: 12px;
+    white-space: pre-wrap; margin: 0; color: var(--graphite);
+  }
+  .transcript-row .summary { font-size: 13.5px; color: var(--graphite); }
+  .empty-hint { padding: 24px 18px; font-size: 13px; color: var(--paper-soft); }
+
+  /* ---------- Tutor bar ---------- */
+  .tutor-bar {
+    background: #ede7da;
+    border-top: 1px solid var(--paper-line);
+    display: flex; flex-direction: column;
+    max-height: 300px;
+    flex-shrink: 0;
+  }
+  .tutor-bar h2 {
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--paper-soft);
+    margin: 12px 18px 8px;
+  }
+  .tutor-log { flex: 1; overflow-y: auto; padding: 0 18px; }
+  .chat-msg { max-width: 75%; margin-bottom: 10px; }
+  .chat-msg.chat-user { margin-left: auto; }
+  .chat-text {
+    margin: 0; padding: 9px 12px; border-radius: 10px;
+    font-size: 13.5px; line-height: 1.45; white-space: pre-wrap;
+  }
+  .chat-user .chat-text { background: var(--teal); color: #f3fbf9; border-radius: 10px 10px 2px 10px; }
+  .chat-assistant .chat-text { background: var(--bone); color: var(--graphite); border-radius: 10px 10px 10px 2px; }
+  .chat-msg.pending .chat-text { opacity: 0.6; font-style: italic; }
+  .ts-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .ts-chip {
+    background: none; border: 1px solid rgba(47, 122, 110, 0.45);
+    color: var(--teal); border-radius: 999px; padding: 3px 9px;
+    font-family: "JetBrains Mono", monospace; font-size: 11px; cursor: pointer;
+  }
+  .ts-chip:hover { background: rgba(47, 122, 110, 0.1); }
+
+  .chat-form { display: flex; gap: 8px; padding: 10px 18px 16px; }
+  .chat-form input {
+    flex: 1; border: 1px solid var(--paper-line); border-radius: 8px;
+    padding: 10px 12px; font-size: 13.5px; background: #fffdf8;
+  }
+  .chat-form input:disabled { background: rgba(0,0,0,0.04); color: rgba(42,39,48,0.4); }
+  .chat-form button {
+    background: var(--graphite); color: #fdfaf3; border: none;
+    border-radius: 8px; padding: 0 16px; font-weight: 600; font-size: 13px; cursor: pointer;
+  }
+  .chat-form button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ---------- Upload dialog ---------- */
+  dialog#uploadDialog {
+    border: none; border-radius: 12px; padding: 0; width: min(420px, 90vw);
+  }
+  dialog#uploadDialog::backdrop { background: rgba(20, 23, 28, 0.55); }
+  .upload-form { padding: 22px 22px 18px; display: flex; flex-direction: column; gap: 12px; }
+  .upload-form h2 { font-family: "Lora", serif; margin: 0 0 4px; font-size: 19px; }
+  .upload-form label { font-size: 12px; font-weight: 600; color: var(--paper-soft); display: block; margin-bottom: 4px; }
+  .upload-form input[type="text"], .upload-form textarea {
+    width: 100%; border: 1px solid var(--paper-line); border-radius: 8px;
+    padding: 8px 10px; font-size: 13.5px; font-family: inherit; resize: vertical;
+  }
+  .upload-form input[type="file"] { font-size: 13px; }
+  .upload-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+  .upload-actions button { border-radius: 8px; padding: 9px 14px; font-size: 13px; cursor: pointer; }
+  .upload-actions .cancel { background: none; border: 1px solid var(--paper-line); color: var(--graphite); }
+  .upload-error { color: var(--rose); font-size: 12.5px; margin: 0; }
+  .upload-error[hidden] { display: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .topic-row::before { transition: none; }
+    .status-pill.pill-processing::before { animation: none; }
+  }
+
+  /* ---------- Snapshot button & UI ---------- */
+  .video-stage-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .video-wrap { position: relative; }
+  .video-wrap video { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 10px; }
+  .btn-snapshot {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(95, 191, 175, 0.12);
+    color: var(--teal-bright);
+    border: 1px solid rgba(95, 191, 175, 0.35);
+    border-radius: 8px; padding: 7px 13px;
+    font-size: 12.5px; font-weight: 600; cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .btn-snapshot:hover:not(:disabled) {
+    background: rgba(95, 191, 175, 0.22);
+    border-color: rgba(95, 191, 175, 0.6);
+  }
+  .btn-snapshot:disabled { opacity: 0.35; cursor: not-allowed; }
+  .btn-snapshot.loading {
+    opacity: 0.7; cursor: wait;
+    animation: snapshotPulse 1s ease-in-out infinite;
+  }
+  @keyframes snapshotPulse { 0%,100% { opacity:.7; } 50% { opacity:.4; } }
+
+  .snapshot-key-bar {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--ink-line);
+    border-radius: 8px; padding: 8px 12px;
+    margin-top: 2px;
+  }
+  .snapshot-key-bar[hidden] { display: none; }
+  .snapshot-key-input {
+    flex: 1; background: var(--ink-soft); color: #ede9e0;
+    border: 1px solid var(--ink-line); border-radius: 6px;
+    padding: 5px 9px; font-size: 12px;
+    font-family: "JetBrains Mono", monospace;
+  }
+  .btn-snapshot-save {
+    background: var(--amber); color: #1c1206; border: none;
+    border-radius: 6px; padding: 5px 11px;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+  }
+
+  .snapshot-preview {
+    position: relative; border-radius: 8px; overflow: hidden;
+    border: 1px solid var(--ink-line); margin-top: 2px;
+  }
+  .snapshot-preview[hidden] { display: none; }
+  .snapshot-preview img { width: 100%; display: block; border-radius: 8px; }
+  .snapshot-close {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(20,23,28,0.7); color: #ede9e0;
+    border: none; border-radius: 50%; width: 24px; height: 24px;
+    font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .snapshot-close:hover { background: rgba(20,23,28,0.9); }
+
+  /* snapshot answer in chat */
+  .chat-snapshot-thumb {
+    width: 72px; height: 42px; object-fit: cover;
+    border-radius: 5px; display: block; margin-bottom: 6px;
+    border: 1px solid var(--paper-line);
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="brand">
+      <strong>Lecture Companion</strong>
+      <span>Cybernauts</span>
+    </div>
+    <div class="topbar-controls">
+      <select id="lectureSelect" class="lecture-select"></select>
+      <label class="api-field">API
+        <input id="apiBaseInput" type="text" placeholder="http://localhost:8000" />
+      </label>
+      <button id="uploadBtn" class="btn-primary" type="button">+ New lecture</button>
+    </div>
+  </header>
+
+  <p id="globalError" class="global-error" hidden></p>
+
+  <main class="stage-grid">
+    <section class="video-stage">
+      <div class="video-stage-header">
+        <span id="statusPill" class="status-pill">—</span>
+        <button id="snapshotBtn" class="btn-snapshot" type="button" title="Capture frame and explain with AI" disabled>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+          Explain frame
+        </button>
+      </div>
+      <div class="video-wrap">
+        <video id="player" controls crossorigin="anonymous"></video>
+        <canvas id="snapshotCanvas" hidden></canvas>
+      </div>
+      <p id="videoEmptyNote" class="video-empty-note" hidden>
+        No video preview available for this lecture (it was uploaded in a different session, or has no file attached).
+      </p>
+      <p id="lectureMeta" class="lecture-meta"></p>
+      <div id="snapshotKeyBar" class="snapshot-key-bar" hidden>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.6"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span style="font-size:12px;color:rgba(237,233,224,0.6)">Anthropic key</span>
+        <input id="anthropicKeyInput" type="password" class="snapshot-key-input" placeholder="sk-ant-…" autocomplete="off" />
+        <button id="snapshotKeySaveBtn" type="button" class="btn-snapshot-save">Save</button>
+      </div>
+      <div id="snapshotPreview" class="snapshot-preview" hidden>
+        <img id="snapshotImg" alt="captured frame" />
+        <button id="snapshotCloseBtn" type="button" class="snapshot-close" title="Dismiss">&#x2715;</button>
+      </div>
+    </section>
+
+    <aside class="notes-margin">
+      <div class="margin-tabs">
+        <button type="button" data-tab="notes" class="active">Notes</button>
+        <button type="button" data-tab="transcript">Transcript</button>
+      </div>
+      <div id="notesList" class="notes-list"></div>
+    </aside>
+  </main>
+
+  <section class="tutor-bar">
+    <h2>Ask the lecture</h2>
+    <div id="tutorLog" class="tutor-log"></div>
+    <form id="chatForm" class="chat-form">
+      <input id="chatInput" type="text" placeholder="Upload a lecture to start asking questions…" disabled />
+      <button id="chatSubmitBtn" type="submit" disabled>Ask</button>
+    </form>
+  </section>
+</div>
+
+<dialog id="uploadDialog">
+  <form id="uploadForm" class="upload-form">
+    <h2>New lecture</h2>
+    <div>
+      <label for="uploadTitle">Title</label>
+      <input id="uploadTitle" name="title" type="text" placeholder="e.g. Lecture 4 — Dynamic Programming" />
+    </div>
+    <div>
+      <label for="uploadDescription">Description</label>
+      <textarea id="uploadDescription" name="description" rows="2" placeholder="Optional"></textarea>
+    </div>
+    <div>
+      <label for="uploadFile">Audio or video file</label>
+      <input id="uploadFile" name="file" type="file" accept="audio/*,video/*" required />
+    </div>
+    <p id="uploadError" class="upload-error" hidden></p>
+    <div class="upload-actions">
+      <button type="button" id="uploadCancelBtn" class="cancel">Cancel</button>
+      <button type="submit" id="uploadSubmitBtn" class="btn-primary">Upload &amp; generate</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+  const els = {
+    lectureSelect: document.getElementById("lectureSelect"),
+    apiBaseInput: document.getElementById("apiBaseInput"),
+    uploadBtn: document.getElementById("uploadBtn"),
+    globalError: document.getElementById("globalError"),
+    player: document.getElementById("player"),
+    videoEmptyNote: document.getElementById("videoEmptyNote"),
+    statusPill: document.getElementById("statusPill"),
+    lectureMeta: document.getElementById("lectureMeta"),
+    notesList: document.getElementById("notesList"),
+    tabButtons: document.querySelectorAll(".margin-tabs button"),
+    tutorLog: document.getElementById("tutorLog"),
+    chatForm: document.getElementById("chatForm"),
+    chatInput: document.getElementById("chatInput"),
+    chatSubmitBtn: document.getElementById("chatSubmitBtn"),
+    uploadDialog: document.getElementById("uploadDialog"),
+    uploadForm: document.getElementById("uploadForm"),
+    uploadCancelBtn: document.getElementById("uploadCancelBtn"),
+    uploadError: document.getElementById("uploadError"),
+    uploadSubmitBtn: document.getElementById("uploadSubmitBtn"),
+    snapshotBtn: document.getElementById("snapshotBtn"),
+    snapshotCanvas: document.getElementById("snapshotCanvas"),
+    snapshotKeyBar: document.getElementById("snapshotKeyBar"),
+    snapshotPreview: document.getElementById("snapshotPreview"),
+    snapshotImg: document.getElementById("snapshotImg"),
+    snapshotCloseBtn: document.getElementById("snapshotCloseBtn"),
+    anthropicKeyInput: document.getElementById("anthropicKeyInput"),
+    snapshotKeySaveBtn: document.getElementById("snapshotKeySaveBtn"),
+  };
+
+  const state = {
+    apiBase: "http://localhost:8000",
+    lectures: [],
+    activeLectureId: null,
+    notes: null,
+    transcript: null,
+    localVideoUrls: {}, // lectureId -> blob: URL, only for files uploaded this session
+    pollTimer: null,
+    view: "notes",
+  };
+
+  els.apiBaseInput.value = state.apiBase;
+
+  function escapeHtml(str) {
+    return String(str ?? "").replace(/[&<>"']/g, (c) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+    }[c]));
+  }
+
+  function formatTime(seconds) {
+    if (!Number.isFinite(seconds)) return "00:00";
+    const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const s = Math.floor(seconds % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
+  }
+
+  async function api(path, opts = {}) {
+    const res = await fetch(state.apiBase + path, opts);
+    let body = null;
+    try { body = await res.json(); } catch (e) { /* no body */ }
+    if (!res.ok) {
+      let message = `Request failed (${res.status})`;
+      if (body) {
+        const detail = body.detail || body.error;
+        if (typeof detail === "string") {
+          message = detail;
+        } else if (Array.isArray(detail)) {
+          // FastAPI validation errors: [{loc, msg, type}, ...]
+          message = detail.map((d) => `${d.loc ? d.loc.join(" → ") + ": " : ""}${d.msg}`).join("; ");
+        } else if (detail) {
+          message = JSON.stringify(detail);
+        }
+      }
+      throw new Error(message);
+    }
+    return body;
+  }
+
+  function showGlobalError(msg) {
+    els.globalError.textContent = msg;
+    els.globalError.hidden = false;
+  }
+  function clearGlobalError() {
+    els.globalError.hidden = true;
+  }
+
+  function setStatusPill(status) {
+    const map = {
+      PROCESSING: { text: "Processing…", cls: "pill-processing" },
+      READY: { text: "Ready", cls: "pill-ready" },
+      FAILED: { text: "Failed", cls: "pill-failed" },
+    };
+    const info = map[status] || { text: status || "Unknown", cls: "" };
+    els.statusPill.textContent = info.text;
+    els.statusPill.className = `status-pill ${info.cls}`;
+  }
+
+  function setVideoSource(lecture) {
+    const localUrl = lecture ? state.localVideoUrls[lecture.id] : null;
+    if (localUrl) {
+      els.player.src = localUrl;
+      els.videoEmptyNote.hidden = true;
+    } else if (lecture && lecture.fileUrl) {
+      // fileUrl is a relative path like /temp_uploads/lec-xxx_filename.mp4
+      els.player.src = state.apiBase + lecture.fileUrl;
+      els.videoEmptyNote.hidden = true;
+    } else {
+      // No file available (seeded demo data or different session upload)
+      els.player.removeAttribute("src");
+      els.player.load();
+      els.videoEmptyNote.hidden = false;
+    }
+  }
+
+  function renderLectureMeta(lecture) {
+    if (!lecture) { els.lectureMeta.textContent = ""; return; }
+    els.lectureMeta.textContent = lecture.description || "";
+  }
+
+  function renderLectureSwitcher() {
+    const select = els.lectureSelect;
+    select.innerHTML = "";
+    state.lectures.forEach((lec) => {
+      const opt = document.createElement("option");
+      opt.value = lec.id;
+      opt.textContent = `${lec.title} — ${lec.status}`;
+      select.appendChild(opt);
+    });
+    if (state.activeLectureId) select.value = state.activeLectureId;
+  }
+
+  function enableChat(enabled) {
+    els.chatInput.disabled = !enabled;
+    els.chatSubmitBtn.disabled = !enabled;
+    els.chatInput.placeholder = enabled
+      ? "Ask about this lecture…"
+      : "Upload a lecture to start asking questions…";
+  }
+
+  function renderNotesPlaceholder(msg) {
+    els.notesList.innerHTML = `<p class="empty-hint">${escapeHtml(msg)}</p>`;
+  }
+
+  function renderNotes() {
+    els.notesList.innerHTML = "";
+    if (state.view === "notes") {
+      const topics = (state.notes && state.notes.topics) || [];
+      if (!topics.length) {
+        renderNotesPlaceholder("No notes available yet for this lecture.");
+        return;
+      }
+      topics.forEach((topic) => {
+        const row = document.createElement("button");
+        row.type = "button";
+        row.className = "topic-row";
+        row.dataset.start = topic.start;
+        row.dataset.end = topic.end;
+        const keyPoints = topic.key_points && topic.key_points.length
+          ? `<ul class="key-points">${topic.key_points.map((p) => `<li>${escapeHtml(p)}</li>`).join("")}</ul>`
+          : "";
+        const tech = topic.technical_details
+          ? `<pre class="tech">${escapeHtml(topic.technical_details)}</pre>`
+          : "";
+        row.innerHTML = `
+          <span class="ts">${formatTime(topic.start)}</span>
+          <h3>${escapeHtml(topic.title)}</h3>
+          <p class="summary">${escapeHtml(topic.summary || "")}</p>
+          ${keyPoints}${tech}
+        `;
+        row.addEventListener("click", () => seekTo(topic.start));
+        els.notesList.appendChild(row);
+      });
+    } else {
+      const segments = (state.transcript && state.transcript.segments) || [];
+      if (!segments.length) {
+        renderNotesPlaceholder("No transcript available yet for this lecture.");
+        return;
+      }
+      segments.forEach((seg) => {
+        const row = document.createElement("button");
+        row.type = "button";
+        row.className = "topic-row transcript-row";
+        row.dataset.start = seg.start;
+        row.dataset.end = seg.end;
+        row.innerHTML = `<span class="ts">${formatTime(seg.start)}</span><p class="summary">${escapeHtml(seg.text)}</p>`;
+        row.addEventListener("click", () => seekTo(seg.start));
+        els.notesList.appendChild(row);
+      });
+    }
+  }
+
+  function seekTo(seconds) {
+    if (!Number.isFinite(seconds)) return;
+    els.player.currentTime = seconds;
+    els.player.play().catch(() => {});
+  }
+
+  els.player.addEventListener("timeupdate", () => {
+    const t = els.player.currentTime;
+    const rows = els.notesList.querySelectorAll(".topic-row");
+    let activeRow = null;
+    rows.forEach((row) => {
+      const start = parseFloat(row.dataset.start);
+      const end = parseFloat(row.dataset.end);
+      const isActive = t >= start && (Number.isNaN(end) || t < end);
+      row.classList.toggle("active", isActive);
+      if (isActive) activeRow = row;
+    });
+    if (activeRow) activeRow.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  });
+
+  els.tabButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.view = btn.dataset.tab;
+      els.tabButtons.forEach((b) => b.classList.toggle("active", b === btn));
+      renderNotes();
+    });
+  });
+
+  function stopPolling() {
+    if (state.pollTimer) { clearInterval(state.pollTimer); state.pollTimer = null; }
+  }
+
+  function startPolling(id) {
+    stopPolling();
+    let failCount = 0;
+    state.pollTimer = setInterval(async () => {
+      try {
+        const res = await api(`/api/lectures/${id}?t=${Date.now()}`);
+        const updated = res.data;
+        failCount = 0;
+        const idx = state.lectures.findIndex((l) => l.id === id);
+        if (idx >= 0) state.lectures[idx] = updated;
+        if (state.activeLectureId !== id) return;
+        setStatusPill(updated.status);
+        if (updated.status === "READY") {
+          stopPolling();
+          loadLectureContent(id);
+        } else if (updated.status === "FAILED") {
+          stopPolling();
+          const reason = updated.error ? `Error: ${updated.error}` : "Check your server logs for details.";
+          renderNotesPlaceholder(`Transcription failed — ${reason} Fix the issue and re-upload the file.`);
+        }
+      } catch (err) {
+        failCount++;
+        if (failCount >= 3) {
+          stopPolling();
+          renderNotesPlaceholder(`Lost contact with backend after ${failCount} retries: ${err.message}`);
+          showGlobalError(`Polling failed: ${err.message}`);
+        }
+      }
+    }, 2000);
+  }
+
+  async function loadLectureContent(id) {
+    const [notesResult, transcriptResult] = await Promise.allSettled([
+      api(`/api/lectures/${id}/notes`),
+      api(`/api/lectures/${id}/transcript`),
+    ]);
+    state.notes = notesResult.status === "fulfilled" ? notesResult.value.data : null;
+    state.transcript = transcriptResult.status === "fulfilled" ? transcriptResult.value.data : null;
+    renderNotes();
+    enableChat(true);
+  }
+
+  function selectLecture(id) {
+    state.activeLectureId = id;
+    stopPolling();
+    state.notes = null;
+    state.transcript = null;
+    els.tutorLog.innerHTML = "";
+    enableChat(false);
+
+    const lecture = state.lectures.find((l) => l.id === id);
+    els.lectureSelect.value = id;
+    setVideoSource(lecture);
+    renderLectureMeta(lecture);
+    setStatusPill(lecture && lecture.status);
+
+    if (!lecture) return;
+    if (lecture.status === "READY") {
+      loadLectureContent(id);
+    } else if (lecture.status === "PROCESSING") {
+      renderNotesPlaceholder("Generating notes — this updates automatically once it's ready.");
+      startPolling(id);
+    } else if (lecture.status === "FAILED") {
+      const reason = lecture.error ? `Error: ${lecture.error}` : "Check your server logs for details.";
+      renderNotesPlaceholder(`Processing failed — ${reason} Try re-uploading.`);
+    }
+  }
+
+  els.lectureSelect.addEventListener("change", () => selectLecture(els.lectureSelect.value));
+
+  async function loadLectures() {
+    try {
+      const res = await api("/api/lectures");
+      clearGlobalError();
+      state.lectures = res.data || [];
+      renderLectureSwitcher();
+      if (!state.activeLectureId && state.lectures.length) {
+        selectLecture(state.lectures[0].id);
+      }
+    } catch (err) {
+      showGlobalError(`Couldn't reach the backend at ${state.apiBase}. ${err.message}`);
+    }
+  }
+
+  els.apiBaseInput.addEventListener("change", () => {
+    state.apiBase = els.apiBaseInput.value.trim().replace(/\/$/, "");
+    state.activeLectureId = null;
+    loadLectures();
+  });
+
+  // ---------- Upload ----------
+  els.uploadBtn.addEventListener("click", () => {
+    els.uploadError.hidden = true;
+    els.uploadForm.reset();
+    els.uploadDialog.showModal();
+  });
+  els.uploadCancelBtn.addEventListener("click", () => els.uploadDialog.close());
+
+  els.uploadForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const file = document.getElementById("uploadFile").files[0];
+    if (!file) return;
+    const title = document.getElementById("uploadTitle").value.trim() || file.name;
+    const description = document.getElementById("uploadDescription").value.trim();
+
+    const fd = new FormData();
+    fd.append("title", title);
+    fd.append("description", description);
+    fd.append("file", file);
+
+    els.uploadSubmitBtn.disabled = true;
+    els.uploadSubmitBtn.textContent = "Uploading…";
+    els.uploadError.hidden = true;
+    try {
+      const res = await api("/api/lectures", { method: "POST", body: fd });
+      const lecture = res.data;
+      state.localVideoUrls[lecture.id] = URL.createObjectURL(file);
+      state.lectures.unshift(lecture);
+      renderLectureSwitcher();
+      els.uploadDialog.close();
+      selectLecture(lecture.id);
+    } catch (err) {
+      els.uploadError.textContent = err.message;
+      els.uploadError.hidden = false;
+    } finally {
+      els.uploadSubmitBtn.disabled = false;
+      els.uploadSubmitBtn.textContent = "Upload & generate";
+    }
+  });
+
+  // ---------- Chat ----------
+  let chatCounter = 0;
+  function appendChat(role, text, pending) {
+    const id = `chat-${++chatCounter}`;
+    const wrap = document.createElement("div");
+    wrap.className = `chat-msg chat-${role}${pending ? " pending" : ""}`;
+    wrap.id = id;
+    wrap.innerHTML = `<p class="chat-text">${escapeHtml(text)}</p>`;
+    els.tutorLog.appendChild(wrap);
+    els.tutorLog.scrollTop = els.tutorLog.scrollHeight;
+    return id;
+  }
+
+  function updateChat(id, text, timestamps) {
+    const wrap = document.getElementById(id);
+    if (!wrap) return;
+    wrap.classList.remove("pending");
+    const chips = (timestamps || []).map((t) =>
+      `<button type="button" class="ts-chip" data-start="${t.start}">${formatTime(t.start)} · ${escapeHtml((t.label || "").slice(0, 28))}</button>`
+    ).join("");
+    wrap.innerHTML = `<p class="chat-text">${escapeHtml(text)}</p>${chips ? `<div class="ts-chips">${chips}</div>` : ""}`;
+    wrap.querySelectorAll(".ts-chip").forEach((chip) => {
+      chip.addEventListener("click", () => seekTo(parseFloat(chip.dataset.start)));
+    });
+    els.tutorLog.scrollTop = els.tutorLog.scrollHeight;
+  }
+
+  els.chatForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const question = els.chatInput.value.trim();
+    if (!question || !state.activeLectureId) return;
+    appendChat("user", question);
+    els.chatInput.value = "";
+    const pendingId = appendChat("assistant", "…thinking", true);
+    try {
+      const res = await fetch(`${state.apiBase}/api/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lecture_id: state.activeLectureId, question }),
+      });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.detail || "The tutor could not answer that.");
+      updateChat(pendingId, body.answer, body.timestamps);
+    } catch (err) {
+      updateChat(pendingId, `Couldn't get an answer: ${err.message}`, []);
+    }
+  });
+
+  // =====================================================================
+  // SNAPSHOT / FRAME EXPLAINER
+  // =====================================================================
+
+  // ---------- Anthropic key persistence (sessionStorage only) ----------
+  const ANTH_KEY_SS = "anth_vision_key";
+
+  function getAnthropicKey() {
+    return sessionStorage.getItem(ANTH_KEY_SS) || "";
+  }
+
+  function setAnthropicKey(k) {
+    sessionStorage.setItem(ANTH_KEY_SS, k.trim());
+  }
+
+  // Show the key bar if no key is saved yet
+  function maybeShowKeyBar() {
+    if (!getAnthropicKey()) {
+      els.snapshotKeyBar.hidden = false;
+    }
+  }
+
+  els.snapshotKeySaveBtn.addEventListener("click", () => {
+    const k = els.anthropicKeyInput.value.trim();
+    if (!k) return;
+    setAnthropicKey(k);
+    els.anthropicKeyInput.value = "";
+    els.snapshotKeyBar.hidden = true;
+    // Provide instant feedback
+    const orig = els.snapshotKeySaveBtn.textContent;
+    els.snapshotKeySaveBtn.textContent = "Saved!";
+    setTimeout(() => { els.snapshotKeySaveBtn.textContent = orig; }, 1500);
+  });
+
+  // Also accept Enter in the key input
+  els.anthropicKeyInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") els.snapshotKeySaveBtn.click();
+  });
+
+  // ---------- Enable/disable snapshot button with video ----------
+  function setSnapshotEnabled(enabled) {
+    els.snapshotBtn.disabled = !enabled;
+    if (enabled) maybeShowKeyBar();
+  }
+
+  els.player.addEventListener("loadeddata", () => setSnapshotEnabled(true));
+  els.player.addEventListener("emptied", () => setSnapshotEnabled(false));
+
+  // Dismiss preview
+  els.snapshotCloseBtn.addEventListener("click", () => {
+    els.snapshotPreview.hidden = true;
+  });
+
+  // ---------- Capture current video frame as base64 JPEG ----------
+  function captureFrame() {
+    const video = els.player;
+    const canvas = els.snapshotCanvas;
+    canvas.width = video.videoWidth || 1280;
+    canvas.height = video.videoHeight || 720;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // Use JPEG at 0.88 quality — good balance of fidelity vs token cost
+    return canvas.toDataURL("image/jpeg", 0.88).split(",")[1]; // return base64 only
+  }
+
+  // ---------- Call Anthropic vision API ----------
+  async function explainFrameWithClaude(base64Jpeg, timestampLabel) {
+    const apiKey = getAnthropicKey();
+    if (!apiKey) {
+      els.snapshotKeyBar.hidden = false;
+      els.anthropicKeyInput.focus();
+      throw new Error("No Anthropic API key set — enter it in the key bar above the video.");
+    }
+
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1024,
+        system: (
+          "You are an expert AI tutor helping a student understand a lecture. " +
+          "The student has captured a frame from the lecture video. " +
+          "Examine the frame carefully and provide a clear, structured explanation. " +
+          "Focus on: diagrams, equations, pseudocode, charts, slide content, or any visual concept shown. " +
+          "If it is a plain talking-head shot with no visual content, say so briefly and note what the lecturer appears to be discussing. " +
+          "Be concise but thorough — 3 to 8 sentences or bullet points as appropriate."
+        ),
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "image",
+                source: {
+                  type: "base64",
+                  media_type: "image/jpeg",
+                  data: base64Jpeg,
+                },
+              },
+              {
+                type: "text",
+                text: `This frame is from timestamp ${timestampLabel} in the lecture. Please explain what is shown.`,
+              },
+            ],
+          },
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      let errMsg = `Anthropic API error (${response.status})`;
+      try {
+        const errBody = await response.json();
+        if (errBody.error && errBody.error.message) errMsg = errBody.error.message;
+      } catch (_) {}
+      // If 401, clear the bad key and show the bar again
+      if (response.status === 401) {
+        sessionStorage.removeItem(ANTH_KEY_SS);
+        els.snapshotKeyBar.hidden = false;
+        els.anthropicKeyInput.focus();
+        throw new Error("Invalid Anthropic API key — please re-enter it.");
+      }
+      throw new Error(errMsg);
+    }
+
+    const data = await response.json();
+    const text = (data.content || [])
+      .filter((b) => b.type === "text")
+      .map((b) => b.text)
+      .join("\n")
+      .trim();
+    return text || "(No explanation returned.)";
+  }
+
+  // ---------- Main snapshot handler ----------
+  els.snapshotBtn.addEventListener("click", async () => {
+    // Pause video for a clean still frame
+    const wasPlaying = !els.player.paused;
+    els.player.pause();
+
+    let base64;
+    try {
+      base64 = captureFrame();
+    } catch (err) {
+      // Canvas taint error means the video source is cross-origin
+      appendChat("assistant", "Cannot capture this frame — the video is cross-origin and the browser blocks canvas access. This works with locally-uploaded files. Try re-uploading the lecture.", false);
+      if (wasPlaying) els.player.play().catch(() => {});
+      return;
+    }
+
+    // Show thumbnail preview
+    els.snapshotImg.src = "data:image/jpeg;base64," + base64;
+    els.snapshotPreview.hidden = false;
+
+    const ts = formatTime(els.player.currentTime);
+
+    // Post a user message into the chat
+    const userMsgId = appendChat("user", `[Frame at ${ts}] Explain what is shown in this frame.`, false);
+
+    // Post a pending assistant reply
+    const pendingId = appendChat("assistant", "Analysing frame…", true);
+
+    // Set button to loading state
+    els.snapshotBtn.classList.add("loading");
+    els.snapshotBtn.disabled = true;
+
+    try {
+      const explanation = await explainFrameWithClaude(base64, ts);
+
+      // Build the chat bubble with thumbnail + text
+      const wrap = document.getElementById(pendingId);
+      if (wrap) {
+        wrap.classList.remove("pending");
+        const thumb = `<img class="chat-snapshot-thumb" src="data:image/jpeg;base64,${base64}" alt="frame at ${ts}" />`;
+        wrap.innerHTML = `${thumb}<p class="chat-text">${escapeHtml(explanation)}</p>`;
+      }
+    } catch (err) {
+      const wrap = document.getElementById(pendingId);
+      if (wrap) {
+        wrap.classList.remove("pending");
+        wrap.innerHTML = `<p class="chat-text">Could not explain frame: ${escapeHtml(err.message)}</p>`;
+      }
+    } finally {
+      els.snapshotBtn.classList.remove("loading");
+      els.snapshotBtn.disabled = false;
+      if (wasPlaying) els.player.play().catch(() => {});
+    }
+  });
+
+  loadLectures();
+</script>
+</body>
+</html>
