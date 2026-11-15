@@ -250,15 +250,26 @@ async def run_transcription_background(lecture_id: str, temp_file_path: str, url
         if url:
             print(f"[AI] Downloading audio from {url} via yt-dlp...")
             import yt_dlp
+            import glob
             ydl_opts = {
                 'format': 'bestaudio/best',
                 'outtmpl': temp_file_path,
-                'quiet': True,
-                # Fix for yt-dlp ffmpeg requirement if not installed, we fallback to just downloading the native audio
+                'quiet': False,
+                'no_warnings': False,
                 'postprocessors': [] 
             }
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([url])
+
+            # Resiliency: If yt-dlp appended an extension or used native container
+            if not os.path.exists(temp_file_path):
+                temp_dir = os.path.dirname(temp_file_path) or "temp_uploads"
+                candidates = glob.glob(os.path.join(temp_dir, f"{lecture_id}_audio*"))
+                if candidates:
+                    temp_file_path = candidates[0]
+                    print(f"[AI] Resolved downloaded audio file to: {temp_file_path}")
+                else:
+                    raise FileNotFoundError(f"yt-dlp downloaded media but output file for {lecture_id} was not found")
 
         # 1. Run transcription pipeline
         transcript = transcribe_and_normalize(temp_file_path, lecture_id)
@@ -267,38 +278,42 @@ async def run_transcription_background(lecture_id: str, temp_file_path: str, url
         transcript_path = os.path.join(DATA_DIR, f"{lecture_id}_transcript.json")
         with open(transcript_path, "w") as f:
             json.dump(transcript, f, indent=2)
-        
-        # 2.5. Index transcript for RAG-based chat (from NaeemRagFeat)
-        index_lecture_transcript(lecture_id)
-        
 
         # 3. Run note generation pipeline
         notes = generate_notes_from_transcript(transcript)
         notes_path = os.path.join(DATA_DIR, f"{lecture_id}_notes.json")
         with open(notes_path, "w") as f:
             json.dump(notes, f, indent=2)
-        
 
-        # 4. Update status in lectures list (JSON)
+        # 4. Index both transcript and notes for RAG tutor chat (non-fatal if ChromaDB fails)
+        try:
+            index_lecture_transcript(lecture_id)
+        except Exception as rag_err:
+            print(f"[WARN] Failed to index ChromaDB for {lecture_id}: {rag_err}")
+
+        # 5. Update status in lectures list (JSON)
         lectures = load_lectures_list()
-        lecture_data = None
         for lec in lectures:
             if lec["id"] == lecture_id:
                 lec["status"] = "READY"
                 lec["duration"] = transcript.get("duration", 0.0)
                 lec["updatedAt"] = datetime.utcnow().isoformat() + "Z"
-                lecture_data = lec
+                lec.pop("error", None)
                 break
         save_lectures_list(lectures)
-        
+        print(f"[SUCCESS] Background processing completed for {lecture_id} (READY)")
 
     except Exception as e:
-        print(f"Background processing failed for {lecture_id}: {str(e)}")
-        # Update status to FAILED in lectures list
+        import traceback
+        traceback.print_exc()
+        error_msg = str(e)
+        print(f"[ERROR] Background processing failed for {lecture_id}: {error_msg}")
+        # Update status to FAILED in lectures list with error details
         lectures = load_lectures_list()
         for lec in lectures:
             if lec["id"] == lecture_id:
                 lec["status"] = "FAILED"
+                lec["error"] = error_msg
                 lec["updatedAt"] = datetime.utcnow().isoformat() + "Z"
                 break
         save_lectures_list(lectures)
@@ -524,3 +539,47 @@ async def regenerate_notes(lecture_id: str):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Notes regeneration failed: {str(e)}")
+
+
+@app.post("/api/lectures/{lecture_id}/retry")
+@app.post("/lectures/{lecture_id}/retry")
+async def retry_lecture_processing(lecture_id: str, background_tasks: BackgroundTasks):
+    """
+    Retries processing for a failed lecture using its stored fileUrl or web link.
+    """
+    lectures = load_lectures_list()
+    target_lec = None
+    for lec in lectures:
+        if lec["id"] == lecture_id:
+            target_lec = lec
+            break
+
+    if not target_lec:
+        raise HTTPException(status_code=404, detail="Lecture not found")
+
+    file_url = target_lec.get("fileUrl", "")
+    temp_dir = "temp_uploads"
+    os.makedirs(temp_dir, exist_ok=True)
+
+    url = None
+    temp_file_path = None
+
+    if file_url.startswith("http://") or file_url.startswith("https://"):
+        url = file_url
+        temp_file_path = os.path.join(temp_dir, f"{lecture_id}_audio.m4a")
+    else:
+        filename = os.path.basename(file_url)
+        temp_file_path = os.path.join(temp_dir, filename)
+        if not os.path.exists(temp_file_path):
+            raise HTTPException(
+                status_code=400,
+                detail="Original media file is not available on server storage. Please upload the file again."
+            )
+
+    target_lec["status"] = "PROCESSING"
+    target_lec.pop("error", None)
+    target_lec["updatedAt"] = datetime.utcnow().isoformat() + "Z"
+    save_lectures_list(lectures)
+
+    background_tasks.add_task(run_transcription_background, lecture_id, temp_file_path, url)
+    return {"success": True, "data": target_lec}

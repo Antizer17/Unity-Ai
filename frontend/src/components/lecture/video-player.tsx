@@ -31,7 +31,17 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
     const [isMounted, setIsMounted] = useState(false);
     useEffect(() => setIsMounted(true), []);
 
-    const isYouTube = src ? src.includes('youtube.com') || src.includes('youtu.be') : false;
+    const isExternalWeb = Boolean(
+      src && (
+        src.includes('youtube.com') ||
+        src.includes('youtu.be') ||
+        src.includes('vimeo.com') ||
+        src.includes('twitch.tv') ||
+        src.includes('soundcloud.com') ||
+        src.includes('streamable.com') ||
+        src.includes('dailymotion.com')
+      )
+    );
 
     const Player = ReactPlayer as any;
 
@@ -53,7 +63,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
 
     useImperativeHandle(ref, () => ({
       seekTo: (seconds: number) => {
-        if (isYouTube && playerRef.current) {
+        if (isExternalWeb && playerRef.current) {
           if (typeof playerRef.current.seekTo === 'function') {
             playerRef.current.seekTo(seconds, 'seconds');
           } else {
@@ -68,7 +78,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
         setCurrentTime(seconds);
       },
       play: () => {
-        if (isYouTube && playerRef.current) {
+        if (isExternalWeb && playerRef.current) {
           setPlaying(true);
         } else if (nativeRef.current) {
           const playPromise = nativeRef.current.play();
@@ -89,7 +99,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
       }
       setPlaying(p => {
         const next = !p;
-        if (!isYouTube && nativeRef.current) {
+        if (!isExternalWeb && nativeRef.current) {
           if (next) {
             const playPromise = nativeRef.current.play();
             if (playPromise !== undefined) {
@@ -103,31 +113,31 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
         }
         return next;
       });
-    }, [isYouTube]);
+    }, [isExternalWeb]);
 
     const toggleMute = useCallback(() => {
       setMuted(m => {
         const next = !m;
-        if (!isYouTube && nativeRef.current) {
+        if (!isExternalWeb && nativeRef.current) {
           nativeRef.current.muted = next;
         }
         return next;
       });
-    }, [isYouTube]);
+    }, [isExternalWeb]);
 
     const handleVolumeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
       const v = parseFloat(e.target.value);
       setVolume(v);
       setMuted(v === 0);
-      if (!isYouTube && nativeRef.current) {
+      if (!isExternalWeb && nativeRef.current) {
         nativeRef.current.volume = v;
         nativeRef.current.muted = v === 0;
       }
-    }, [isYouTube]);
+    }, [isExternalWeb]);
 
     const skip = useCallback((seconds: number) => {
       const newTime = Math.max(0, Math.min(currentTime + seconds, duration));
-      if (isYouTube && playerRef.current) {
+      if (isExternalWeb && playerRef.current) {
         if (typeof playerRef.current.seekTo === 'function') {
           playerRef.current.seekTo(newTime, 'seconds');
         } else {
@@ -140,7 +150,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
         nativeRef.current.currentTime = newTime;
       }
       setCurrentTime(newTime);
-    }, [duration, currentTime, isYouTube]);
+    }, [duration, currentTime, isExternalWeb]);
 
     const handleFullscreen = useCallback(() => {
       const container = document.getElementById(id);
@@ -172,7 +182,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
       >
         {type === 'video' ? (
           <div className="w-full aspect-video bg-slate-900 relative">
-            {isMounted && src && isYouTube ? (
+            {isMounted && src && isExternalWeb ? (
               <Player
                 ref={playerRef}
                 url={src}
@@ -212,7 +222,7 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
           </div>
         ) : (
           <div className="w-full aspect-video bg-gradient-to-br from-slate-900 to-black flex items-center justify-center relative p-8">
-            {isMounted && src && isYouTube ? (
+            {isMounted && src && isExternalWeb ? (
               <Player
                 ref={playerRef}
                 url={src}

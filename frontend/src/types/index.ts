@@ -28,6 +28,7 @@ export interface Lecture {
   userId: string;
   createdAt: string;
   updatedAt: string;
+  error?: string;
 }
 
 export interface TranscriptSegment {

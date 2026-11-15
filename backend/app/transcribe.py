@@ -1,4 +1,4 @@
-﻿"""
+"""
 transcribe.py
 
 Transcribes an audio/video lecture file using Groq's Whisper API
@@ -41,6 +41,9 @@ def transcribe_and_normalize(audio_path, lecture_id):
     Returns a normalized dict with:
         lecture_id, duration, language, fullText, segments[]
     """
+    if not os.path.exists(audio_path):
+        raise FileNotFoundError(f"Audio file not found at: {audio_path}")
+
     client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
     file_size = os.path.getsize(audio_path)
@@ -78,17 +81,15 @@ def _transcribe_chunked(client, audio_path, lecture_id):
     """
     try:
         from pydub import AudioSegment
-    except ImportError:
-        print("[WARN] pydub not installed. Attempting single-pass transcription for large file...")
-        print("   Install pydub for proper large file support: pip install pydub")
+    except (ImportError, ModuleNotFoundError):
+        print("[WARN] pydub or audioop not available. Attempting single-pass transcription for large file...")
         return _transcribe_single_pass(client, audio_path, lecture_id)
 
-    # Determine format from file extension
+    # Autodetect format with ffmpeg, fallback to extension if needed
     ext = os.path.splitext(audio_path)[1].replace(".", "").lower()
-    if ext in ("mp4", "m4a", "webm"):
-        # pydub can handle these with ffmpeg
-        audio = AudioSegment.from_file(audio_path, format=ext)
-    else:
+    try:
+        audio = AudioSegment.from_file(audio_path)
+    except Exception:
         audio = AudioSegment.from_file(audio_path, format=ext)
 
     # Split into 10-minute structural segments (600,000 milliseconds)

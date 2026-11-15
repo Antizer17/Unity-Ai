@@ -26,6 +26,10 @@ if (!RAW_URL.startsWith('http://') && !RAW_URL.startsWith('https://')) {
 const cleanUrl = RAW_URL.replace(/\/+$/, '');
 const BASE_URL = cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
 
+export function getBackendBaseUrl(): string {
+  return BASE_URL.replace(/\/api\/?$/, '');
+}
+
 /** Simulate network latency */
 function delay(ms = 500): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -148,6 +152,12 @@ export const lecturesApi = {
     return apiFetch<Lecture>('/lectures', {
       method: 'POST',
       body: formData,
+    });
+  },
+
+  async retry(id: string): Promise<ApiResponse<Lecture>> {
+    return apiFetch<Lecture>(`/lectures/${id}/retry`, {
+      method: 'POST',
     });
   },
 

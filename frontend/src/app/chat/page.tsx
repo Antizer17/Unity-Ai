@@ -46,7 +46,7 @@ export default function GuestChatPage() {
       const errorMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: "I couldn't reach the AI service. Please make sure the backend server is running on http://localhost:8000 and try again.",
+        content: "I couldn't reach the AI service. Please make sure the backend server is reachable and try again.",
         createdAt: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, errorMsg]);

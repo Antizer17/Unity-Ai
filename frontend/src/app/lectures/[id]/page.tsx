@@ -20,7 +20,7 @@ import { Badge } from '@/components/ui/badge';
 import { Spinner } from '@/components/ui/spinner';
 import { Button } from '@/components/ui/button';
 import { cn, formatDuration } from '@/lib/utils';
-import { api } from '@/lib/api';
+import { api, getBackendBaseUrl } from '@/lib/api';
 import type { Lecture, Transcript, Note, ChatMessage } from '@/types';
 
 type TabKey = 'notes' | 'chat' | 'transcript';
@@ -47,6 +47,22 @@ export default function LectureDetailPage({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [retrying, setRetrying] = useState(false);
+
+  const handleRetryProcessing = async () => {
+    try {
+      setRetrying(true);
+      setError(null);
+      const res = await api.lectures.retry(id);
+      if (res.success && res.data) {
+        setLecture(res.data);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Retry failed');
+    } finally {
+      setRetrying(false);
+    }
+  };
 
   useEffect(() => {
     let intervalId: any;
@@ -75,7 +91,7 @@ export default function LectureDetailPage({
             clearInterval(intervalId);
             setLoading(false);
           } else if (res.data.status === 'FAILED') {
-            setError('Lecture processing failed. Please try re-uploading.');
+            setError(res.data.error || 'Lecture processing failed.');
             clearInterval(intervalId);
             setLoading(false);
           } else {
@@ -227,7 +243,7 @@ export default function LectureDetailPage({
   const isReady = lecture?.status === 'READY';
   let displayFileUrl = lecture?.fileUrl || undefined;
   if (displayFileUrl && displayFileUrl.startsWith('/')) {
-    displayFileUrl = `http://localhost:8000${displayFileUrl}`;
+    displayFileUrl = `${getBackendBaseUrl()}${displayFileUrl}`;
   }
 
   return (
@@ -262,6 +278,17 @@ export default function LectureDetailPage({
             >
               {lecture?.status}
             </Badge>
+            {lecture?.status === 'FAILED' && (
+              <Button
+                size="sm"
+                variant="outline"
+                loading={retrying}
+                onClick={handleRetryProcessing}
+                className="h-7 text-xs"
+              >
+                Retry Processing
+              </Button>
+            )}
             <span className="text-xs text-slate-500">
               {lecture ? formatDuration(lecture.duration) : '--:--'}
             </span>
@@ -350,10 +377,19 @@ export default function LectureDetailPage({
                 </div>
               ) : lecture?.status === 'FAILED' ? (
                 <div className="flex flex-col items-center justify-center h-full p-6 text-center gap-3">
+                  <AlertCircle className="h-8 w-8 text-red-400" />
                   <h4 className="text-sm font-medium text-red-400">Processing Failed</h4>
-                  <p className="text-xs text-slate-500 max-w-[250px]">
-                    We couldn't generate notes for this lecture. The transcription service might be down.
+                  <p className="text-xs text-slate-400 max-w-[320px]">
+                    {lecture?.error || "We couldn't generate notes for this lecture. The transcription service might be down."}
                   </p>
+                  <Button
+                    size="sm"
+                    loading={retrying}
+                    onClick={handleRetryProcessing}
+                    className="mt-2 text-xs"
+                  >
+                    Retry Processing
+                  </Button>
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-full p-6 text-slate-500 text-sm">
@@ -389,10 +425,19 @@ export default function LectureDetailPage({
                 </div>
               ) : lecture?.status === 'FAILED' ? (
                 <div className="flex flex-col items-center justify-center h-full p-6 text-center gap-3">
+                  <AlertCircle className="h-8 w-8 text-red-400" />
                   <h4 className="text-sm font-medium text-red-400">Transcription Failed</h4>
-                  <p className="text-xs text-slate-500 max-w-[250px]">
-                    We couldn't transcribe this lecture. The API connection might have failed.
+                  <p className="text-xs text-slate-400 max-w-[320px]">
+                    {lecture?.error || "We couldn't transcribe this lecture. The API connection might have failed."}
                   </p>
+                  <Button
+                    size="sm"
+                    loading={retrying}
+                    onClick={handleRetryProcessing}
+                    className="mt-2 text-xs"
+                  >
+                    Retry Processing
+                  </Button>
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-full p-6 text-slate-500 text-sm">

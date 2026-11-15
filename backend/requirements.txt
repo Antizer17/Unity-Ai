@@ -3,6 +3,7 @@ uvicorn[standard]
 chromadb
 groq
 pydub
+pyaudioop
 python-dotenv
 python-multipart
 yt-dlp
