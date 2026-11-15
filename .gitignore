@@ -109,3 +109,4 @@ prisma/seed-output.log
 
 # ============== DEPLOYMENT ==============
 .vercel
+supabase/
