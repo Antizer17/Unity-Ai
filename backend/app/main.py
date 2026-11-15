@@ -313,6 +313,7 @@ def health_check():
     return {"status": "healthy", "project": "AI Lecture Companion Backend"}
 
 @app.get("/api/lectures")
+@app.get("/lectures")
 def get_lectures():
     """
     Return all lectures.
@@ -321,6 +322,7 @@ def get_lectures():
     return {"success": True, "data": lectures}
 
 @app.get("/api/lectures/{lecture_id}")
+@app.get("/lectures/{lecture_id}")
 def get_lecture_details(lecture_id: str):
     """
     Get metadata for a single lecture.
@@ -332,6 +334,7 @@ def get_lecture_details(lecture_id: str):
     raise HTTPException(status_code=404, detail="Lecture not found")
 
 @app.post("/api/lectures")
+@app.post("/lectures")
 async def create_lecture(
     background_tasks: BackgroundTasks,
     title: str = Form(...),
@@ -389,6 +392,7 @@ async def create_lecture(
         raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
 
 @app.get("/api/lectures/{lecture_id}/transcript")
+@app.get("/lectures/{lecture_id}/transcript")
 def get_lecture_transcript(lecture_id: str):
     """
     Retrieve transcript for a given lecture.
@@ -404,6 +408,7 @@ def get_lecture_transcript(lecture_id: str):
     raise HTTPException(status_code=404, detail="Transcript not found or still processing")
 
 @app.get("/api/lectures/{lecture_id}/notes")
+@app.get("/lectures/{lecture_id}/notes")
 def get_lecture_notes(lecture_id: str):
     """
     Retrieve notes for a given lecture.
@@ -420,6 +425,7 @@ def get_lecture_notes(lecture_id: str):
 
 # Person D Original Endpoint kept for compatibility
 @app.post("/api/transcribe")
+@app.post("/transcribe")
 async def api_transcribe_lecture(
     lecture_id: str = Form(...),
     file: UploadFile = File(...)
@@ -452,6 +458,7 @@ async def api_transcribe_lecture(
 # --- RAG Chat Endpoints (from NaeemRagFeat - Person C) -------------------------
 
 @app.post("/api/chat")
+@app.post("/chat")
 async def chat_with_tutor(request: ChatRequest):
     """
     RAG-powered chat endpoint. Accepts a lecture_id and question,
@@ -473,6 +480,7 @@ async def chat_with_tutor(request: ChatRequest):
 
 
 @app.post("/api/chat/general")
+@app.post("/chat/general")
 async def chat_general(request: ChatRequest):
     """
     General-purpose AI tutor chat (no specific lecture context).
@@ -488,6 +496,7 @@ async def chat_general(request: ChatRequest):
 # --- Notes Regeneration Endpoint (from feat/backend-integration - Person B) ---
 
 @app.post("/api/lectures/{lecture_id}/notes/regenerate")
+@app.post("/lectures/{lecture_id}/notes/regenerate")
 async def regenerate_notes(lecture_id: str):
     """
     Re-generates notes for a lecture by re-running the notes pipeline

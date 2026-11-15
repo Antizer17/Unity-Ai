@@ -19,7 +19,9 @@ import {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api';
+const RAW_URL = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api').trim();
+const cleanUrl = RAW_URL.replace(/\/+$/, '');
+const BASE_URL = cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
 
 /** Simulate network latency */
 function delay(ms = 500): Promise<void> {
@@ -33,7 +35,8 @@ async function apiFetch<T>(
 ): Promise<ApiResponse<T>> {
   try {
     const isFormData = options?.body instanceof FormData;
-    const res = await fetch(`${BASE_URL}${endpoint}`, {
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    const res = await fetch(`${BASE_URL}${cleanEndpoint}`, {
       headers: {
         ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
         ...options?.headers,
