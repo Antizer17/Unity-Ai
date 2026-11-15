@@ -19,7 +19,10 @@ import {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const RAW_URL = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api').trim();
+let RAW_URL = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api').trim();
+if (!RAW_URL.startsWith('http://') && !RAW_URL.startsWith('https://')) {
+  RAW_URL = `https://${RAW_URL}`;
+}
 const cleanUrl = RAW_URL.replace(/\/+$/, '');
 const BASE_URL = cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
 
