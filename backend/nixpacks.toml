@@ -1,4 +1,6 @@
 # Configuration for Railway Nixpacks builder
+providers = ["python"]
+
 [phases.setup]
 nixPkgs = ["ffmpeg"]
 
