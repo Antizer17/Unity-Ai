@@ -1,4 +1,4 @@
-﻿"""
+"""
 notes.py
 
 Generates structured, topic-organized notes from a normalized transcript JSON
@@ -26,10 +26,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Upgraded from llama3-8b-8192 to llama-3.3-70b-versatile (Person B's recommendation)
-MODEL = "llama-3.3-70b-versatile"
-# Fallback model if the 70B model is unavailable or quota-limited
-FALLBACK_MODEL = "llama3-8b-8192"
+AVAILABLE_MODELS = [
+    os.getenv("GROQ_MODEL", "openai/gpt-oss-120b"),
+    "qwen/qwen3.8-27b",
+    "openai/gpt-oss-20b",
+    "llama-3.3-70b-versatile",
+]
 
 
 def decide_chunking_strategy(transcript: dict) -> dict:
@@ -131,8 +133,9 @@ def _generate_notes_single_pass(lecture_id: str, segments: list, api_key: str) -
 
     user_prompt = f"Here is the lecture transcript:\n\n{segments_text}"
 
-    # Try the primary model first, fall back to smaller model if it fails
-    for model in [MODEL, FALLBACK_MODEL]:
+    # Try available models in order of priority
+    response = None
+    for model in AVAILABLE_MODELS:
         try:
             response = client.chat.completions.create(
                 model=model,
@@ -143,36 +146,39 @@ def _generate_notes_single_pass(lecture_id: str, segments: list, api_key: str) -
                 response_format={"type": "json_object"},
                 temperature=0.2,
             )
-
-            result_json = json.loads(response.choices[0].message.content)
-            
-            # Build standard NoteSection objects
-            sections = []
-            for i, sec in enumerate(result_json.get("sections", [])):
-                sections.append({
-                    "id": f"sec-{lecture_id}-{i}",
-                    "title": sec.get("title", f"Section {i+1}"),
-                    "content": sec.get("content", ""),
-                    "startTimestamp": float(sec.get("startTimestamp", 0.0)),
-                    "endTimestamp": float(sec.get("endTimestamp", 0.0)),
-                    "orderIndex": i,
-                    "technical_details": sec.get("technical_details", "")
-                })
-
-            return {
-                "id": f"note-{lecture_id}",
-                "lectureId": lecture_id,
-                "content": result_json.get("summary", "Study notes generated from lecture."),
-                "sections": sections,
-                "generatedAt": datetime.utcnow().isoformat() + "Z"
-            }
-
+            break
         except Exception as e:
-            print(f"[WARN] Model {model} failed: {e}")
-            if model == FALLBACK_MODEL:
-                raise  # Re-raise if even the fallback fails
-            print(f"   Trying fallback model: {FALLBACK_MODEL}...")
-            continue
+            err_str = str(e).lower()
+            if "model_not_found" in err_str or "does not exist" in err_str or "404" in err_str:
+                print(f"[WARN] Model '{model}' unavailable for notes, trying next model...")
+                continue
+            raise e
+
+    if not response:
+        raise RuntimeError("No available models succeeded in generating notes.")
+
+    result_json = json.loads(response.choices[0].message.content)
+    
+    # Build standard NoteSection objects
+    sections = []
+    for i, sec in enumerate(result_json.get("sections", [])):
+        sections.append({
+            "id": f"sec-{lecture_id}-{i}",
+            "title": sec.get("title", f"Section {i+1}"),
+            "content": sec.get("content", ""),
+            "startTimestamp": float(sec.get("startTimestamp", 0.0)),
+            "endTimestamp": float(sec.get("endTimestamp", 0.0)),
+            "orderIndex": i,
+            "technical_details": sec.get("technical_details", "")
+        })
+
+    return {
+        "id": f"note-{lecture_id}",
+        "lectureId": lecture_id,
+        "content": result_json.get("summary", "Study notes generated from lecture."),
+        "sections": sections,
+        "generatedAt": datetime.utcnow().isoformat() + "Z"
+    }
 
 
 def _generate_notes_two_pass(lecture_id: str, segments: list, api_key: str) -> dict:

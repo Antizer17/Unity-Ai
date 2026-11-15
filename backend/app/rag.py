@@ -23,6 +23,34 @@ chroma_client = chromadb.PersistentClient(path=CHROMA_DIR)
 # Default embedding function (all-MiniLM-L6-v2)
 embedding_fn = embedding_functions.DefaultEmbeddingFunction()
 
+AVAILABLE_MODELS = [
+    os.getenv("GROQ_MODEL", "openai/gpt-oss-120b"),
+    "qwen/qwen3.8-27b",
+    "openai/gpt-oss-20b",
+    "llama-3.3-70b-versatile",
+]
+
+def call_groq_chat(client: Groq, messages: list, temperature: float = 0.3, response_format: dict = None):
+    last_err = None
+    for model in AVAILABLE_MODELS:
+        try:
+            kwargs = {
+                "model": model,
+                "messages": messages,
+                "temperature": temperature,
+            }
+            if response_format:
+                kwargs["response_format"] = response_format
+            return client.chat.completions.create(**kwargs)
+        except Exception as e:
+            last_err = e
+            err_str = str(e).lower()
+            if "model_not_found" in err_str or "does not exist" in err_str or "404" in err_str:
+                print(f"[WARN] Model '{model}' not available on Groq, trying next fallback model...")
+                continue
+            raise e
+    raise last_err
+
 def get_lecture_collection(lecture_id: str):
     col_name = f"collection_{lecture_id.replace('-', '_')}"
     return chroma_client.get_or_create_collection(
@@ -185,8 +213,8 @@ def query_ai_tutor(lecture_id: str, student_query: str) -> dict:
 
         user_prompt = f"Lecture Content:\n{context_text}\n\nStudent Question: {student_query}"
 
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+        response = call_groq_chat(
+            client=client,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
@@ -228,8 +256,8 @@ def query_general_tutor(student_query: str) -> dict:
             "lecture, suggest that the student upload the lecture for more precise answers."
         )
 
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+        response = call_groq_chat(
+            client=client,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": student_query}
