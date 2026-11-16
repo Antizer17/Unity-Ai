@@ -7,23 +7,14 @@ import {
   Sparkles,
   ArrowRight,
   Play,
-  Shield,
   UploadCloud,
   Cpu,
   GraduationCap,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Footer } from '@/components/layout/footer';
 import { PaletteToggle } from '@/components/layout/palette-toggle';
 import { FontToggle } from '@/components/layout/font-toggle';
 import { FunctionCardsCarousel } from '@/components/landing/function-cards-carousel';
-
-const stats = [
-  { value: '10,000+', label: 'Lectures Processed' },
-  { value: '98.5%', label: 'Transcription Accuracy' },
-  { value: '50K+', label: 'Notes Generated' },
-  { value: '4.9/5', label: 'Student Rating' },
-];
 
 const workflowSteps = [
   {
@@ -62,7 +53,7 @@ export default function LandingPage() {
         <nav className="sticky top-0 z-50 border-b border-[var(--hero-border)] bg-[var(--hero-bg)]/90 backdrop-blur-xl transition-colors duration-300">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-20 items-center justify-between">
-              {/* Brand Logo & Name (Larger with Space Grotesk) */}
+              {/* Brand Logo & Name */}
               <Link
                 href="/"
                 className="flex items-center gap-2.5 hover:opacity-85 transition-opacity group"
@@ -73,27 +64,27 @@ export default function LandingPage() {
                 </span>
               </Link>
 
-              {/* Action Buttons (Larger) */}
+              {/* Action Buttons with Dark Navy Hover */}
               <div className="flex items-center gap-2 sm:gap-3">
                 <FontToggle className="px-3.5 py-2 text-sm font-semibold rounded-xl border-[var(--hero-border)] bg-white/80 text-[var(--hero-text-primary)] hover:bg-white shadow-xs" />
                 <PaletteToggle className="px-3.5 py-2 text-sm font-semibold rounded-xl border-[var(--hero-border)] bg-white/80 text-[var(--hero-text-primary)] hover:bg-white shadow-xs" />
+
                 <Link href="/dashboard" className="hidden sm:block">
-                  <Button
+                  <button
                     id="landing-guest-chat-btn"
-                    variant="outline"
-                    className="h-11 px-5 text-sm sm:text-base font-semibold rounded-xl border-[var(--hero-border)] text-[var(--hero-text-primary)] hover:bg-[var(--hero-bg-subtle)]"
+                    className="h-11 px-5 text-sm sm:text-base font-semibold rounded-xl border border-slate-300 bg-white/80 text-slate-800 hover:bg-slate-950 hover:text-white hover:border-slate-950 transition-all shadow-2xs font-heading cursor-pointer inline-flex items-center justify-center"
                   >
                     Dashboard
-                  </Button>
+                  </button>
                 </Link>
+
                 <Link href="/dashboard">
-                  <Button
+                  <button
                     id="landing-register-btn"
-                    variant="accent"
-                    className="h-11 px-6 text-sm sm:text-base font-bold rounded-xl shadow-md"
+                    className="h-11 px-6 text-sm sm:text-base font-bold rounded-xl border border-slate-300 bg-white text-slate-900 hover:bg-slate-950 hover:text-white hover:border-slate-950 transition-all shadow-xs font-heading cursor-pointer inline-flex items-center justify-center"
                   >
                     Get Started
-                  </Button>
+                  </button>
                 </Link>
               </div>
             </div>
@@ -103,7 +94,7 @@ export default function LandingPage() {
         {/* Hero Section */}
         <section className="relative pt-16 pb-20 sm:pt-24 sm:pb-28">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-            {/* Headline — all unified color, no zigzag underline, Space Grotesk font */}
+            {/* Headline */}
             <motion.h1
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
@@ -171,31 +162,6 @@ export default function LandingPage() {
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--color-primary)]/10 rounded-full blur-3xl animate-blob pointer-events-none" />
         <div className="absolute top-2/3 right-1/4 w-96 h-96 bg-[var(--color-accent)]/8 rounded-full blur-3xl animate-blob [animation-delay:2s] pointer-events-none" />
 
-        {/* Stats Section */}
-        <section className="py-20 border-y border-[var(--border-color)] bg-[var(--bg-secondary)]/40 backdrop-blur-md relative z-10">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {stats.map((stat, i) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="text-center"
-                >
-                  <p className="text-3xl sm:text-5xl font-extrabold text-[var(--color-primary)] tracking-tight">
-                    {stat.value}
-                  </p>
-                  <p className="text-sm font-medium text-[var(--text-secondary)] mt-2">
-                    {stat.label}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* How It Works Section */}
         <section className="py-24 sm:py-32 relative z-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -245,38 +211,6 @@ export default function LandingPage() {
                 );
               })}
             </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="py-24 relative z-10">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="rounded-3xl bg-[var(--bg-secondary)] border border-[var(--border-color)] shadow-2xl p-8 sm:p-16 text-center relative overflow-hidden"
-            >
-              <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-80 bg-[var(--color-primary)]/10 rounded-full blur-3xl pointer-events-none" />
-              <Shield className="h-12 w-12 text-[var(--color-primary)] mx-auto mb-6 relative z-10" />
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--text-primary)] mb-4 relative z-10">
-                Ready to transform your study experience?
-              </h2>
-              <p className="text-lg text-[var(--text-secondary)] max-w-xl mx-auto mb-8 relative z-10">
-                Join thousands of students who are studying smarter with AI-powered lecture tools.
-              </p>
-              <Link href="/dashboard" className="relative z-10">
-                <Button
-                  id="cta-get-started-btn"
-                  variant="accent"
-                  size="lg"
-                  className="font-semibold shadow-lg shadow-[var(--glow-accent)]"
-                >
-                  Get Started for Free
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-            </motion.div>
           </div>
         </section>
 

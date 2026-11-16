@@ -37,7 +37,7 @@ export const FUNCTION_CARDS: FunctionCardData[] = [
     badge: '01 · Whisper AI',
     title: 'Automatic Audio & Video Transcription',
     description:
-      'Upload any lecture video (MP4, WebM) or audio file (MP3, WAV), or paste a YouTube URL. Whisper AI processes the speech into timestamped, speaker-segmented text with 98.5% verbatim accuracy.',
+      'Upload any lecture video (MP4, WebM) or audio file (MP3, WAV), or paste a YouTube URL. Whisper AI processes the speech into timestamped, speaker-segmented text ready for study.',
     theme: {
       name: 'Sky Blue',
       chassisBg: '#d7ebfc',

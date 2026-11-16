@@ -129,10 +129,14 @@ export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
             ) : (
               <div className="hidden md:flex items-center gap-3">
                 <Link href="/dashboard">
-                  <span className="text-sm font-medium hover:text-[var(--text-primary)] text-[var(--text-secondary)] px-3 transition-colors">Dashboard</span>
+                  <span className="h-11 px-5 text-sm sm:text-base font-semibold rounded-xl border border-slate-300 bg-white/80 text-slate-800 hover:bg-slate-950 hover:text-white hover:border-slate-950 transition-all shadow-2xs font-heading cursor-pointer inline-flex items-center justify-center">
+                    Dashboard
+                  </span>
                 </Link>
                 <Link href="/dashboard">
-                  <span className="px-4 py-1.5 text-sm font-medium bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors shadow-sm">Start Learning</span>
+                  <span className="h-11 px-6 text-sm sm:text-base font-bold rounded-xl border border-slate-300 bg-white text-slate-900 hover:bg-slate-950 hover:text-white hover:border-slate-950 transition-all shadow-xs font-heading cursor-pointer inline-flex items-center justify-center">
+                    Get Started
+                  </span>
                 </Link>
               </div>
             )}
