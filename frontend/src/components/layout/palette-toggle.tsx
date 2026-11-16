@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Palette, Check, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PALETTES, PaletteId, getSavedPalette, setSavedPalette } from '@/lib/palette';
+import { FONTS, FontId, getSavedFont, setSavedFont } from '@/lib/fonts';
 import { cn } from '@/lib/utils';
 
 export function PaletteToggle({ className }: { className?: string } = {}) {
@@ -141,48 +142,65 @@ export function PaletteToggle({ className }: { className?: string } = {}) {
 }
 
 /**
- * Floating Quick-Switch Pill for easy testing on any page
+ * Floating Quick-Switch Pill for easy testing on any page (Palette & Editorial Font)
  */
 export function FloatingPaletteSwitcher() {
   const [currentPalette, setCurrentPalette] = useState<PaletteId>('aurora');
-  const [minimized, setMinimized] = useState(false);
+  const [currentFont, setCurrentFont] = useState<FontId>('instrument');
 
   useEffect(() => {
     setCurrentPalette(getSavedPalette());
+    setCurrentFont(getSavedFont());
+
     const handlePaletteChange = (e: Event) => {
       const customEvent = e as CustomEvent<PaletteId>;
       if (customEvent.detail) setCurrentPalette(customEvent.detail);
     };
+    const handleFontChange = (e: Event) => {
+      const customEvent = e as CustomEvent<FontId>;
+      if (customEvent.detail) setCurrentFont(customEvent.detail);
+    };
+
     window.addEventListener('unity-palette-changed', handlePaletteChange);
-    return () => window.removeEventListener('unity-palette-changed', handlePaletteChange);
+    window.addEventListener('unity-font-changed', handleFontChange);
+    return () => {
+      window.removeEventListener('unity-palette-changed', handlePaletteChange);
+      window.removeEventListener('unity-font-changed', handleFontChange);
+    };
   }, []);
 
-  const handleSwitch = (id: PaletteId) => {
+  const handleSwitchPalette = (id: PaletteId) => {
     setSavedPalette(id);
     setCurrentPalette(id);
   };
 
+  const handleSwitchFont = (id: FontId) => {
+    setSavedFont(id);
+    setCurrentFont(id);
+  };
+
   return (
     <aside
-      aria-label="Theme Palette Switcher"
-      className="fixed bottom-4 right-4 z-50 flex items-center gap-1.5 p-1.5 rounded-2xl bg-[var(--bg-secondary)]/90 border border-[var(--border-color-hover)] shadow-2xl backdrop-blur-xl transition-all"
+      aria-label="Theme & Font Switcher"
+      className="fixed bottom-4 right-4 z-50 flex flex-col sm:flex-row items-center gap-1.5 p-1.5 rounded-2xl bg-[var(--bg-secondary)]/95 border border-[var(--border-color-hover)] shadow-2xl backdrop-blur-xl transition-all"
     >
-      <div className="flex items-center gap-1.5 px-2 py-1 text-[11px] font-semibold text-[var(--text-muted)] select-none">
-        <Palette className="h-3.5 w-3.5 text-[var(--color-primary)]" />
-        <span className="hidden sm:inline">Palette:</span>
-      </div>
-
+      {/* Palette Selector */}
       <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 px-1.5 py-1 text-[11px] font-semibold text-[var(--text-muted)] select-none">
+          <Palette className="h-3 w-3 text-[var(--color-primary)]" />
+          <span className="hidden md:inline">Theme:</span>
+        </div>
+
         {PALETTES.map((p) => {
           const isSelected = currentPalette === p.id;
           return (
             <button
               key={p.id}
-              onClick={() => handleSwitch(p.id)}
+              onClick={() => handleSwitchPalette(p.id)}
               className={cn(
-                "flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-medium transition-all cursor-pointer",
+                "flex items-center gap-1.5 px-2 py-1 rounded-xl text-xs font-medium transition-all cursor-pointer",
                 isSelected
-                  ? "bg-[var(--color-surface)] text-[var(--text-primary)] border border-[var(--border-color-hover)] shadow-xs"
+                  ? "bg-[var(--color-surface)] text-[var(--text-primary)] border border-[var(--border-color-hover)] shadow-xs font-bold"
                   : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--color-surface)]/40 border border-transparent"
               )}
             >
@@ -196,7 +214,36 @@ export function FloatingPaletteSwitcher() {
                   style={{ backgroundColor: p.contrastColor }}
                 />
               </div>
-              <span>{p.name.split(' ')[1] || p.name}</span>
+              <span className="hidden lg:inline">{p.name.split(' ')[1] || p.name}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Divider */}
+      <div className="hidden sm:block h-4 w-px bg-[var(--border-color)] mx-1" />
+
+      {/* Editorial Font Selector */}
+      <div className="flex items-center gap-1">
+        <span className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-mono font-bold px-1.5 select-none">
+          Font:
+        </span>
+        {FONTS.map((font) => {
+          const isSelected = currentFont === font.id;
+          return (
+            <button
+              key={font.id}
+              onClick={() => handleSwitchFont(font.id)}
+              title={`${font.name} — ${font.tagline}`}
+              className={cn(
+                "px-2 py-1 rounded-xl text-xs transition-all cursor-pointer select-none",
+                isSelected
+                  ? "bg-[var(--color-surface)] text-[var(--text-primary)] border border-[var(--border-color-hover)] shadow-xs font-bold"
+                  : "text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--color-surface)]/40 border border-transparent font-medium"
+              )}
+              style={{ fontFamily: font.previewFontFamily }}
+            >
+              {font.name.split(' ')[0]}
             </button>
           );
         })}

@@ -149,6 +149,46 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* ─── Editorial Headline Font Switcher ─────────────────────────────────────────
+ * Dynamic font system toggling between:
+ * 1. Instrument Serif (The Modern Darling — Sleek, condensed, editorial magazine)
+ * 2. Playfair Display (The Timeless Standard — Classic, high contrast)
+ * 3. Newsreader (The Sophisticated Academic — Digital journalism & literary)
+ * 4. Cormorant Garamond (The Luxury Choice — Delicate, classical bookcraft)
+ * 5. Space Grotesk (Modern Tech & CS — Geometric sharp angles)
+ */
+
+:root,
+[data-font="instrument"] {
+  --font-active-heading: var(--font-instrument), Georgia, serif;
+  --heading-tracking: -0.01em;
+  --heading-style: normal;
+}
+
+[data-font="playfair"] {
+  --font-active-heading: var(--font-playfair), Georgia, serif;
+  --heading-tracking: -0.015em;
+  --heading-style: normal;
+}
+
+[data-font="newsreader"] {
+  --font-active-heading: var(--font-newsreader), "Times New Roman", serif;
+  --heading-tracking: -0.01em;
+  --heading-style: normal;
+}
+
+[data-font="cormorant"] {
+  --font-active-heading: var(--font-cormorant), Garamond, serif;
+  --heading-tracking: -0.01em;
+  --heading-style: normal;
+}
+
+[data-font="space"] {
+  --font-active-heading: var(--font-space-grotesk), sans-serif;
+  --heading-tracking: -0.025em;
+  --heading-style: normal;
+}
+
 h1,
 h2,
 h3,
@@ -157,8 +197,29 @@ h5,
 h6,
 .font-heading,
 .brand-font {
-  font-family: var(--font-space-grotesk), var(--font-inter), sans-serif;
-  letter-spacing: -0.02em;
+  font-family: var(--font-active-heading), serif;
+  letter-spacing: var(--heading-tracking, -0.015em);
+  font-style: var(--heading-style, normal);
+}
+
+.font-instrument {
+  font-family: var(--font-instrument), Georgia, serif;
+}
+
+.font-playfair {
+  font-family: var(--font-playfair), Georgia, serif;
+}
+
+.font-newsreader {
+  font-family: var(--font-newsreader), "Times New Roman", serif;
+}
+
+.font-cormorant {
+  font-family: var(--font-cormorant), Garamond, serif;
+}
+
+.font-space {
+  font-family: var(--font-space-grotesk), sans-serif;
 }
 
 /* ─── Scrollbar Styling ──────────────────────────────────────────────────────── */

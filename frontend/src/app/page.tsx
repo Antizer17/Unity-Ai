@@ -15,6 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Footer } from '@/components/layout/footer';
 import { PaletteToggle } from '@/components/layout/palette-toggle';
+import { FontToggle } from '@/components/layout/font-toggle';
 import { FunctionCardsCarousel } from '@/components/landing/function-cards-carousel';
 
 const stats = [
@@ -73,7 +74,8 @@ export default function LandingPage() {
               </Link>
 
               {/* Action Buttons (Larger) */}
-              <div className="flex items-center gap-2 sm:gap-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <FontToggle className="px-3.5 py-2 text-sm font-semibold rounded-xl border-[var(--hero-border)] bg-white/80 text-[var(--hero-text-primary)] hover:bg-white shadow-xs" />
                 <PaletteToggle className="px-3.5 py-2 text-sm font-semibold rounded-xl border-[var(--hero-border)] bg-white/80 text-[var(--hero-text-primary)] hover:bg-white shadow-xs" />
                 <Link href="/dashboard" className="hidden sm:block">
                   <Button

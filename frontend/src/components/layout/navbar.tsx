@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils';
 import { mockUser } from '@/lib/mock-data';
 import { ThemeToggle } from './theme-toggle';
 import { PaletteToggle } from './palette-toggle';
+import { FontToggle } from './font-toggle';
 
 export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -74,7 +75,8 @@ export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <FontToggle className="px-3.5 py-2 text-sm font-semibold rounded-xl" />
             <PaletteToggle className="px-3.5 py-2 text-sm font-semibold rounded-xl" />
             
             {/* Desktop Profile or Guest Actions */}
