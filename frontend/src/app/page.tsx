@@ -156,24 +156,29 @@ export default function LandingPage() {
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {workflowSteps.map((step, i) => (
-                <motion.div
-                  key={step.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.15 }}
-                  whileHover={{ y: -5 }}
-                  className="group rounded-3xl bg-[#163832]/90 border border-[#6ee7b7]/30 backdrop-blur-md p-8 hover:bg-[#1d4740] hover:border-[#6ee7b7]/60 hover:shadow-xl hover:shadow-[#6ee7b7]/15 transition-all duration-300 relative overflow-hidden"
-                >
-                  <h3 className="text-xl font-bold text-[#f0fdf9] mb-3 group-hover:text-[#6ee7b7] transition-colors">
-                    {step.title}
-                  </h3>
-                  <p className="text-sm text-[#c6e6de] leading-relaxed">
-                    {step.description}
-                  </p>
-                </motion.div>
-              ))}
+              {workflowSteps.map((step, i) => {
+                const pastels = ['#173449', '#14382e', '#362514'];
+                const cardColor = pastels[i % pastels.length];
+                return (
+                  <motion.div
+                    key={step.title}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.15 }}
+                    whileHover={{ y: -5 }}
+                    className="rounded-3xl p-8 shadow-2xl transition-all duration-300 relative overflow-hidden"
+                    style={{ backgroundColor: cardColor, border: 'none' }}
+                  >
+                    <h3 className="text-xl font-bold text-white mb-3">
+                      {step.title}
+                    </h3>
+                    <p className="text-sm text-slate-200 leading-relaxed font-normal">
+                      {step.description}
+                    </p>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </section>
