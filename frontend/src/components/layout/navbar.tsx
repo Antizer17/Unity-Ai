@@ -11,7 +11,6 @@ import {
   User,
   Settings,
   LogOut,
-  Sparkles,
 } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -19,6 +18,7 @@ import { mockUser } from '@/lib/mock-data';
 import { ThemeToggle } from './theme-toggle';
 import { PaletteToggle } from './palette-toggle';
 import { FontToggle } from './font-toggle';
+import { Logo } from '@/components/ui/logo';
 
 export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -54,7 +54,7 @@ export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
               id="navbar-logo"
               className="flex items-center gap-2.5 text-[var(--text-primary)] font-bold hover:opacity-85 transition-opacity group"
             >
-              <Sparkles className="h-7 w-7 text-[var(--color-primary)] transition-transform group-hover:scale-110" />
+              <Logo size={42} variant="dark" priority />
               <span className="font-heading font-extrabold text-2xl sm:text-3xl tracking-tight text-[var(--text-primary)]">
                 Unity<span className="text-[var(--color-accent)]">-AI</span>
               </span>

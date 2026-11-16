@@ -4,7 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
-  Sparkles,
   ArrowRight,
   Play,
   UploadCloud,
@@ -14,6 +13,7 @@ import {
 import { Footer } from '@/components/layout/footer';
 import { PaletteToggle } from '@/components/layout/palette-toggle';
 import { FontToggle } from '@/components/layout/font-toggle';
+import { Logo } from '@/components/ui/logo';
 import { FunctionCardsCarousel } from '@/components/landing/function-cards-carousel';
 
 const workflowSteps = [
@@ -58,7 +58,7 @@ export default function LandingPage() {
                 href="/"
                 className="flex items-center gap-2.5 hover:opacity-85 transition-opacity group"
               >
-                <Sparkles className="h-7 w-7 text-[var(--hero-primary)] transition-transform group-hover:scale-110" />
+                <Logo size={44} variant="light" priority />
                 <span className="font-heading font-extrabold text-2xl sm:text-3xl tracking-tight text-[var(--hero-text-primary)]">
                   Unity<span className="text-[var(--hero-accent)]">-AI</span>
                 </span>

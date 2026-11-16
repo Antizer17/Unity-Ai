@@ -54,6 +54,10 @@ export const metadata: Metadata = {
   title: 'Unity-AI | Lecture Study Platform',
   description:
     'Transform lecture recordings into interactive study sessions with AI-powered transcription, smart notes, and an intelligent tutor chatbot.',
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
   keywords: [
     'AI',
     'lectures',

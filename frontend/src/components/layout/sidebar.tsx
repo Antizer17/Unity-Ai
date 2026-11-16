@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Logo } from '@/components/ui/logo';
 
 const historyGroups = [
   {
@@ -55,7 +56,8 @@ export function Sidebar({ isGuest = false }: { isGuest?: boolean }) {
       )}
     >
       <div className="p-3 w-[260px] pt-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 text-[var(--text-primary)] font-bold hover:opacity-85 transition-opacity pl-2">
+        <Link href="/" className="flex items-center gap-2.5 text-[var(--text-primary)] font-bold hover:opacity-85 transition-opacity pl-2 group">
+          <Logo size={36} variant="dark" />
           <span className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)]">
             Unity<span className="text-[var(--color-accent)]">-AI</span>
           </span>

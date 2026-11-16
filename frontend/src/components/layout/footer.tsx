@@ -1,14 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
-import { Sparkles } from 'lucide-react';
+import { Logo } from '@/components/ui/logo';
 
 export function Footer() {
   return (
     <footer id="footer" className="border-t border-[var(--border-color)] bg-[var(--bg-secondary)]/90 backdrop-blur-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-[var(--text-secondary)]">
-            <Sparkles className="h-4 w-4 text-[var(--color-primary)]" />
+          <div className="flex items-center gap-2.5 text-[var(--text-secondary)]">
+            <Logo size={26} variant="dark" />
             <span className="text-sm">
               © {new Date().getFullYear()} Unity-AI. All rights reserved.
             </span>
