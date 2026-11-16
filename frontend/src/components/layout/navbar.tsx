@@ -54,8 +54,8 @@ export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
               className="flex items-center gap-2 text-[var(--text-primary)] font-bold text-xl hover:opacity-85 transition-opacity"
             >
               <Sparkles className="h-6 w-6 text-[var(--color-primary)]" />
-              <span className="bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] bg-clip-text text-transparent font-extrabold tracking-tight">
-                Unity-AI
+              <span className="font-extrabold tracking-tight text-[var(--text-primary)]">
+                Unity<span className="text-[var(--color-accent)]">-AI</span>
               </span>
             </Link>
 

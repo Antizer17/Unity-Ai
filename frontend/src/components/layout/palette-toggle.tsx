@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PALETTES, PaletteId, getSavedPalette, setSavedPalette } from '@/lib/palette';
 import { cn } from '@/lib/utils';
 
-export function PaletteToggle() {
+export function PaletteToggle({ className }: { className?: string } = {}) {
   const [currentPalette, setCurrentPalette] = useState<PaletteId>('aurora');
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -51,7 +51,8 @@ export function PaletteToggle() {
         id="palette-toggle-btn"
         className={cn(
           "flex items-center gap-2 px-2.5 py-1.5 rounded-xl border border-[var(--border-color)] bg-[var(--color-surface)] hover:border-[var(--border-color-hover)] hover:bg-[var(--bg-secondary)] transition-all cursor-pointer shadow-sm text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)]",
-          open && "border-[var(--color-primary)] ring-1 ring-[var(--color-primary)]/30 text-[var(--text-primary)]"
+          open && "border-[var(--color-primary)] ring-1 ring-[var(--color-primary)]/30 text-[var(--text-primary)]",
+          className
         )}
         title="Change Dark Pastel Palette"
       >

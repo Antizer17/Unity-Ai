@@ -33,6 +33,17 @@
   --gradient-accent: linear-gradient(135deg, #ff9e88 0%, #fb923c 100%);
   --glow-primary: rgba(94, 234, 212, 0.25);
   --glow-accent: rgba(255, 158, 136, 0.25);
+
+  /* Light Hero Zone (Pastel Seafoam canvas) */
+  --hero-bg: #edf8f6;
+  --hero-bg-subtle: #e1f4f1;
+  --hero-text-primary: #0b1f24;
+  --hero-text-secondary: #325359;
+  --hero-primary: #0f766e;
+  --hero-accent: #e0533c;
+  --hero-border: rgba(15, 118, 110, 0.16);
+  --hero-card-bg: rgba(255, 255, 255, 0.95);
+  --hero-surface: #ffffff;
 }
 
 [data-palette="lagoon"] {
@@ -62,6 +73,17 @@
   --gradient-accent: linear-gradient(135deg, #fbb572 0%, #f59e0b 100%);
   --glow-primary: rgba(110, 231, 183, 0.25);
   --glow-accent: rgba(251, 181, 114, 0.25);
+
+  /* Light Hero Zone (Pastel Mint Sage canvas) */
+  --hero-bg: #ecf7f2;
+  --hero-bg-subtle: #dff2e8;
+  --hero-text-primary: #0a1f18;
+  --hero-text-secondary: #2a4e42;
+  --hero-primary: #047857;
+  --hero-accent: #d97706;
+  --hero-border: rgba(4, 120, 87, 0.16);
+  --hero-card-bg: rgba(255, 255, 255, 0.95);
+  --hero-surface: #ffffff;
 }
 
 [data-palette="orchid"] {
@@ -91,6 +113,17 @@
   --gradient-accent: linear-gradient(135deg, #f472b6 0%, #e879f9 100%);
   --glow-primary: rgba(103, 232, 249, 0.25);
   --glow-accent: rgba(244, 114, 182, 0.25);
+
+  /* Light Hero Zone (Pastel Ice Aqua canvas) */
+  --hero-bg: #edf7fa;
+  --hero-bg-subtle: #dfeff6;
+  --hero-text-primary: #091c25;
+  --hero-text-secondary: #2d4d5a;
+  --hero-primary: #0284c7;
+  --hero-accent: #db2777;
+  --hero-border: rgba(2, 132, 199, 0.16);
+  --hero-card-bg: rgba(255, 255, 255, 0.95);
+  --hero-surface: #ffffff;
 }
 
 /* ─── Global Styles ──────────────────────────────────────────────────────────── */
@@ -168,27 +201,30 @@ body {
   border: 1px solid var(--border-color);
 }
 
-/* ─── Gradient Text ──────────────────────────────────────────────────────────── */
+/* ─── Typography (Solid High-Contrast, No Linear Gradients on Writing) ────────── */
 
 .gradient-text {
-  background: var(--gradient-brand);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-primary);
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
 }
 
 .gradient-text-primary {
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-primary);
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
 }
 
 .gradient-text-accent {
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-accent);
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
 }
 
 /* ─── Animation Keyframes ────────────────────────────────────────────────────── */
