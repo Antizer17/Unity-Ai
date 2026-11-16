@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/layout/theme-provider';
 import { FloatingPaletteSwitcher } from '@/components/layout/palette-toggle';
@@ -7,6 +7,13 @@ import { FloatingPaletteSwitcher } from '@/components/layout/palette-toggle';
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
+  display: 'swap',
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -52,7 +59,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} font-sans bg-[var(--bg-primary)] text-[var(--text-primary)] antialiased`}
+        className={`${inter.variable} ${spaceGrotesk.variable} font-sans bg-[var(--bg-primary)] text-[var(--text-primary)] antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           {children}

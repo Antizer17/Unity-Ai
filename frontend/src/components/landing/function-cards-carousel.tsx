@@ -2,20 +2,6 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Mic,
-  BookOpenText,
-  MessageSquareText,
-  Play,
-  Download,
-  ChevronLeft,
-  ChevronRight,
-  Sparkles,
-  CheckCircle2,
-  Volume2,
-  Clock,
-  Search,
-} from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export interface FunctionCardData {
@@ -24,7 +10,6 @@ export interface FunctionCardData {
   badge: string;
   title: string;
   description: string;
-  icon: React.ComponentType<{ className?: string }>;
   theme: {
     name: string;
     // iPad pastel chassis (outer frame)
@@ -53,7 +38,6 @@ export const FUNCTION_CARDS: FunctionCardData[] = [
     title: 'Automatic Audio & Video Transcription',
     description:
       'Upload any lecture video (MP4, WebM) or audio file (MP3, WAV), or paste a YouTube URL. Whisper AI processes the speech into timestamped, speaker-segmented text with 98.5% verbatim accuracy.',
-    icon: Mic,
     theme: {
       name: 'Sky Blue',
       chassisBg: '#d7ebfc',
@@ -76,7 +60,6 @@ export const FUNCTION_CARDS: FunctionCardData[] = [
     title: 'Structured, Topic-Organized Notes',
     description:
       'Never scramble to take notes again. Our LLM analyzes the transcript to generate clean topic outlines, key concept definitions, and bullet-point summaries linked to exact video moments.',
-    icon: BookOpenText,
     theme: {
       name: 'Mint Sage',
       chassisBg: '#d7f3e8',
@@ -99,7 +82,6 @@ export const FUNCTION_CARDS: FunctionCardData[] = [
     title: 'Ask Questions with Exact Citations',
     description:
       'Have questions about a difficult proof or concept? Chat directly with the AI tutor. ChromaDB vector search indexes every chunk of the lecture, so you get answers with exact video timestamps.',
-    icon: MessageSquareText,
     theme: {
       name: 'Blossom Pink',
       chassisBg: '#fcdde3',
@@ -122,7 +104,6 @@ export const FUNCTION_CARDS: FunctionCardData[] = [
     title: 'Synchronized Video & Note Following',
     description:
       'Watch the video lecture side-by-side with live transcripts and notes. Click any timestamp in the notes to immediately seek the video to that exact point without losing your train of thought.',
-    icon: Play,
     theme: {
       name: 'Starlight Cream',
       chassisBg: '#faf0d2',
@@ -145,7 +126,6 @@ export const FUNCTION_CARDS: FunctionCardData[] = [
     title: 'Export to Markdown, PDF & Docs',
     description:
       'Take your study materials everywhere. Export full structured notes, flashcard summaries, or complete raw transcripts formatted for Obsidian, Notion, Google Docs, or printable PDF sheets.',
-    icon: Download,
     theme: {
       name: 'Lavender Lilac',
       chassisBg: '#ebdffa',
@@ -178,19 +158,18 @@ export function FunctionCardsCarousel() {
   return (
     <div className="w-full max-w-5xl mx-auto">
       {/* ─── Top Pastel Tab Selector (iPad Color Palette) ────────────── */}
-      <div className="flex items-center justify-center gap-1.5 sm:gap-2 overflow-x-auto pb-4 custom-scrollbar">
+      <div className="flex items-center justify-center gap-1.5 sm:gap-2.5 overflow-x-auto pb-4 custom-scrollbar">
         {FUNCTION_CARDS.map((item, idx) => {
           const isSelected = idx === currentIndex;
-          const Icon = item.icon;
           return (
             <button
               key={item.id}
               onClick={() => setCurrentIndex(idx)}
               className={cn(
-                'flex items-center gap-2 px-3.5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer shrink-0 shadow-xs border',
+                'flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer shrink-0 shadow-xs border',
                 isSelected
-                  ? 'scale-105 shadow-md'
-                  : 'bg-white/70 hover:bg-white text-slate-700 border-slate-200/80 hover:border-slate-300'
+                  ? 'scale-105 shadow-md font-bold'
+                  : 'bg-white/80 hover:bg-white text-slate-700 border-slate-200 hover:border-slate-300'
               )}
               style={
                 isSelected
@@ -207,7 +186,6 @@ export function FunctionCardsCarousel() {
                 className="w-2.5 h-2.5 rounded-full border border-black/15 shrink-0"
                 style={{ backgroundColor: item.theme.chassisBg }}
               />
-              <Icon className="h-3.5 w-3.5 shrink-0" />
               <span>{item.tabLabel}</span>
             </button>
           );
@@ -215,23 +193,23 @@ export function FunctionCardsCarousel() {
       </div>
 
       {/* ─── Swipeable iPad Pastel Card Stage ────────────────────────── */}
-      <div className="relative mt-4 px-2 sm:px-12">
-        {/* Navigation Arrow Left */}
+      <div className="relative mt-4 px-2 sm:px-14">
+        {/* Navigation Arrow Left (Clean Typography, No Icon) */}
         <button
           onClick={handlePrev}
           aria-label="Previous function"
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-20 hidden sm:flex items-center justify-center w-11 h-11 rounded-full bg-white/90 hover:bg-white text-slate-700 hover:text-slate-900 border border-slate-200 shadow-lg hover:scale-105 transition-all cursor-pointer"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-20 hidden sm:flex items-center justify-center w-12 h-12 rounded-full bg-white/90 hover:bg-white text-slate-800 hover:text-black border border-slate-300/80 shadow-lg hover:scale-105 transition-all cursor-pointer"
         >
-          <ChevronLeft className="h-5 w-5" />
+          <span className="text-xl font-bold leading-none select-none">←</span>
         </button>
 
-        {/* Navigation Arrow Right */}
+        {/* Navigation Arrow Right (Clean Typography, No Icon) */}
         <button
           onClick={handleNext}
           aria-label="Next function"
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-20 hidden sm:flex items-center justify-center w-11 h-11 rounded-full bg-white/90 hover:bg-white text-slate-700 hover:text-slate-900 border border-slate-200 shadow-lg hover:scale-105 transition-all cursor-pointer"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-20 hidden sm:flex items-center justify-center w-12 h-12 rounded-full bg-white/90 hover:bg-white text-slate-800 hover:text-black border border-slate-300/80 shadow-lg hover:scale-105 transition-all cursor-pointer"
         >
-          <ChevronRight className="h-5 w-5" />
+          <span className="text-xl font-bold leading-none select-none">→</span>
         </button>
 
         {/* Swipable Card Frame (Framer Motion Touch/Mouse Drag) */}
@@ -253,65 +231,58 @@ export function FunctionCardsCarousel() {
           >
             {/* iPad Chassis (Outer Pastel Aluminum Shell) */}
             <div
-              className="rounded-[32px] sm:rounded-[36px] p-4 sm:p-7 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.15)] transition-colors duration-500 border-2"
+              className="rounded-[32px] sm:rounded-[40px] p-4 sm:p-8 shadow-[0_22px_55px_-15px_rgba(0,0,0,0.14)] transition-colors duration-500 border-2"
               style={{
                 backgroundColor: card.theme.chassisBg,
                 borderColor: card.theme.chassisBorder,
               }}
             >
-              {/* iPad Top Camera Bezel */}
-              <div className="flex items-center justify-center mb-3">
+              {/* iPad Top Camera Pin */}
+              <div className="flex items-center justify-center mb-4">
                 <span className="w-2.5 h-2.5 rounded-full bg-black/25 border border-white/40 shadow-inner" />
               </div>
 
-              {/* iPad Retina Display Screen (Crisp White/Pastel Glass Surface) */}
-              <div className="rounded-2xl sm:rounded-3xl bg-white/95 border border-white/80 shadow-inner p-6 sm:p-9 text-left">
+              {/* iPad Retina Display Screen (Crisp White Glass Surface) */}
+              <div className="rounded-2xl sm:rounded-3xl bg-white border border-white/80 shadow-inner p-6 sm:p-10 text-left">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                   {/* Left Column: Description & Highlights */}
                   <div className="lg:col-span-6 space-y-4">
-                    {/* Badge */}
+                    {/* Badge (Clean typography, no icon) */}
                     <div
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border shadow-2xs"
+                      className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider border shadow-2xs"
                       style={{
                         backgroundColor: card.theme.badgeBg,
                         color: card.theme.badgeText,
                         borderColor: card.theme.badgeBorder,
                       }}
                     >
-                      <Sparkles className="h-3.5 w-3.5" />
                       {card.badge}
                     </div>
 
-                    {/* Title */}
-                    <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug">
+                    {/* Title in Space Grotesk */}
+                    <h3 className="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug">
                       {card.title}
                     </h3>
 
-                    {/* Description */}
+                    {/* Description in Inter */}
                     <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
                       {card.description}
                     </p>
 
-                    {/* Feature Bullets */}
-                    <div className="pt-2 space-y-2">
-                      <div className="flex items-center gap-2.5 text-xs sm:text-sm font-medium text-slate-700">
-                        <CheckCircle2
-                          className="h-4 w-4 shrink-0"
-                          style={{ color: card.theme.accentText }}
-                        />
+                    {/* Feature Bullets (Clean typographic dash, no icons) */}
+                    <div className="pt-3 space-y-2.5">
+                      <div className="flex items-start gap-2.5 text-xs sm:text-sm font-medium text-slate-700">
+                        <span className="font-bold text-slate-400 select-none">—</span>
                         <span>Verbatim timestamped indexing</span>
                       </div>
-                      <div className="flex items-center gap-2.5 text-xs sm:text-sm font-medium text-slate-700">
-                        <CheckCircle2
-                          className="h-4 w-4 shrink-0"
-                          style={{ color: card.theme.accentText }}
-                        />
+                      <div className="flex items-start gap-2.5 text-xs sm:text-sm font-medium text-slate-700">
+                        <span className="font-bold text-slate-400 select-none">—</span>
                         <span>One-click jump directly to key lecture moments</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Right Column: Interactive Screen UI Mockup */}
+                  {/* Right Column: Screen UI Simulation */}
                   <div className="lg:col-span-6">
                     <CardScreenPreview card={card} />
                   </div>
@@ -321,10 +292,10 @@ export function FunctionCardsCarousel() {
           </motion.div>
         </AnimatePresence>
 
-        {/* ─── Bottom Pagination Indicators & Mobile Swipe Hint ─────── */}
+        {/* ─── Bottom Pagination Indicators & Controls ─────── */}
         <div className="mt-5 flex flex-col sm:flex-row items-center justify-between gap-3 px-2">
           <p className="text-xs text-slate-500 font-medium">
-            💡 Swipe left/right or click pills to explore all functions
+            Swipe left / right or click pills to explore functions
           </p>
 
           <div className="flex items-center gap-2">
@@ -351,24 +322,23 @@ export function FunctionCardsCarousel() {
 }
 
 /**
- * Screen UI Simulation inside the iPad Retina Screen
+ * Screen UI Simulation inside the iPad Retina Screen (Strictly No Icons or Emojis)
  */
 function CardScreenPreview({ card }: { card: FunctionCardData }) {
   if (card.id === 'transcription') {
     return (
       <div className="rounded-2xl bg-slate-50 border border-slate-200/90 p-4 sm:p-5 shadow-xs space-y-3 font-sans">
         <div className="flex items-center justify-between border-b border-slate-200/80 pb-2.5">
-          <div className="flex items-center gap-2">
-            <Volume2 className="h-4 w-4 text-sky-600" />
-            <span className="text-xs font-bold text-slate-800">Whisper Transcript</span>
-          </div>
-          <span className="text-[11px] font-semibold text-sky-700 bg-sky-100 px-2 py-0.5 rounded-full">
+          <span className="font-heading text-xs font-bold text-slate-800 tracking-wider uppercase">
+            Whisper Transcript
+          </span>
+          <span className="text-[11px] font-semibold text-sky-700 bg-sky-100 px-2.5 py-0.5 rounded-full">
             Live Sync
           </span>
         </div>
 
-        {/* Waveform graphic */}
-        <div className="h-8 flex items-center justify-between gap-1 px-1 bg-white rounded-lg border border-slate-200/60">
+        {/* Waveform graphic bars */}
+        <div className="h-8 flex items-center justify-between gap-1 px-1.5 bg-white rounded-lg border border-slate-200/60">
           {[40, 75, 55, 90, 60, 80, 45, 95, 70, 85, 30, 65, 90, 50, 75, 40].map((h, i) => (
             <span
               key={i}
@@ -405,11 +375,10 @@ function CardScreenPreview({ card }: { card: FunctionCardData }) {
     return (
       <div className="rounded-2xl bg-slate-50 border border-slate-200/90 p-4 sm:p-5 shadow-xs space-y-3 font-sans">
         <div className="flex items-center justify-between border-b border-slate-200/80 pb-2.5">
-          <div className="flex items-center gap-2">
-            <BookOpenText className="h-4 w-4 text-emerald-600" />
-            <span className="text-xs font-bold text-slate-800">Generated Study Notes</span>
-          </div>
-          <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+          <span className="font-heading text-xs font-bold text-slate-800 tracking-wider uppercase">
+            Generated Study Notes
+          </span>
+          <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">
             Markdown
           </span>
         </div>
@@ -417,9 +386,9 @@ function CardScreenPreview({ card }: { card: FunctionCardData }) {
         <div className="space-y-2.5">
           <div className="p-3 rounded-xl bg-white border border-slate-200/70">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-900">📌 Topic: Gradient Descent</span>
-              <span className="text-[11px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/50">
-                ⏱ 02:45
+              <span className="text-xs font-bold text-slate-900">Topic: Gradient Descent</span>
+              <span className="text-[11px] font-mono font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/50">
+                02:45
               </span>
             </div>
             <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
@@ -429,9 +398,9 @@ function CardScreenPreview({ card }: { card: FunctionCardData }) {
 
           <div className="p-3 rounded-xl bg-white border border-slate-200/70">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-900">📐 Key Formula</span>
-              <span className="text-[11px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/50">
-                ⏱ 04:12
+              <span className="text-xs font-bold text-slate-900">Key Formula</span>
+              <span className="text-[11px] font-mono font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/50">
+                04:12
               </span>
             </div>
             <code className="text-xs font-mono text-emerald-800 bg-emerald-50/60 block mt-1.5 p-1.5 rounded">
@@ -447,25 +416,22 @@ function CardScreenPreview({ card }: { card: FunctionCardData }) {
     return (
       <div className="rounded-2xl bg-slate-50 border border-slate-200/90 p-4 sm:p-5 shadow-xs space-y-3 font-sans">
         <div className="flex items-center justify-between border-b border-slate-200/80 pb-2.5">
-          <div className="flex items-center gap-2">
-            <MessageSquareText className="h-4 w-4 text-rose-600" />
-            <span className="text-xs font-bold text-slate-800">Lecture AI Tutor</span>
-          </div>
-          <span className="text-[11px] font-semibold text-rose-700 bg-rose-100 px-2 py-0.5 rounded-full">
+          <span className="font-heading text-xs font-bold text-slate-800 tracking-wider uppercase">
+            Lecture AI Tutor
+          </span>
+          <span className="text-[11px] font-semibold text-rose-700 bg-rose-100 px-2.5 py-0.5 rounded-full">
             ChromaDB RAG
           </span>
         </div>
 
         {/* Chat bubbles */}
         <div className="space-y-2.5">
-          {/* User message */}
           <div className="flex justify-end">
             <div className="max-w-[85%] rounded-2xl bg-slate-900 text-white p-2.5 text-xs rounded-br-xs">
               Why do we prefer ReLU over Sigmoid for deep neural nets?
             </div>
           </div>
 
-          {/* AI response */}
           <div className="flex justify-start">
             <div className="max-w-[90%] rounded-2xl bg-white border border-slate-200 p-3 text-xs text-slate-800 rounded-bl-xs shadow-2xs space-y-1.5">
               <p>
@@ -473,7 +439,7 @@ function CardScreenPreview({ card }: { card: FunctionCardData }) {
               </p>
               <div className="flex items-center gap-1.5 pt-1">
                 <span className="text-[10px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
-                  📍 Cited from [14:20 - 15:05]
+                  Cited: 14:20 - 15:05
                 </span>
               </div>
             </div>
@@ -487,25 +453,24 @@ function CardScreenPreview({ card }: { card: FunctionCardData }) {
     return (
       <div className="rounded-2xl bg-slate-50 border border-slate-200/90 p-4 sm:p-5 shadow-xs space-y-3 font-sans">
         <div className="flex items-center justify-between border-b border-slate-200/80 pb-2.5">
-          <div className="flex items-center gap-2">
-            <Play className="h-4 w-4 text-amber-600" />
-            <span className="text-xs font-bold text-slate-800">Side-by-Side Sync</span>
-          </div>
-          <span className="text-[11px] font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
+          <span className="font-heading text-xs font-bold text-slate-800 tracking-wider uppercase">
+            Side-by-Side Sync
+          </span>
+          <span className="text-[11px] font-semibold text-amber-700 bg-amber-100 px-2.5 py-0.5 rounded-full">
             Auto-Scroll
           </span>
         </div>
 
         {/* Video simulation screen */}
-        <div className="w-full aspect-video rounded-xl bg-slate-900 flex flex-col justify-between p-3 relative overflow-hidden">
+        <div className="w-full aspect-video rounded-xl bg-slate-950 flex flex-col justify-between p-3.5 relative overflow-hidden border border-slate-800">
           <div className="flex items-center justify-between text-white text-[11px]">
             <span className="font-semibold">Lecture 4: Neural Architecture</span>
             <span className="font-mono text-amber-300">03:42 / 48:10</span>
           </div>
 
           <div className="flex items-center justify-center">
-            <div className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center backdrop-blur-md cursor-pointer">
-              <Play className="h-5 w-5 text-white fill-white ml-0.5" />
+            <div className="px-4 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-xs font-bold tracking-wider uppercase backdrop-blur-md cursor-pointer border border-white/20 transition-all">
+              Play Lecture
             </div>
           </div>
 
@@ -526,11 +491,10 @@ function CardScreenPreview({ card }: { card: FunctionCardData }) {
   return (
     <div className="rounded-2xl bg-slate-50 border border-slate-200/90 p-4 sm:p-5 shadow-xs space-y-3 font-sans">
       <div className="flex items-center justify-between border-b border-slate-200/80 pb-2.5">
-        <div className="flex items-center gap-2">
-          <Download className="h-4 w-4 text-purple-600" />
-          <span className="text-xs font-bold text-slate-800">Export & Study Anywhere</span>
-        </div>
-        <span className="text-[11px] font-semibold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full">
+        <span className="font-heading text-xs font-bold text-slate-800 tracking-wider uppercase">
+          Export & Study Anywhere
+        </span>
+        <span className="text-[11px] font-semibold text-purple-700 bg-purple-100 px-2.5 py-0.5 rounded-full">
           Multi-Format
         </span>
       </div>
@@ -546,7 +510,7 @@ function CardScreenPreview({ card }: { card: FunctionCardData }) {
             key={fmt.name}
             className="p-3 rounded-xl bg-white border border-slate-200/70 hover:border-purple-300 transition-all cursor-pointer"
           >
-            <span className="text-[10px] font-mono font-bold text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded">
+            <span className="text-[10px] font-mono font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded">
               {fmt.ext}
             </span>
             <p className="text-xs font-bold text-slate-800 mt-1">{fmt.name}</p>

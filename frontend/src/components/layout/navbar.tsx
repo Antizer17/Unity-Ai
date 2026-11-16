@@ -42,29 +42,29 @@ export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
   return (
     <nav
       id="navbar"
-      className="sticky top-0 z-40 w-full border-b border-[var(--border-color)] bg-[var(--bg-primary)]/80 backdrop-blur-xl"
+      className="sticky top-0 z-40 w-full border-b border-[var(--border-color)] bg-[var(--bg-primary)]/85 backdrop-blur-xl"
     >
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo & Desktop Nav */}
+        <div className="flex h-20 items-center justify-between">
+          {/* Logo & Desktop Nav (Larger with Space Grotesk) */}
           <div className="flex items-center gap-8">
             <Link
               href="/"
               id="navbar-logo"
-              className="flex items-center gap-2 text-[var(--text-primary)] font-bold text-xl hover:opacity-85 transition-opacity"
+              className="flex items-center gap-2.5 text-[var(--text-primary)] font-bold hover:opacity-85 transition-opacity group"
             >
-              <Sparkles className="h-6 w-6 text-[var(--color-primary)]" />
-              <span className="font-extrabold tracking-tight text-[var(--text-primary)]">
+              <Sparkles className="h-7 w-7 text-[var(--color-primary)] transition-transform group-hover:scale-110" />
+              <span className="font-heading font-extrabold text-2xl sm:text-3xl tracking-tight text-[var(--text-primary)]">
                 Unity<span className="text-[var(--color-accent)]">-AI</span>
               </span>
             </Link>
 
-            <div className="hidden md:flex items-center gap-1">
+            <div className="hidden md:flex items-center gap-2">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--color-surface)] transition-all"
+                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--color-surface)] transition-all"
                 >
                   <link.icon className="h-4 w-4 opacity-70" />
                   {link.label}
@@ -74,8 +74,8 @@ export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <PaletteToggle />
+          <div className="flex items-center gap-3">
+            <PaletteToggle className="px-3.5 py-2 text-sm font-semibold rounded-xl" />
             
             {/* Desktop Profile or Guest Actions */}
             {!isGuest ? (

@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: var(--font-space-grotesk), var(--font-inter), sans-serif;
+  --font-space: var(--font-space-grotesk), sans-serif;
+}
+
 /* ─── Dark Pastel Palettes ──────────────────────────────────────────────────────
  * All palettes are dark pastel themes centered on green-blue / bluish-green
  * paired with a warm / vibrant complementary contrast color.
@@ -135,11 +141,24 @@ html {
 }
 
 body {
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-heading,
+.brand-font {
+  font-family: var(--font-space-grotesk), var(--font-inter), sans-serif;
+  letter-spacing: -0.02em;
 }
 
 /* ─── Scrollbar Styling ──────────────────────────────────────────────────────── */

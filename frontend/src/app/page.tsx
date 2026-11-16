@@ -58,26 +58,28 @@ export default function LandingPage() {
         <div className="absolute top-1/2 right-1/4 w-[450px] h-[450px] bg-[var(--color-accent)]/12 rounded-full blur-3xl pointer-events-none" />
 
         {/* Navbar */}
-        <nav className="sticky top-0 z-50 border-b border-[var(--hero-border)] bg-[var(--hero-bg)]/85 backdrop-blur-xl transition-colors duration-300">
+        <nav className="sticky top-0 z-50 border-b border-[var(--hero-border)] bg-[var(--hero-bg)]/90 backdrop-blur-xl transition-colors duration-300">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex h-16 items-center justify-between">
+            <div className="flex h-20 items-center justify-between">
+              {/* Brand Logo & Name (Larger with Space Grotesk) */}
               <Link
                 href="/"
-                className="flex items-center gap-2 font-bold text-xl hover:opacity-85 transition-opacity"
+                className="flex items-center gap-2.5 hover:opacity-85 transition-opacity group"
               >
-                <Sparkles className="h-6 w-6 text-[var(--hero-primary)]" />
-                <span className="font-extrabold tracking-tight text-[var(--hero-text-primary)]">
+                <Sparkles className="h-7 w-7 text-[var(--hero-primary)] transition-transform group-hover:scale-110" />
+                <span className="font-heading font-extrabold text-2xl sm:text-3xl tracking-tight text-[var(--hero-text-primary)]">
                   Unity<span className="text-[var(--hero-accent)]">-AI</span>
                 </span>
               </Link>
-              <div className="flex items-center gap-2 sm:gap-3">
-                <PaletteToggle className="border-[var(--hero-border)] bg-white/70 text-[var(--hero-text-primary)] hover:bg-white" />
+
+              {/* Action Buttons (Larger) */}
+              <div className="flex items-center gap-2 sm:gap-4">
+                <PaletteToggle className="px-3.5 py-2 text-sm font-semibold rounded-xl border-[var(--hero-border)] bg-white/80 text-[var(--hero-text-primary)] hover:bg-white shadow-xs" />
                 <Link href="/dashboard" className="hidden sm:block">
                   <Button
                     id="landing-guest-chat-btn"
                     variant="outline"
-                    size="sm"
-                    className="border-[var(--hero-border)] text-[var(--hero-text-primary)] hover:bg-[var(--hero-bg-subtle)]"
+                    className="h-11 px-5 text-sm sm:text-base font-semibold rounded-xl border-[var(--hero-border)] text-[var(--hero-text-primary)] hover:bg-[var(--hero-bg-subtle)]"
                   >
                     Dashboard
                   </Button>
@@ -86,8 +88,7 @@ export default function LandingPage() {
                   <Button
                     id="landing-register-btn"
                     variant="accent"
-                    size="sm"
-                    className="font-semibold shadow-xs"
+                    className="h-11 px-6 text-sm sm:text-base font-bold rounded-xl shadow-md"
                   >
                     Get Started
                   </Button>
@@ -100,12 +101,12 @@ export default function LandingPage() {
         {/* Hero Section */}
         <section className="relative pt-16 pb-20 sm:pt-24 sm:pb-28">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-            {/* Headline — all unified color, no zigzag underline, no powered by tag */}
+            {/* Headline — all unified color, no zigzag underline, Space Grotesk font */}
             <motion.h1
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[var(--hero-text-primary)] leading-[1.15] max-w-4xl mx-auto"
+              className="font-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[var(--hero-text-primary)] leading-[1.15] max-w-4xl mx-auto"
             >
               Transform Lectures into Interactive Study Sessions
             </motion.h1>
@@ -125,27 +126,22 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.25 }}
             >
-              <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
+                {/* High Contrast Deep Obsidian CTA Button */}
                 <Link href="/dashboard">
-                  <Button
+                  <button
                     id="landing-hero-cta"
-                    variant="accent"
-                    size="lg"
-                    className="h-12 px-8 text-base shadow-lg shadow-[var(--glow-accent)] font-semibold"
+                    className="h-14 px-9 text-base sm:text-lg font-bold rounded-2xl bg-slate-950 hover:bg-black text-white shadow-xl shadow-slate-950/20 border border-slate-800 transition-all hover:scale-[1.02] cursor-pointer inline-flex items-center justify-center gap-2.5 font-heading"
                   >
-                    Start Uploading
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
+                    <span>Start Uploading</span>
+                    <ArrowRight className="h-5 w-5 text-[var(--color-primary)]" />
+                  </button>
                 </Link>
                 <Link href="/dashboard">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="h-12 px-8 text-base border-[var(--hero-border)] text-[var(--hero-text-primary)] hover:bg-[var(--hero-bg-subtle)]"
-                  >
-                    <Play className="mr-2 h-4 w-4 text-[var(--hero-primary)]" />
-                    View Demo
-                  </Button>
+                  <button className="h-14 px-8 text-base sm:text-lg font-semibold rounded-2xl border-2 border-slate-300 bg-white/90 hover:bg-white text-slate-800 hover:text-black hover:border-slate-400 shadow-sm transition-all inline-flex items-center justify-center gap-2 cursor-pointer font-heading">
+                    <Play className="h-4 w-4 text-[var(--hero-primary)]" />
+                    <span>View Demo</span>
+                  </button>
                 </Link>
               </div>
             </motion.div>

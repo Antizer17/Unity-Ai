@@ -55,8 +55,8 @@ export function Sidebar({ isGuest = false }: { isGuest?: boolean }) {
       )}
     >
       <div className="p-3 w-[260px] pt-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 text-[var(--text-primary)] font-bold text-lg hover:opacity-85 transition-opacity pl-2">
-          <span className="font-extrabold tracking-tight text-[var(--text-primary)]">
+        <Link href="/" className="flex items-center gap-2 text-[var(--text-primary)] font-bold hover:opacity-85 transition-opacity pl-2">
+          <span className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)]">
             Unity<span className="text-[var(--color-accent)]">-AI</span>
           </span>
         </Link>
