@@ -215,18 +215,6 @@ export function FunctionCardsCarousel() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                   {/* Left Column: Description & Highlights */}
                   <div className="lg:col-span-6 space-y-4">
-                    {/* Badge */}
-                    <div
-                      className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
-                      style={{
-                        backgroundColor: card.theme.badgeBg,
-                        color: card.theme.badgeText,
-                        border: 'none',
-                      }}
-                    >
-                      {card.badge}
-                    </div>
-
                     {/* Title */}
                     <h3 className="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug">
                       {card.title}
@@ -297,12 +285,6 @@ function CardScreenPreview({ card }: { card: FunctionCardData }) {
           <span className="font-heading text-xs font-bold text-slate-800 tracking-wider uppercase">
             Whisper Transcript
           </span>
-          <span
-            className="text-[11px] font-bold px-2.5 py-0.5 rounded-full"
-            style={{ backgroundColor: card.theme.badgeBg, color: card.theme.badgeText }}
-          >
-            Live Sync
-          </span>
         </div>
 
         {/* Waveform graphic bars */}
@@ -357,12 +339,6 @@ function CardScreenPreview({ card }: { card: FunctionCardData }) {
           <span className="font-heading text-xs font-bold text-slate-800 tracking-wider uppercase">
             Generated Study Notes
           </span>
-          <span
-            className="text-[11px] font-bold px-2.5 py-0.5 rounded-full"
-            style={{ backgroundColor: card.theme.badgeBg, color: card.theme.badgeText }}
-          >
-            Markdown
-          </span>
         </div>
 
         <div className="space-y-2.5">
@@ -410,12 +386,6 @@ function CardScreenPreview({ card }: { card: FunctionCardData }) {
           <span className="font-heading text-xs font-bold text-slate-800 tracking-wider uppercase">
             Lecture AI Tutor
           </span>
-          <span
-            className="text-[11px] font-bold px-2.5 py-0.5 rounded-full"
-            style={{ backgroundColor: card.theme.badgeBg, color: card.theme.badgeText }}
-          >
-            ChromaDB RAG
-          </span>
         </div>
 
         {/* Chat bubbles */}
@@ -455,12 +425,6 @@ function CardScreenPreview({ card }: { card: FunctionCardData }) {
         <div className="flex items-center justify-between pb-2.5 border-b border-slate-200">
           <span className="font-heading text-xs font-bold text-slate-800 tracking-wider uppercase">
             Side-by-Side Sync
-          </span>
-          <span
-            className="text-[11px] font-bold px-2.5 py-0.5 rounded-full"
-            style={{ backgroundColor: card.theme.badgeBg, color: card.theme.badgeText }}
-          >
-            Auto-Scroll
           </span>
         </div>
 
@@ -505,12 +469,6 @@ function CardScreenPreview({ card }: { card: FunctionCardData }) {
       <div className="flex items-center justify-between pb-2.5 border-b border-slate-200">
         <span className="font-heading text-xs font-bold text-slate-800 tracking-wider uppercase">
           Export & Study Anywhere
-        </span>
-        <span
-          className="text-[11px] font-bold px-2.5 py-0.5 rounded-full"
-          style={{ backgroundColor: card.theme.badgeBg, color: card.theme.badgeText }}
-        >
-          Multi-Format
         </span>
       </div>
 

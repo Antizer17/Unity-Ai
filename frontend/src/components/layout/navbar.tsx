@@ -16,7 +16,6 @@ import { Avatar } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { mockUser } from '@/lib/mock-data';
 import { ThemeToggle } from './theme-toggle';
-import { Logo } from '@/components/ui/logo';
 
 export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -50,9 +49,8 @@ export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
             <Link
               href="/"
               id="navbar-logo"
-              className="flex items-center gap-3 text-[var(--text-primary)] font-bold hover:opacity-85 transition-opacity group"
+              className="flex items-center text-[var(--text-primary)] font-bold hover:opacity-85 transition-opacity"
             >
-              <Logo size={52} variant="dark" priority />
               <span className="font-heading font-extrabold text-2xl sm:text-3xl tracking-tight text-[var(--text-primary)]">
                 UnityAI
               </span>

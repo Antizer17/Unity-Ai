@@ -4,11 +4,10 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
-  ArrowRight,
+  Upload,
   Play,
 } from 'lucide-react';
 import { Footer } from '@/components/layout/footer';
-import { Logo } from '@/components/ui/logo';
 import { FunctionCardsCarousel } from '@/components/landing/function-cards-carousel';
 
 const workflowSteps = [
@@ -45,9 +44,8 @@ export default function LandingPage() {
               {/* Brand Logo & Name */}
               <Link
                 href="/"
-                className="flex items-center gap-3 hover:opacity-85 transition-opacity group"
+                className="flex items-center hover:opacity-85 transition-opacity"
               >
-                <Logo size={62} variant="light" priority />
                 <span className="font-heading font-extrabold text-2xl sm:text-3xl tracking-tight text-[var(--hero-text-primary)]">
                   UnityAI
                 </span>
@@ -103,7 +101,7 @@ export default function LandingPage() {
                     className="h-14 px-9 text-base sm:text-lg font-bold rounded-2xl bg-slate-950 hover:bg-black text-white shadow-xl shadow-slate-950/20 border border-slate-800 transition-all hover:scale-[1.02] cursor-pointer inline-flex items-center justify-center gap-2.5 font-heading"
                   >
                     <span>Start Uploading</span>
-                    <ArrowRight className="h-5 w-5 text-[var(--color-primary)]" />
+                    <Upload className="h-5 w-5 text-[var(--color-primary)]" />
                   </button>
                 </Link>
                 <Link href="/dashboard">
