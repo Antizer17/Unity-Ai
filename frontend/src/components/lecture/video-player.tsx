@@ -26,20 +26,34 @@ export interface VideoPlayerProps {
   onTimeUpdate?: (time: number) => void;
 }
 
+function cleanMediaUrl(rawUrl?: string): string | undefined {
+  if (!rawUrl) return undefined;
+  // If it's a YouTube URL, extract clean watch URL without playlist/index/feature params
+  const ytMatch = rawUrl.match(
+    /(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/|live\/))([a-zA-Z0-9_-]{11})/
+  );
+  if (ytMatch && ytMatch[1]) {
+    return `https://www.youtube.com/watch?v=${ytMatch[1]}`;
+  }
+  return rawUrl;
+}
+
 const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
   ({ src, type = 'video', poster, id = 'video-player', onTimeUpdate }, ref) => {
     const [isMounted, setIsMounted] = useState(false);
     useEffect(() => setIsMounted(true), []);
 
+    const cleanSrc = cleanMediaUrl(src);
+
     const isExternalWeb = Boolean(
-      src && (
-        src.includes('youtube.com') ||
-        src.includes('youtu.be') ||
-        src.includes('vimeo.com') ||
-        src.includes('twitch.tv') ||
-        src.includes('soundcloud.com') ||
-        src.includes('streamable.com') ||
-        src.includes('dailymotion.com')
+      cleanSrc && (
+        cleanSrc.includes('youtube.com') ||
+        cleanSrc.includes('youtu.be') ||
+        cleanSrc.includes('vimeo.com') ||
+        cleanSrc.includes('twitch.tv') ||
+        cleanSrc.includes('soundcloud.com') ||
+        cleanSrc.includes('streamable.com') ||
+        cleanSrc.includes('dailymotion.com')
       )
     );
 
@@ -66,10 +80,14 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
         if (isExternalWeb && playerRef.current) {
           if (typeof playerRef.current.seekTo === 'function') {
             playerRef.current.seekTo(seconds, 'seconds');
+          } else if ('currentTime' in playerRef.current) {
+            playerRef.current.currentTime = seconds;
           } else {
             const internal = (playerRef.current as any).getInternalPlayer?.();
             if (internal && 'currentTime' in internal) {
               internal.currentTime = seconds;
+            } else if (internal && typeof internal.seekTo === 'function') {
+              internal.seekTo(seconds, true);
             }
           }
         } else if (nativeRef.current) {
@@ -79,6 +97,12 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
       },
       play: () => {
         if (isExternalWeb && playerRef.current) {
+          if (typeof playerRef.current.play === 'function') {
+            const p = playerRef.current.play();
+            if (p && typeof p.catch === 'function') {
+              p.catch(() => {});
+            }
+          }
           setPlaying(true);
         } else if (nativeRef.current) {
           const playPromise = nativeRef.current.play();
@@ -182,10 +206,18 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
       >
         {type === 'video' ? (
           <div className="w-full aspect-video bg-slate-900 relative">
-            {isMounted && src && isExternalWeb ? (
+            {isMounted && cleanSrc && isExternalWeb ? (
               <Player
                 ref={playerRef}
-                url={src}
+                src={cleanSrc}
+                url={cleanSrc}
+                config={{
+                  youtube: {
+                    controls: 1,
+                    modestbranding: 1,
+                    rel: 0,
+                  },
+                }}
                 width="100%"
                 height="100%"
                 playing={playing}
@@ -195,7 +227,11 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
                 onProgress={(state: any) => setCurrentTime(state.playedSeconds)}
                 onReady={() => {
                   if (playerRef.current) {
-                    setDuration(playerRef.current.getDuration());
+                    const dur =
+                      typeof playerRef.current.getDuration === 'function'
+                        ? playerRef.current.getDuration()
+                        : playerRef.current.duration || 0;
+                    setDuration(dur);
                     setLoaded(true);
                   }
                 }}
@@ -222,10 +258,18 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
           </div>
         ) : (
           <div className="w-full aspect-video bg-gradient-to-br from-slate-900 to-black flex items-center justify-center relative p-8">
-            {isMounted && src && isExternalWeb ? (
+            {isMounted && cleanSrc && isExternalWeb ? (
               <Player
                 ref={playerRef}
-                url={src}
+                src={cleanSrc}
+                url={cleanSrc}
+                config={{
+                  youtube: {
+                    controls: 1,
+                    modestbranding: 1,
+                    rel: 0,
+                  },
+                }}
                 width="100%"
                 height="100px"
                 playing={playing}
@@ -235,7 +279,11 @@ const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
                 onProgress={(state: any) => setCurrentTime(state.playedSeconds)}
                 onReady={() => {
                   if (playerRef.current) {
-                    setDuration(playerRef.current.getDuration());
+                    const dur =
+                      typeof playerRef.current.getDuration === 'function'
+                        ? playerRef.current.getDuration()
+                        : playerRef.current.duration || 0;
+                    setDuration(dur);
                     setLoaded(true);
                   }
                 }}

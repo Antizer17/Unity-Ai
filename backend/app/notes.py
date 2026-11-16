@@ -161,21 +161,39 @@ def _generate_notes_single_pass(lecture_id: str, segments: list, api_key: str) -
     
     # Build standard NoteSection objects
     sections = []
-    for i, sec in enumerate(result_json.get("sections", [])):
+    raw_sections = result_json.get("sections", []) if isinstance(result_json, dict) else (result_json if isinstance(result_json, list) else [])
+    for i, sec in enumerate(raw_sections):
+        if isinstance(sec, dict):
+            sec_title = sec.get("title", f"Section {i+1}")
+            sec_content = sec.get("content", "")
+            sec_start = float(sec.get("startTimestamp", 0.0))
+            sec_end = float(sec.get("endTimestamp", 0.0))
+            sec_tech = sec.get("technical_details", "")
+        elif isinstance(sec, str):
+            sec_title = f"Section {i+1}"
+            sec_content = sec
+            sec_start = 0.0
+            sec_end = 0.0
+            sec_tech = ""
+        else:
+            continue
+
         sections.append({
             "id": f"sec-{lecture_id}-{i}",
-            "title": sec.get("title", f"Section {i+1}"),
-            "content": sec.get("content", ""),
-            "startTimestamp": float(sec.get("startTimestamp", 0.0)),
-            "endTimestamp": float(sec.get("endTimestamp", 0.0)),
+            "title": sec_title,
+            "content": sec_content,
+            "startTimestamp": sec_start,
+            "endTimestamp": sec_end,
             "orderIndex": i,
-            "technical_details": sec.get("technical_details", "")
+            "technical_details": sec_tech
         })
+
+    summary_text = result_json.get("summary", "Study notes generated from lecture.") if isinstance(result_json, dict) else "Study notes generated from lecture."
 
     return {
         "id": f"note-{lecture_id}",
         "lectureId": lecture_id,
-        "content": result_json.get("summary", "Study notes generated from lecture."),
+        "content": summary_text,
         "sections": sections,
         "generatedAt": datetime.utcnow().isoformat() + "Z"
     }

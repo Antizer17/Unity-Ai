@@ -69,21 +69,28 @@ def index_lecture_transcript(lecture_id: str):
     metadatas = []
     ids = []
     
-    # 1. Index Notes Topics (higher quality summaries)
+    # 1. Index Notes Topics & Sections (higher quality summaries)
     if os.path.exists(notes_path):
         try:
             with open(notes_path, "r", encoding="utf-8") as f:
                 notes_data = json.load(f)
-                for i, topic in enumerate(notes_data.get("topics", [])):
-                    text = f"Topic: {topic.get('title', '')}\nSummary: {topic.get('summary', '')}"
+                note_items = notes_data.get("sections") or notes_data.get("topics", [])
+                for i, topic in enumerate(note_items):
+                    title = topic.get("title", "")
+                    content = topic.get("content", "") or topic.get("summary", "")
+                    text = f"Topic: {title}\nSummary: {content}"
                     if topic.get("key_points"):
                         text += "\nKey points: " + "; ".join(topic["key_points"])
+                    if topic.get("technical_details"):
+                        text += "\nTechnical Details: " + topic["technical_details"]
+                    start_val = float(topic.get("startTimestamp") or topic.get("start") or 0.0)
+                    end_val = float(topic.get("endTimestamp") or topic.get("end") or 0.0)
                     documents.append(text)
                     metadatas.append({
                         "type": "note",
-                        "start": float(topic.get("start", 0.0)),
-                        "end": float(topic.get("end", 0.0)),
-                        "label": topic.get("title", "")
+                        "start": start_val,
+                        "end": end_val,
+                        "label": title
                     })
                     ids.append(f"note_{i}")
         except Exception as e:
