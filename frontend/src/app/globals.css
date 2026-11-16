@@ -1,49 +1,104 @@
 @import "tailwindcss";
 
-/* ─── CSS Custom Properties ──────────────────────────────────────────────────── */
+/* ─── Dark Pastel Palettes ──────────────────────────────────────────────────────
+ * All palettes are dark pastel themes centered on green-blue / bluish-green
+ * paired with a warm / vibrant complementary contrast color.
+ */
 
-:root {
-  --color-primary: #6366f1;
-  --color-primary-light: #818cf8;
-  --color-primary-dark: #4f46e5;
-  --color-accent: #06b6d4;
-  --color-accent-light: #22d3ee;
-  
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8fafc;
-  --bg-tertiary: #f1f5f9;
-  
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
-  
-  --border-color: rgba(0, 0, 0, 0.1);
-  --color-surface: rgba(255, 255, 255, 0.9);
+:root,
+[data-palette="aurora"] {
+  /* Option 1: Nordic Aurora — Pastel Seafoam Teal & Soft Coral Peach */
+  --color-primary: #5eead4;
+  --color-primary-light: #99f6e4;
+  --color-primary-dark: #2dd4bf;
+  --color-secondary: #7dd3fc;
+  --color-accent: #ff9e88;
+  --color-accent-light: #ffc2b3;
+  --color-accent-dark: #f87171;
+
+  --bg-primary: #091216;
+  --bg-secondary: #101e24;
+  --bg-tertiary: #050a0d;
+
+  --text-primary: #eef7f6;
+  --text-secondary: #cbd8d7;
+  --text-muted: #7e999c;
+
+  --border-color: rgba(94, 234, 212, 0.12);
+  --border-color-hover: rgba(94, 234, 212, 0.28);
+  --color-surface: rgba(16, 30, 36, 0.75);
+
+  --gradient-brand: linear-gradient(135deg, #5eead4 0%, #38bdf8 50%, #ff9e88 100%);
+  --gradient-primary: linear-gradient(135deg, #5eead4 0%, #2dd4bf 100%);
+  --gradient-accent: linear-gradient(135deg, #ff9e88 0%, #fb923c 100%);
+  --glow-primary: rgba(94, 234, 212, 0.25);
+  --glow-accent: rgba(255, 158, 136, 0.25);
 }
 
-.dark {
-  --color-primary: #6366f1;
-  --color-primary-light: #818cf8;
-  --color-primary-dark: #4f46e5;
-  --color-accent: #06b6d4;
-  --color-accent-light: #22d3ee;
+[data-palette="lagoon"] {
+  /* Option 2: Deep Lagoon — Mint Sage & Golden Apricot */
+  --color-primary: #6ee7b7;
+  --color-primary-light: #a7f3d0;
+  --color-primary-dark: #34d399;
+  --color-secondary: #2dd4bf;
+  --color-accent: #fbb572;
+  --color-accent-light: #fed7aa;
+  --color-accent-dark: #f97316;
 
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-tertiary: #020617;
-  
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #64748b;
+  --bg-primary: #091313;
+  --bg-secondary: #111f1f;
+  --bg-tertiary: #040909;
 
-  --border-color: rgba(255, 255, 255, 0.1);
-  --color-surface: rgba(0, 0, 0, 0.5);
+  --text-primary: #eff7f5;
+  --text-secondary: #c6d8d4;
+  --text-muted: #7a9590;
+
+  --border-color: rgba(110, 231, 183, 0.12);
+  --border-color-hover: rgba(110, 231, 183, 0.28);
+  --color-surface: rgba(17, 31, 31, 0.75);
+
+  --gradient-brand: linear-gradient(135deg, #6ee7b7 0%, #2dd4bf 50%, #fbb572 100%);
+  --gradient-primary: linear-gradient(135deg, #6ee7b7 0%, #34d399 100%);
+  --gradient-accent: linear-gradient(135deg, #fbb572 0%, #f59e0b 100%);
+  --glow-primary: rgba(110, 231, 183, 0.25);
+  --glow-accent: rgba(251, 181, 114, 0.25);
+}
+
+[data-palette="orchid"] {
+  /* Option 3: Abyssal Orchid — Pastel Ice Aqua & Orchid Rose */
+  --color-primary: #67e8f9;
+  --color-primary-light: #a5f3fc;
+  --color-primary-dark: #22d3ee;
+  --color-secondary: #5eead4;
+  --color-accent: #f472b6;
+  --color-accent-light: #fbcfe8;
+  --color-accent-dark: #ec4899;
+
+  --bg-primary: #071015;
+  --bg-secondary: #0e1c25;
+  --bg-tertiary: #03070a;
+
+  --text-primary: #f0f8fa;
+  --text-secondary: #cbe0e7;
+  --text-muted: #76939f;
+
+  --border-color: rgba(103, 232, 249, 0.12);
+  --border-color-hover: rgba(103, 232, 249, 0.28);
+  --color-surface: rgba(14, 28, 37, 0.75);
+
+  --gradient-brand: linear-gradient(135deg, #67e8f9 0%, #5eead4 50%, #f472b6 100%);
+  --gradient-primary: linear-gradient(135deg, #67e8f9 0%, #22d3ee 100%);
+  --gradient-accent: linear-gradient(135deg, #f472b6 0%, #e879f9 100%);
+  --glow-primary: rgba(103, 232, 249, 0.25);
+  --glow-accent: rgba(244, 114, 182, 0.25);
 }
 
 /* ─── Global Styles ──────────────────────────────────────────────────────────── */
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--bg-primary);
+  color-scheme: dark;
 }
 
 body {
@@ -51,13 +106,14 @@ body {
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ─── Scrollbar Styling ──────────────────────────────────────────────────────── */
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(99, 102, 241, 0.3) transparent;
+  scrollbar-color: var(--border-color-hover) transparent;
 }
 
 ::-webkit-scrollbar {
@@ -70,12 +126,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.3);
+  background: var(--border-color-hover);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.5);
+  background: var(--color-primary);
 }
 
 /* Custom scrollbar for panels */
@@ -88,12 +144,12 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--border-color);
   border-radius: 2px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--border-color-hover);
 }
 
 /* ─── Glass Utility ──────────────────────────────────────────────────────────── */
@@ -115,14 +171,21 @@ body {
 /* ─── Gradient Text ──────────────────────────────────────────────────────────── */
 
 .gradient-text {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4);
+  background: var(--gradient-brand);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-text-primary {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-accent {
+  background: var(--gradient-accent);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -155,10 +218,10 @@ body {
 @keyframes pulse-glow {
   0%,
   100% {
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 0 20px var(--glow-primary);
   }
   50% {
-    box-shadow: 0 0 40px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 40px var(--glow-accent);
   }
 }
 

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Footer } from '@/components/layout/footer';
+import { PaletteToggle } from '@/components/layout/palette-toggle';
 
 const features = [
   {
@@ -22,21 +23,21 @@ const features = [
     title: 'AI Transcription',
     description:
       'Upload any audio or video lecture and get accurate, timestamped transcripts powered by Whisper AI. Supports multiple languages and accents.',
-    gradient: 'from-cyan-500 to-blue-500',
+    gradient: 'from-[var(--color-primary)] to-[var(--color-secondary)]',
   },
   {
     icon: BookOpenText,
     title: 'Smart Notes',
     description:
       'Our LLM automatically generates structured, topic-organized notes linked to exact timestamps. Never miss a key concept again.',
-    gradient: 'from-indigo-500 to-violet-500',
+    gradient: 'from-[var(--color-secondary)] to-[var(--color-accent)]',
   },
   {
     icon: MessageSquareText,
     title: 'AI Tutor Chatbot',
     description:
       'Ask questions about your lecture and get contextual answers with citations. Like having a personal tutor who watched every lecture with you.',
-    gradient: 'from-violet-500 to-pink-500',
+    gradient: 'from-[var(--color-accent)] to-[var(--color-primary)]',
   },
 ];
 
@@ -49,27 +50,28 @@ const stats = [
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+    <div className="min-h-screen bg-[var(--bg-primary)] relative overflow-hidden">
       {/* Animated background blobs */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-blob" />
-        <div className="absolute top-3/4 right-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl animate-blob [animation-delay:2s]" />
-        <div className="absolute bottom-1/4 left-1/2 w-96 h-96 bg-cyan-500/8 rounded-full blur-3xl animate-blob [animation-delay:4s]" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--color-primary)]/10 rounded-full blur-3xl animate-blob" />
+        <div className="absolute top-3/4 right-1/4 w-96 h-96 bg-[var(--color-secondary)]/10 rounded-full blur-3xl animate-blob [animation-delay:2s]" />
+        <div className="absolute bottom-1/4 left-1/2 w-96 h-96 bg-[var(--color-accent)]/8 rounded-full blur-3xl animate-blob [animation-delay:4s]" />
       </div>
 
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 border-b border-white/5 bg-slate-950/60 backdrop-blur-xl">
+      <nav className="sticky top-0 z-50 border-b border-[var(--border-color)] bg-[var(--bg-primary)]/80 backdrop-blur-xl">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 text-white font-bold text-xl">
-              <Sparkles className="h-6 w-6 text-indigo-400" />
-              <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
+            <Link href="/" className="flex items-center gap-2 text-[var(--text-primary)] font-bold text-xl">
+              <Sparkles className="h-6 w-6 text-[var(--color-primary)]" />
+              <span className="bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] bg-clip-text text-transparent font-extrabold tracking-tight">
                 Unity-AI
               </span>
             </Link>
             <div className="flex items-center gap-2 sm:gap-3">
+              <PaletteToggle />
               <Link href="/dashboard" className="hidden sm:block">
-                <Button id="landing-guest-chat-btn" variant="outline" size="sm" className="border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10">
+                <Button id="landing-guest-chat-btn" variant="outline" size="sm">
                   Dashboard
                 </Button>
               </Link>
@@ -91,9 +93,9 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-sm text-indigo-400 mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 text-sm text-[var(--color-primary)] mb-8">
               <Zap className="h-4 w-4" />
-              Powered by GPT-4 & Whisper AI
+              Powered by Llama 3 & Whisper AI
             </div>
           </motion.div>
 
@@ -101,7 +103,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight"
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[var(--text-primary)] leading-tight"
           >
             Transform Lectures into{' '}
             <span className="gradient-text">Interactive Study Sessions</span>
@@ -111,7 +113,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-6 text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed"
+            className="mt-6 text-base sm:text-lg text-[var(--text-secondary)] max-w-2xl mx-auto leading-relaxed"
           >
             Upload your lecture recordings and let AI transcribe, generate structured notes, and
             power an intelligent tutor that answers your questions with precision.
@@ -124,13 +126,13 @@ export default function LandingPage() {
           >
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/dashboard">
-                <Button id="landing-hero-cta" variant="primary" size="lg" className="h-12 px-8 text-base shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)]">
+                <Button id="landing-hero-cta" variant="accent" size="lg" className="h-12 px-8 text-base shadow-[0_0_40px_-10px_var(--glow-accent)] font-semibold">
                   Start Uploading
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
               <Link href="/dashboard">
-                <Button variant="outline" size="lg" className="h-12 px-8 text-base border-white/10 hover:bg-white/5">
+                <Button variant="outline" size="lg" className="h-12 px-8 text-base border-[var(--border-color)] hover:bg-[var(--color-surface)]">
                   <Play className="mr-2 h-4 w-4" />
                   View Demo
                 </Button>
@@ -145,26 +147,26 @@ export default function LandingPage() {
             transition={{ duration: 0.8, delay: 0.5 }}
             className="mt-20 mx-auto max-w-4xl"
           >
-            <div className="rounded-2xl bg-gradient-to-br from-indigo-500/20 via-violet-500/10 to-cyan-500/20 p-[1px]">
-              <div className="rounded-2xl bg-slate-900/90 backdrop-blur-xl p-8 sm:p-12">
+            <div className="rounded-2xl bg-gradient-to-br from-[var(--color-primary)]/20 via-[var(--color-secondary)]/10 to-[var(--color-accent)]/20 p-[1px]">
+              <div className="rounded-2xl bg-[var(--bg-secondary)] backdrop-blur-xl p-8 sm:p-12 border border-[var(--border-color)]">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                  <div className="rounded-xl bg-white/5 p-6 border border-white/10">
-                    <Mic className="h-8 w-8 text-cyan-400 mb-3" />
-                    <div className="h-2 rounded-full bg-cyan-500/30 mb-2" />
-                    <div className="h-2 rounded-full bg-cyan-500/20 w-4/5" />
-                    <p className="text-xs text-slate-500 mt-3">Transcribing…</p>
+                  <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--border-color)]">
+                    <Mic className="h-8 w-8 text-[var(--color-primary)] mb-3" />
+                    <div className="h-2 rounded-full bg-[var(--color-primary)]/30 mb-2" />
+                    <div className="h-2 rounded-full bg-[var(--color-primary)]/20 w-4/5" />
+                    <p className="text-xs text-[var(--text-muted)] mt-3">Transcribing…</p>
                   </div>
-                  <div className="rounded-xl bg-white/5 p-6 border border-white/10">
-                    <BookOpenText className="h-8 w-8 text-indigo-400 mb-3" />
-                    <div className="h-2 rounded-full bg-indigo-500/30 mb-2" />
-                    <div className="h-2 rounded-full bg-indigo-500/20 w-3/5" />
-                    <p className="text-xs text-slate-500 mt-3">Generating notes…</p>
+                  <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--border-color)]">
+                    <BookOpenText className="h-8 w-8 text-[var(--color-secondary)] mb-3" />
+                    <div className="h-2 rounded-full bg-[var(--color-secondary)]/30 mb-2" />
+                    <div className="h-2 rounded-full bg-[var(--color-secondary)]/20 w-3/5" />
+                    <p className="text-xs text-[var(--text-muted)] mt-3">Generating notes…</p>
                   </div>
-                  <div className="rounded-xl bg-white/5 p-6 border border-white/10">
-                    <MessageSquareText className="h-8 w-8 text-violet-400 mb-3" />
-                    <div className="h-2 rounded-full bg-violet-500/30 mb-2" />
-                    <div className="h-2 rounded-full bg-violet-500/20 w-4/6" />
-                    <p className="text-xs text-slate-500 mt-3">Ready to chat!</p>
+                  <div className="rounded-xl bg-[var(--color-surface)] p-6 border border-[var(--border-color)]">
+                    <MessageSquareText className="h-8 w-8 text-[var(--color-accent)] mb-3" />
+                    <div className="h-2 rounded-full bg-[var(--color-accent)]/30 mb-2" />
+                    <div className="h-2 rounded-full bg-[var(--color-accent)]/20 w-4/6" />
+                    <p className="text-xs text-[var(--text-muted)] mt-3">Ready to chat!</p>
                   </div>
                 </div>
               </div>

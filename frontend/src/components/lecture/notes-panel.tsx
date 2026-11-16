@@ -100,10 +100,10 @@ export function NotesPanel({
               className={cn(
                 'rounded-xl border transition-all duration-300',
                 isActive
-                  ? 'bg-indigo-500/10 border-indigo-500/50 shadow-[0_0_15px_rgba(99,102,241,0.15)] scale-[1.02]'
+                  ? 'bg-[var(--color-primary)]/10 border-[var(--color-primary)]/50 shadow-[0_0_15px_var(--glow-primary)] scale-[1.02]'
                   : isExpanded
-                  ? 'bg-indigo-500/5 border-indigo-500/30'
-                  : 'bg-[var(--bg-secondary)] border-[var(--border-color)] hover:border-[var(--text-muted)]'
+                  ? 'bg-[var(--color-primary)]/5 border-[var(--color-primary)]/30'
+                  : 'bg-[var(--bg-secondary)] border-[var(--border-color)] hover:border-[var(--border-color-hover)]'
               )}
             >
               <div
@@ -122,22 +122,18 @@ export function NotesPanel({
                     {section.title}
                   </h4>
                 </div>
-                <Badge
-                  variant="info"
-                  className="cursor-pointer shrink-0"
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onTimestampClick?.(section.startTimestamp);
+                  }}
+                  className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--color-accent)]/15 text-[var(--color-accent)] border border-[var(--color-accent)]/30 hover:bg-[var(--color-accent)]/25 transition-all cursor-pointer shrink-0 shadow-xs"
+                  id={`${id}-timestamp-${section.id}`}
+                  title="Jump video to this moment"
                 >
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onTimestampClick?.(section.startTimestamp);
-                    }}
-                    className="flex items-center gap-1 hover:opacity-80"
-                    id={`${id}-timestamp-${section.id}`}
-                  >
-                    <Clock className="h-3 w-3" />
-                    {formatTimestamp(section.startTimestamp)}
-                  </button>
-                </Badge>
+                  <Clock className="h-3 w-3" />
+                  {formatTimestamp(section.startTimestamp)}
+                </button>
               </div>
 
               <AnimatePresence>

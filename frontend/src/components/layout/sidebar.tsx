@@ -9,6 +9,7 @@ import {
   Plus,
   LayoutDashboard,
   Settings,
+  BookOpen,
   MoreHorizontal,
   ChevronRight,
   ChevronLeft
@@ -35,6 +36,7 @@ const historyGroups = [
 
 const bottomLinks = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/lectures', label: 'My Lectures', icon: BookOpen },
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
 
@@ -53,8 +55,8 @@ export function Sidebar({ isGuest = false }: { isGuest?: boolean }) {
       )}
     >
       <div className="p-3 w-[260px] pt-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 text-[var(--text-primary)] font-bold text-lg hover:opacity-80 transition-opacity pl-2">
-          <span className="bg-gradient-to-r from-indigo-500 to-violet-500 bg-clip-text text-transparent font-extrabold tracking-tight">
+        <Link href="/" className="flex items-center gap-2 text-[var(--text-primary)] font-bold text-lg hover:opacity-85 transition-opacity pl-2">
+          <span className="bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] bg-clip-text text-transparent font-extrabold tracking-tight">
             Unity-AI
           </span>
         </Link>

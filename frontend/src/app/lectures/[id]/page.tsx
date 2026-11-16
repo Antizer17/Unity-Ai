@@ -327,21 +327,21 @@ export default function LectureDetailPage({
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="lg:w-[40%] flex flex-col rounded-2xl bg-white/[0.02] border border-white/10 backdrop-blur-md overflow-hidden"
+          className="lg:w-[40%] flex flex-col rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-color)] backdrop-blur-md overflow-hidden"
           style={{ height: 'calc(100vh - 12rem)' }}
         >
           {/* Tab bar */}
-          <div className="flex border-b border-white/10 bg-white/[0.02]">
+          <div className="flex border-b border-[var(--border-color)] bg-[var(--color-surface)]">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
                 id={`lecture-tab-${tab.key}`}
                 onClick={() => setActiveTab(tab.key)}
                 className={cn(
-                  'flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all relative',
+                  'flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all relative cursor-pointer',
                   activeTab === tab.key
-                    ? 'text-indigo-400'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'text-[var(--color-primary)] font-semibold'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                 )}
               >
                 <tab.icon className="h-4 w-4" />
@@ -349,7 +349,7 @@ export default function LectureDetailPage({
                 {activeTab === tab.key && (
                   <motion.div
                     layoutId="active-tab-indicator"
-                    className="absolute bottom-0 inset-x-0 h-0.5 bg-gradient-to-r from-indigo-500 to-violet-500"
+                    className="absolute bottom-0 inset-x-0 h-0.5 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)]"
                   />
                 )}
               </button>

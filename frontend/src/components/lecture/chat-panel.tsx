@@ -19,8 +19,8 @@ export interface ChatPanelProps {
 function TypingIndicator() {
   return (
     <div className="flex items-center gap-3 py-4">
-      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center shrink-0 shadow-sm">
-        <Sparkles className="h-4 w-4 text-white" />
+      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] flex items-center justify-center shrink-0 shadow-sm">
+        <Sparkles className="h-4 w-4 text-slate-950" />
       </div>
       <div className="flex items-center gap-1.5 px-3 py-2">
         <motion.span
@@ -132,8 +132,8 @@ export function ChatPanel({
               )}
             >
               {msg.role === 'assistant' && (
-                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center shrink-0 shadow-sm mt-1">
-                  <Sparkles className="h-4 w-4 text-white" />
+                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] flex items-center justify-center shrink-0 shadow-sm mt-1">
+                  <Sparkles className="h-4 w-4 text-slate-950" />
                 </div>
               )}
 
@@ -254,9 +254,9 @@ export function ChatPanel({
               onClick={handleSend}
               disabled={!input.trim()}
               className={cn(
-                'p-2 rounded-full shrink-0 mb-0.5 transition-all duration-200',
+                'p-2 rounded-full shrink-0 mb-0.5 transition-all duration-200 cursor-pointer',
                 input.trim()
-                  ? 'bg-[var(--text-primary)] text-[var(--bg-primary)] hover:opacity-80'
+                  ? 'bg-[var(--color-primary)] text-slate-950 hover:brightness-110 shadow-sm shadow-[var(--glow-primary)]'
                   : 'bg-[var(--color-surface)] text-[var(--text-muted)] cursor-not-allowed'
               )}
             >

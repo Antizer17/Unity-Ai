@@ -17,6 +17,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { mockUser } from '@/lib/mock-data';
 import { ThemeToggle } from './theme-toggle';
+import { PaletteToggle } from './palette-toggle';
 
 export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -45,21 +46,36 @@ export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
     >
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <Link
-            href="/"
-            id="navbar-logo"
-            className="flex items-center gap-2 text-[var(--text-primary)] font-bold text-xl hover:opacity-80 transition-opacity"
-          >
-            <Sparkles className="h-6 w-6 text-indigo-500" />
-            <span className="bg-gradient-to-r from-indigo-500 to-violet-500 bg-clip-text text-transparent font-extrabold tracking-tight">
-              Unity-AI
-            </span>
-          </Link>
+          {/* Logo & Desktop Nav */}
+          <div className="flex items-center gap-8">
+            <Link
+              href="/"
+              id="navbar-logo"
+              className="flex items-center gap-2 text-[var(--text-primary)] font-bold text-xl hover:opacity-85 transition-opacity"
+            >
+              <Sparkles className="h-6 w-6 text-[var(--color-primary)]" />
+              <span className="bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] bg-clip-text text-transparent font-extrabold tracking-tight">
+                Unity-AI
+              </span>
+            </Link>
+
+            <div className="hidden md:flex items-center gap-1">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--color-surface)] transition-all"
+                >
+                  <link.icon className="h-4 w-4 opacity-70" />
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 md:gap-4">
-            <ThemeToggle />
+          <div className="flex items-center gap-2 sm:gap-3">
+            <PaletteToggle />
             
             {/* Desktop Profile or Guest Actions */}
             {!isGuest ? (

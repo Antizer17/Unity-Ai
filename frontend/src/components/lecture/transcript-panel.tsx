@@ -97,16 +97,16 @@ export function TranscriptPanel({
               className={cn(
                 'flex gap-3 p-3 rounded-xl cursor-pointer transition-all duration-200 group',
                 isActive
-                  ? 'bg-indigo-500/10 border border-indigo-500/20'
-                  : 'hover:bg-white/5 border border-transparent'
+                  ? 'bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/30'
+                  : 'hover:bg-[var(--color-surface)] border border-transparent'
               )}
             >
               <button
                 className={cn(
                   'flex items-center gap-1 text-[11px] font-mono shrink-0 pt-0.5',
                   isActive
-                    ? 'text-indigo-400'
-                    : 'text-slate-500 group-hover:text-slate-300'
+                    ? 'text-[var(--color-accent)] font-semibold'
+                    : 'text-[var(--text-muted)] group-hover:text-[var(--text-primary)]'
                 )}
               >
                 <Clock className="h-3 w-3" />
@@ -115,7 +115,7 @@ export function TranscriptPanel({
               <p
                 className={cn(
                   'text-sm leading-relaxed',
-                  isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-300'
+                  isActive ? 'text-[var(--text-primary)] font-medium' : 'text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]'
                 )}
               >
                 {search ? highlightMatch(segment.text, search) : segment.text}

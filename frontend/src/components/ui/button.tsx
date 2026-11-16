@@ -31,7 +31,7 @@ function ButtonSpinner({ className }: { className?: string }) {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'accent';
 export type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -44,19 +44,21 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
 const baseStyles =
-  'inline-flex items-center justify-center gap-2 font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer select-none';
+  'inline-flex items-center justify-center gap-2 font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--bg-primary)] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer select-none';
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    'bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:from-indigo-400 hover:to-violet-400 focus:ring-indigo-500 active:scale-[0.97]',
+    'bg-[var(--gradient-primary)] text-slate-950 font-semibold shadow-lg shadow-[var(--glow-primary)] hover:opacity-95 hover:brightness-105 focus:ring-[var(--color-primary)] active:scale-[0.97]',
   secondary:
-    'bg-[var(--color-surface)] text-[var(--text-primary)] border border-[var(--border-color)] hover:bg-[var(--border-color)] focus:ring-[var(--border-color)] active:scale-[0.97]',
+    'bg-[var(--color-surface)] text-[var(--text-primary)] border border-[var(--border-color)] hover:border-[var(--border-color-hover)] hover:bg-[var(--bg-secondary)] focus:ring-[var(--border-color)] active:scale-[0.97]',
   outline:
-    'border border-indigo-500/50 text-indigo-500 dark:text-indigo-400 hover:bg-indigo-500/10 hover:border-indigo-400 focus:ring-indigo-500 active:scale-[0.97]',
+    'border border-[var(--color-primary)]/40 text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10 hover:border-[var(--color-primary)] focus:ring-[var(--color-primary)] active:scale-[0.97]',
   ghost:
     'text-[var(--text-secondary)] hover:bg-[var(--color-surface)] hover:text-[var(--text-primary)] focus:ring-[var(--color-surface)] active:scale-[0.97]',
   danger:
-    'bg-red-500/10 text-red-500 dark:text-red-400 border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/30 focus:ring-red-500 active:scale-[0.97]',
+    'bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/30 focus:ring-red-500 active:scale-[0.97]',
+  accent:
+    'bg-[var(--gradient-accent)] text-slate-950 font-semibold shadow-lg shadow-[var(--glow-accent)] hover:opacity-95 hover:brightness-105 focus:ring-[var(--color-accent)] active:scale-[0.97]',
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
