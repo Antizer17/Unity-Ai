@@ -4,12 +4,12 @@ import { Logo } from '@/components/ui/logo';
 
 export function Footer() {
   return (
-    <footer id="footer" className="border-t border-[var(--border-color)] bg-[var(--bg-secondary)]/90 backdrop-blur-sm">
+    <footer id="footer" className="w-full border-t border-[var(--border-color)] bg-[var(--bg-secondary)]/90 backdrop-blur-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5 text-[var(--text-secondary)]">
-            <Logo size={26} variant="dark" />
-            <span className="text-sm">
+          <div className="flex items-center gap-3 text-[var(--text-secondary)]">
+            <Logo size={38} variant="dark" />
+            <span className="text-sm font-medium">
               © {new Date().getFullYear()} Unity-AI. All rights reserved.
             </span>
           </div>

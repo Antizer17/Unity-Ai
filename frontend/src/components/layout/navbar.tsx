@@ -16,8 +16,6 @@ import { Avatar } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { mockUser } from '@/lib/mock-data';
 import { ThemeToggle } from './theme-toggle';
-import { PaletteToggle } from './palette-toggle';
-import { FontToggle } from './font-toggle';
 import { Logo } from '@/components/ui/logo';
 
 export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
@@ -52,9 +50,9 @@ export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
             <Link
               href="/"
               id="navbar-logo"
-              className="flex items-center gap-2.5 text-[var(--text-primary)] font-bold hover:opacity-85 transition-opacity group"
+              className="flex items-center gap-3 text-[var(--text-primary)] font-bold hover:opacity-85 transition-opacity group"
             >
-              <Logo size={42} variant="dark" priority />
+              <Logo size={52} variant="dark" priority />
               <span className="font-heading font-extrabold text-2xl sm:text-3xl tracking-tight text-[var(--text-primary)]">
                 Unity<span className="text-[var(--color-accent)]">-AI</span>
               </span>
@@ -76,9 +74,6 @@ export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
 
           {/* Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <FontToggle className="px-3.5 py-2 text-sm font-semibold rounded-xl" />
-            <PaletteToggle className="px-3.5 py-2 text-sm font-semibold rounded-xl" />
-            
             {/* Desktop Profile or Guest Actions */}
             {!isGuest ? (
               <div className="hidden md:block relative" ref={profileRef}>

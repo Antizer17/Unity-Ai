@@ -6,34 +6,23 @@ import { motion } from 'framer-motion';
 import {
   ArrowRight,
   Play,
-  UploadCloud,
-  Cpu,
-  GraduationCap,
 } from 'lucide-react';
 import { Footer } from '@/components/layout/footer';
-import { PaletteToggle } from '@/components/layout/palette-toggle';
-import { FontToggle } from '@/components/layout/font-toggle';
 import { Logo } from '@/components/ui/logo';
 import { FunctionCardsCarousel } from '@/components/landing/function-cards-carousel';
 
 const workflowSteps = [
   {
-    step: '01',
-    icon: UploadCloud,
     title: 'Upload Audio, Video, or Link',
     description:
       'Upload MP4, MP3, WAV or paste any YouTube lecture URL. Files are safely ingested and prepped for AI processing.',
   },
   {
-    step: '02',
-    icon: Cpu,
     title: 'Whisper AI & LLM Extraction',
     description:
       'Whisper AI transcribes with millisecond timecodes while our LLM structures topics, formulas, and key points.',
   },
   {
-    step: '03',
-    icon: GraduationCap,
     title: 'Learn with Side-by-Side Tutor',
     description:
       'Watch synchronized video, read clickable notes, and ask your vector-indexed AI tutor anything with exact citations.',
@@ -42,7 +31,7 @@ const workflowSteps = [
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col justify-between overflow-x-hidden">
       {/* ─── Light Hero Canvas ───────────────────────────────────────────── */}
       <div className="relative bg-[var(--hero-bg)] text-[var(--hero-text-primary)] transition-colors duration-300 overflow-hidden">
         {/* Soft pastel ambient background glows */}
@@ -56,9 +45,9 @@ export default function LandingPage() {
               {/* Brand Logo & Name */}
               <Link
                 href="/"
-                className="flex items-center gap-2.5 hover:opacity-85 transition-opacity group"
+                className="flex items-center gap-3 hover:opacity-85 transition-opacity group"
               >
-                <Logo size={44} variant="light" priority />
+                <Logo size={62} variant="light" priority />
                 <span className="font-heading font-extrabold text-2xl sm:text-3xl tracking-tight text-[var(--hero-text-primary)]">
                   Unity<span className="text-[var(--hero-accent)]">-AI</span>
                 </span>
@@ -66,9 +55,6 @@ export default function LandingPage() {
 
               {/* Action Buttons with Dark Navy Hover */}
               <div className="flex items-center gap-2 sm:gap-3">
-                <FontToggle className="px-3.5 py-2 text-sm font-semibold rounded-xl border-[var(--hero-border)] bg-white/80 text-[var(--hero-text-primary)] hover:bg-white shadow-xs" />
-                <PaletteToggle className="px-3.5 py-2 text-sm font-semibold rounded-xl border-[var(--hero-border)] bg-white/80 text-[var(--hero-text-primary)] hover:bg-white shadow-xs" />
-
                 <Link href="/dashboard" className="hidden sm:block">
                   <button
                     id="landing-guest-chat-btn"
@@ -157,7 +143,7 @@ export default function LandingPage() {
       </div>
 
       {/* ─── Contrasting Dark Palette Realm (As You Scroll) ────────────────── */}
-      <div className="relative bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors duration-300">
+      <div className="relative bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors duration-300 overflow-hidden flex-1 flex flex-col justify-between">
         {/* Ambient background glow blobs */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--color-primary)]/10 rounded-full blur-3xl animate-blob pointer-events-none" />
         <div className="absolute top-2/3 right-1/4 w-96 h-96 bg-[var(--color-accent)]/8 rounded-full blur-3xl animate-blob [animation-delay:2s] pointer-events-none" />
@@ -172,7 +158,7 @@ export default function LandingPage() {
               className="text-center mb-16"
             >
               <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--text-primary)]">
-                How Unity-AI <span className="text-[var(--color-accent)]">Works</span>
+                How Unity-AI Works
               </h2>
               <p className="mt-4 text-lg text-[var(--text-secondary)] max-w-xl mx-auto">
                 From raw audio or video to interactive study-ready tutor in 3 easy steps
@@ -180,36 +166,24 @@ export default function LandingPage() {
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {workflowSteps.map((step, i) => {
-                const Icon = step.icon;
-                return (
-                  <motion.div
-                    key={step.title}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.15 }}
-                    whileHover={{ y: -5 }}
-                    className="group rounded-3xl bg-[var(--color-surface)] border border-[var(--border-color)] backdrop-blur-md p-8 hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--glow-primary)] transition-all duration-300 relative overflow-hidden"
-                  >
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="inline-flex p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-color)]">
-                        <Icon className="h-6 w-6 text-[var(--color-primary)]" />
-                      </div>
-                      <span className="text-xs font-mono font-bold text-[var(--color-accent)] bg-[var(--bg-secondary)] border border-[var(--border-color)] px-3 py-1 rounded-full">
-                        Step {step.step}
-                      </span>
-                    </div>
-
-                    <h3 className="text-xl font-bold text-[var(--text-primary)] mb-3 group-hover:text-[var(--color-primary)] transition-colors">
-                      {step.title}
-                    </h3>
-                    <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                      {step.description}
-                    </p>
-                  </motion.div>
-                );
-              })}
+              {workflowSteps.map((step, i) => (
+                <motion.div
+                  key={step.title}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.15 }}
+                  whileHover={{ y: -5 }}
+                  className="group rounded-3xl bg-[var(--color-surface)] border border-[var(--border-color)] backdrop-blur-md p-8 hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--glow-primary)] transition-all duration-300 relative overflow-hidden"
+                >
+                  <h3 className="text-xl font-bold text-[var(--text-primary)] mb-3 group-hover:text-[var(--color-primary)] transition-colors">
+                    {step.title}
+                  </h3>
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                    {step.description}
+                  </p>
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>

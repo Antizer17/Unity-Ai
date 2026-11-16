@@ -9,7 +9,6 @@ import {
 } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/layout/theme-provider';
-import { FloatingPaletteSwitcher } from '@/components/layout/palette-toggle';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -83,16 +82,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className="dark" data-palette="aurora" data-font="instrument">
+    <html lang="en" suppressHydrationWarning className="dark" data-palette="lagoon" data-font="playfair">
       <head>
         <script
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                const p = localStorage.getItem('unity-palette') || 'aurora';
-                document.documentElement.setAttribute('data-palette', p);
-                const f = localStorage.getItem('unity-font') || 'instrument';
-                document.documentElement.setAttribute('data-font', f);
+                document.documentElement.setAttribute('data-palette', 'lagoon');
+                document.documentElement.setAttribute('data-font', 'playfair');
+                localStorage.setItem('unity-palette', 'lagoon');
+                localStorage.setItem('unity-font', 'playfair');
               } catch (e) {}
             `,
           }}
@@ -103,7 +102,6 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           {children}
-          <FloatingPaletteSwitcher />
         </ThemeProvider>
       </body>
     </html>

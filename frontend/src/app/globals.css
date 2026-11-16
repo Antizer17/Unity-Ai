@@ -2,56 +2,15 @@
 
 @theme {
   --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-heading: var(--font-space-grotesk), var(--font-inter), sans-serif;
+  --font-heading: var(--font-playfair), Georgia, serif;
   --font-space: var(--font-space-grotesk), sans-serif;
 }
 
 /* ─── Dark Pastel Palettes ──────────────────────────────────────────────────────
- * All palettes are dark pastel themes centered on green-blue / bluish-green
- * paired with a warm / vibrant complementary contrast color.
+ * Active Palette: Deep Lagoon (Mint Sage #6ee7b7 & Golden Apricot #fbb572)
  */
 
 :root,
-[data-palette="aurora"] {
-  /* Option 1: Nordic Aurora — Pastel Seafoam Teal & Soft Coral Peach */
-  --color-primary: #5eead4;
-  --color-primary-light: #99f6e4;
-  --color-primary-dark: #2dd4bf;
-  --color-secondary: #7dd3fc;
-  --color-accent: #ff9e88;
-  --color-accent-light: #ffc2b3;
-  --color-accent-dark: #f87171;
-
-  --bg-primary: #091216;
-  --bg-secondary: #101e24;
-  --bg-tertiary: #050a0d;
-
-  --text-primary: #eef7f6;
-  --text-secondary: #cbd8d7;
-  --text-muted: #7e999c;
-
-  --border-color: rgba(94, 234, 212, 0.12);
-  --border-color-hover: rgba(94, 234, 212, 0.28);
-  --color-surface: rgba(16, 30, 36, 0.75);
-
-  --gradient-brand: linear-gradient(135deg, #5eead4 0%, #38bdf8 50%, #ff9e88 100%);
-  --gradient-primary: linear-gradient(135deg, #5eead4 0%, #2dd4bf 100%);
-  --gradient-accent: linear-gradient(135deg, #ff9e88 0%, #fb923c 100%);
-  --glow-primary: rgba(94, 234, 212, 0.25);
-  --glow-accent: rgba(255, 158, 136, 0.25);
-
-  /* Light Hero Zone (Pastel Seafoam canvas) */
-  --hero-bg: #edf8f6;
-  --hero-bg-subtle: #e1f4f1;
-  --hero-text-primary: #0b1f24;
-  --hero-text-secondary: #325359;
-  --hero-primary: #0f766e;
-  --hero-accent: #e0533c;
-  --hero-border: rgba(15, 118, 110, 0.16);
-  --hero-card-bg: rgba(255, 255, 255, 0.95);
-  --hero-surface: #ffffff;
-}
-
 [data-palette="lagoon"] {
   /* Option 2: Deep Lagoon — Mint Sage & Golden Apricot */
   --color-primary: #6ee7b7;
@@ -88,6 +47,46 @@
   --hero-primary: #047857;
   --hero-accent: #d97706;
   --hero-border: rgba(4, 120, 87, 0.16);
+  --hero-card-bg: rgba(255, 255, 255, 0.95);
+  --hero-surface: #ffffff;
+}
+
+[data-palette="aurora"] {
+  /* Option 1: Nordic Aurora — Pastel Seafoam Teal & Soft Coral Peach */
+  --color-primary: #5eead4;
+  --color-primary-light: #99f6e4;
+  --color-primary-dark: #2dd4bf;
+  --color-secondary: #7dd3fc;
+  --color-accent: #ff9e88;
+  --color-accent-light: #ffc2b3;
+  --color-accent-dark: #f87171;
+
+  --bg-primary: #091216;
+  --bg-secondary: #101e24;
+  --bg-tertiary: #050a0d;
+
+  --text-primary: #eef7f6;
+  --text-secondary: #cbd8d7;
+  --text-muted: #7e999c;
+
+  --border-color: rgba(94, 234, 212, 0.12);
+  --border-color-hover: rgba(94, 234, 212, 0.28);
+  --color-surface: rgba(16, 30, 36, 0.75);
+
+  --gradient-brand: linear-gradient(135deg, #5eead4 0%, #38bdf8 50%, #ff9e88 100%);
+  --gradient-primary: linear-gradient(135deg, #5eead4 0%, #2dd4bf 100%);
+  --gradient-accent: linear-gradient(135deg, #ff9e88 0%, #fb923c 100%);
+  --glow-primary: rgba(94, 234, 212, 0.25);
+  --glow-accent: rgba(255, 158, 136, 0.25);
+
+  /* Light Hero Zone (Pastel Seafoam canvas) */
+  --hero-bg: #edf8f6;
+  --hero-bg-subtle: #e1f4f1;
+  --hero-text-primary: #0b1f24;
+  --hero-text-secondary: #325359;
+  --hero-primary: #0f766e;
+  --hero-accent: #e0533c;
+  --hero-border: rgba(15, 118, 110, 0.16);
   --hero-card-bg: rgba(255, 255, 255, 0.95);
   --hero-surface: #ffffff;
 }
@@ -159,15 +158,15 @@ body {
  */
 
 :root,
-[data-font="instrument"] {
-  --font-active-heading: var(--font-instrument), Georgia, serif;
-  --heading-tracking: -0.01em;
-  --heading-style: normal;
-}
-
 [data-font="playfair"] {
   --font-active-heading: var(--font-playfair), Georgia, serif;
   --heading-tracking: -0.015em;
+  --heading-style: normal;
+}
+
+[data-font="instrument"] {
+  --font-active-heading: var(--font-instrument), Georgia, serif;
+  --heading-tracking: -0.01em;
   --heading-style: normal;
 }
 
