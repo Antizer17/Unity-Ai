@@ -49,7 +49,7 @@ export default function LandingPage() {
               >
                 <Logo size={62} variant="light" priority />
                 <span className="font-heading font-extrabold text-2xl sm:text-3xl tracking-tight text-[var(--hero-text-primary)]">
-                  Unity<span className="text-[var(--hero-accent)]">AI</span>
+                  UnityAI
                 </span>
               </Link>
 
@@ -148,7 +148,7 @@ export default function LandingPage() {
               className="text-center mb-16"
             >
               <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--text-primary)]">
-                How Unity<span className="text-[var(--color-accent)]">AI</span> Works
+                How UnityAI Works
               </h2>
               <p className="mt-4 text-lg text-[var(--text-secondary)] max-w-xl mx-auto">
                 From raw audio or video to interactive study-ready tutor in 3 easy steps
@@ -156,29 +156,25 @@ export default function LandingPage() {
             </motion.div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {workflowSteps.map((step, i) => {
-                const pastels = ['#173449', '#14382e', '#362514'];
-                const cardColor = pastels[i % pastels.length];
-                return (
-                  <motion.div
-                    key={step.title}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.15 }}
-                    whileHover={{ y: -5 }}
-                    className="rounded-3xl p-8 shadow-2xl transition-all duration-300 relative overflow-hidden"
-                    style={{ backgroundColor: cardColor, border: 'none' }}
-                  >
-                    <h3 className="text-xl font-bold text-white mb-3">
-                      {step.title}
-                    </h3>
-                    <p className="text-sm text-slate-200 leading-relaxed font-normal">
-                      {step.description}
-                    </p>
-                  </motion.div>
-                );
-              })}
+              {workflowSteps.map((step, i) => (
+                <motion.div
+                  key={step.title}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.15 }}
+                  whileHover={{ y: -5 }}
+                  className="rounded-3xl bg-[#122e28] p-8 shadow-xl transition-all duration-300 relative overflow-hidden"
+                  style={{ border: 'none' }}
+                >
+                  <h3 className="text-xl font-bold text-white mb-3">
+                    {step.title}
+                  </h3>
+                  <p className="text-sm text-slate-200 leading-relaxed font-normal">
+                    {step.description}
+                  </p>
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>
