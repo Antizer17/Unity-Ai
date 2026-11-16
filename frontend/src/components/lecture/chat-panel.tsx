@@ -246,7 +246,7 @@ export function ChatPanel({
                 value={input}
                 onChange={handleInput}
                 onKeyDown={handleKeyDown}
-                placeholder="Message Unity-AI..."
+                placeholder="Message UnityAI..."
                 className="flex-1 max-h-[200px] bg-transparent text-[var(--text-primary)] placeholder-[var(--text-muted)] px-3 py-2 text-base resize-none focus:outline-none custom-scrollbar"
                 rows={1}
               />
@@ -264,7 +264,7 @@ export function ChatPanel({
             </button>
           </div>
           <div className="px-4 pb-2 text-center text-xs text-[var(--text-muted)]">
-            Unity-AI can make mistakes. Consider verifying important information.
+            UnityAI can make mistakes. Consider verifying important information.
           </div>
         </div>
       </div>

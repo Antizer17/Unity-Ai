@@ -4,8 +4,8 @@ import { ArrowLeft } from 'lucide-react';
 import { RegisterForm } from '@/components/auth/register-form';
 
 export const metadata: Metadata = {
-  title: 'Create Account | Unity-AI',
-  description: 'Create your Unity-AI account and start transforming your lectures with AI.',
+  title: 'Create Account | UnityAI',
+  description: 'Create your UnityAI account and start transforming your lectures with AI.',
 };
 
 export default function RegisterPage() {

@@ -1,4 +1,4 @@
-// ─── Unity-AI Type Definitions ────────────────────────────────────────────────
+// ─── UnityAI Type Definitions ────────────────────────────────────────────────
 
 export interface User {
   id: string;

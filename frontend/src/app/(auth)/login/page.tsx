@@ -4,8 +4,8 @@ import { ArrowLeft } from 'lucide-react';
 import { LoginForm } from '@/components/auth/login-form';
 
 export const metadata: Metadata = {
-  title: 'Sign In | Unity-AI',
-  description: 'Sign in to your Unity-AI account to access your lectures and study tools.',
+  title: 'Sign In | UnityAI',
+  description: 'Sign in to your UnityAI account to access your lectures and study tools.',
 };
 
 export default function LoginPage() {

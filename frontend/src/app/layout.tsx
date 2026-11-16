@@ -50,7 +50,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: 'Unity-AI | Lecture Study Platform',
+  title: 'UnityAI | Lecture Study Platform',
   description:
     'Transform lecture recordings into interactive study sessions with AI-powered transcription, smart notes, and an intelligent tutor chatbot.',
   icons: {
@@ -65,11 +65,11 @@ export const metadata: Metadata = {
     'notes',
     'chatbot',
     'education',
-    'Unity-AI',
+    'UnityAI',
   ],
-  authors: [{ name: 'Unity-AI Team' }],
+  authors: [{ name: 'UnityAI Team' }],
   openGraph: {
-    title: 'Unity-AI | Lecture Study Platform',
+    title: 'UnityAI | Lecture Study Platform',
     description:
       'Transform lecture recordings into interactive study sessions with AI.',
     type: 'website',

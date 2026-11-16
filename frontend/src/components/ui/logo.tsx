@@ -28,7 +28,7 @@ export function Logo({
       >
         <Image
           src="/logo.png"
-          alt="Unity-AI Graduation Bird Logo"
+          alt="UnityAI Graduation Bird Logo"
           width={size * 2}
           height={size * 2}
           priority={priority}
@@ -49,7 +49,7 @@ export function Logo({
       >
         <Image
           src="/logo-dark.png"
-          alt="Unity-AI Graduation Bird Logo"
+          alt="UnityAI Graduation Bird Logo"
           width={size * 2}
           height={size * 2}
           priority={priority}
@@ -70,7 +70,7 @@ export function Logo({
     >
       <Image
         src="/logo.png"
-        alt="Unity-AI Graduation Bird Logo"
+        alt="UnityAI Graduation Bird Logo"
         width={size * 2}
         height={size * 2}
         priority={priority}
@@ -78,7 +78,7 @@ export function Logo({
       />
       <Image
         src="/logo-dark.png"
-        alt="Unity-AI Graduation Bird Logo"
+        alt="UnityAI Graduation Bird Logo"
         width={size * 2}
         height={size * 2}
         priority={priority}

@@ -145,6 +145,7 @@ export const FUNCTION_CARDS: FunctionCardData[] = [
 
 export function FunctionCardsCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const card = FUNCTION_CARDS[currentIndex];
 
   const handleNext = () => {
@@ -161,31 +162,33 @@ export function FunctionCardsCarousel() {
       <div className="flex items-center justify-center gap-1.5 sm:gap-2.5 overflow-x-auto pb-4 custom-scrollbar">
         {FUNCTION_CARDS.map((item, idx) => {
           const isSelected = idx === currentIndex;
+          const isHovered = idx === hoveredIndex;
+          const isHighlight = isSelected || isHovered;
+
           return (
             <button
               key={item.id}
               onClick={() => setCurrentIndex(idx)}
+              onMouseEnter={() => setHoveredIndex(idx)}
+              onMouseLeave={() => setHoveredIndex(null)}
               className={cn(
-                'flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer shrink-0 shadow-xs border',
-                isSelected
-                  ? 'scale-105 shadow-md font-bold'
-                  : 'bg-white/80 hover:bg-white text-slate-700 border-slate-200 hover:border-slate-300'
+                'px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer shrink-0 shadow-xs border',
+                isSelected ? 'scale-105 shadow-md font-bold' : 'shadow-2xs'
               )}
               style={
-                isSelected
+                isHighlight
                   ? {
                       backgroundColor: item.theme.tabBgActive,
                       color: item.theme.tabTextActive,
                       borderColor: item.theme.tabBorderActive,
                     }
-                  : undefined
+                  : {
+                      backgroundColor: '#ffffff',
+                      color: '#334155',
+                      borderColor: '#cbd5e1',
+                    }
               }
             >
-              {/* Color swatch dot */}
-              <span
-                className="w-2.5 h-2.5 rounded-full border border-black/15 shrink-0"
-                style={{ backgroundColor: item.theme.chassisBg }}
-              />
               <span>{item.tabLabel}</span>
             </button>
           );
@@ -194,20 +197,20 @@ export function FunctionCardsCarousel() {
 
       {/* ─── Swipeable iPad Pastel Card Stage ────────────────────────── */}
       <div className="relative mt-4 px-2 sm:px-14">
-        {/* Navigation Arrow Left (Clean Typography, No Icon) */}
+        {/* Navigation Arrow Left (Solid Color Hover, No Transparency) */}
         <button
           onClick={handlePrev}
           aria-label="Previous function"
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-20 hidden sm:flex items-center justify-center w-12 h-12 rounded-full bg-white/90 hover:bg-white text-slate-800 hover:text-black border border-slate-300/80 shadow-lg hover:scale-105 transition-all cursor-pointer"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-20 hidden sm:flex items-center justify-center w-12 h-12 rounded-full bg-white hover:bg-slate-950 text-slate-800 hover:text-white border border-slate-300 hover:border-slate-950 shadow-lg hover:scale-105 transition-all cursor-pointer"
         >
           <span className="text-xl font-bold leading-none select-none">←</span>
         </button>
 
-        {/* Navigation Arrow Right (Clean Typography, No Icon) */}
+        {/* Navigation Arrow Right (Solid Color Hover, No Transparency) */}
         <button
           onClick={handleNext}
           aria-label="Next function"
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-20 hidden sm:flex items-center justify-center w-12 h-12 rounded-full bg-white/90 hover:bg-white text-slate-800 hover:text-black border border-slate-300/80 shadow-lg hover:scale-105 transition-all cursor-pointer"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-20 hidden sm:flex items-center justify-center w-12 h-12 rounded-full bg-white hover:bg-slate-950 text-slate-800 hover:text-white border border-slate-300 hover:border-slate-950 shadow-lg hover:scale-105 transition-all cursor-pointer"
         >
           <span className="text-xl font-bold leading-none select-none">→</span>
         </button>
@@ -292,29 +295,23 @@ export function FunctionCardsCarousel() {
           </motion.div>
         </AnimatePresence>
 
-        {/* ─── Bottom Pagination Indicators & Controls ─────── */}
-        <div className="mt-5 flex flex-col sm:flex-row items-center justify-between gap-3 px-2">
-          <p className="text-xs text-slate-500 font-medium">
-            Swipe left / right or click pills to explore functions
-          </p>
-
-          <div className="flex items-center gap-2">
-            {FUNCTION_CARDS.map((item, idx) => (
-              <button
-                key={item.id}
-                onClick={() => setCurrentIndex(idx)}
-                aria-label={`Go to slide ${idx + 1}`}
-                className={cn(
-                  'h-2.5 rounded-full transition-all cursor-pointer',
-                  idx === currentIndex ? 'w-8 shadow-xs' : 'w-2.5 opacity-60 hover:opacity-100'
-                )}
-                style={{
-                  backgroundColor:
-                    idx === currentIndex ? card.theme.accentText : 'rgba(100, 116, 139, 0.3)',
-                }}
-              />
-            ))}
-          </div>
+        {/* ─── Bottom Pagination Indicators ─────── */}
+        <div className="mt-5 flex items-center justify-center gap-2 px-2">
+          {FUNCTION_CARDS.map((item, idx) => (
+            <button
+              key={item.id}
+              onClick={() => setCurrentIndex(idx)}
+              aria-label={`Go to slide ${idx + 1}`}
+              className={cn(
+                'h-2.5 rounded-full transition-all cursor-pointer',
+                idx === currentIndex ? 'w-8 shadow-xs' : 'w-2.5 opacity-60 hover:opacity-100'
+              )}
+              style={{
+                backgroundColor:
+                  idx === currentIndex ? card.theme.accentText : 'rgba(100, 116, 139, 0.3)',
+              }}
+            />
+          ))}
         </div>
       </div>
     </div>

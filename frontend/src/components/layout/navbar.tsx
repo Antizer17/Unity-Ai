@@ -54,7 +54,7 @@ export function Navbar({ isGuest = false }: { isGuest?: boolean }) {
             >
               <Logo size={52} variant="dark" priority />
               <span className="font-heading font-extrabold text-2xl sm:text-3xl tracking-tight text-[var(--text-primary)]">
-                Unity<span className="text-[var(--color-accent)]">-AI</span>
+                Unity<span className="text-[var(--color-accent)]">AI</span>
               </span>
             </Link>
 

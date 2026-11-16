@@ -10,7 +10,7 @@ export function Footer() {
           <div className="flex items-center gap-3 text-[var(--text-secondary)]">
             <Logo size={38} variant="dark" />
             <span className="text-sm font-medium">
-              © {new Date().getFullYear()} Unity-AI. All rights reserved.
+              © {new Date().getFullYear()} Unity<span className="text-[var(--color-accent)] font-semibold">AI</span>. All rights reserved.
             </span>
           </div>
           <div className="flex items-center gap-6">

@@ -49,7 +49,7 @@ export default function LandingPage() {
               >
                 <Logo size={62} variant="light" priority />
                 <span className="font-heading font-extrabold text-2xl sm:text-3xl tracking-tight text-[var(--hero-text-primary)]">
-                  Unity<span className="text-[var(--hero-accent)]">-AI</span>
+                  Unity<span className="text-[var(--hero-accent)]">AI</span>
                 </span>
               </Link>
 
@@ -90,20 +90,10 @@ export default function LandingPage() {
               Transform Lectures into Interactive Study Sessions
             </motion.h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 25 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.15 }}
-              className="mt-6 text-base sm:text-lg text-[var(--hero-text-secondary)] max-w-2xl mx-auto leading-relaxed"
-            >
-              Upload your lecture recordings and let AI transcribe, generate structured notes, and
-              power an intelligent tutor that answers your questions with precision.
-            </motion.p>
-
             <motion.div
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.25 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
               <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
                 {/* High Contrast Deep Obsidian CTA Button */}
@@ -117,7 +107,7 @@ export default function LandingPage() {
                   </button>
                 </Link>
                 <Link href="/dashboard">
-                  <button className="h-14 px-8 text-base sm:text-lg font-semibold rounded-2xl border-2 border-slate-300 bg-white/90 hover:bg-white text-slate-800 hover:text-black hover:border-slate-400 shadow-sm transition-all inline-flex items-center justify-center gap-2 cursor-pointer font-heading">
+                  <button className="h-14 px-8 text-base sm:text-lg font-semibold rounded-2xl border-2 border-slate-300 bg-white hover:bg-slate-950 text-slate-800 hover:text-white hover:border-slate-950 shadow-sm transition-all inline-flex items-center justify-center gap-2 cursor-pointer font-heading">
                     <Play className="h-4 w-4 text-[var(--hero-primary)]" />
                     <span>View Demo</span>
                   </button>
@@ -158,7 +148,7 @@ export default function LandingPage() {
               className="text-center mb-16"
             >
               <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--text-primary)]">
-                How Unity-AI Works
+                How Unity<span className="text-[var(--color-accent)]">AI</span> Works
               </h2>
               <p className="mt-4 text-lg text-[var(--text-secondary)] max-w-xl mx-auto">
                 From raw audio or video to interactive study-ready tutor in 3 easy steps
@@ -174,12 +164,12 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.15 }}
                   whileHover={{ y: -5 }}
-                  className="group rounded-3xl bg-[var(--color-surface)] border border-[var(--border-color)] backdrop-blur-md p-8 hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--glow-primary)] transition-all duration-300 relative overflow-hidden"
+                  className="group rounded-3xl bg-[#163832]/90 border border-[#6ee7b7]/30 backdrop-blur-md p-8 hover:bg-[#1d4740] hover:border-[#6ee7b7]/60 hover:shadow-xl hover:shadow-[#6ee7b7]/15 transition-all duration-300 relative overflow-hidden"
                 >
-                  <h3 className="text-xl font-bold text-[var(--text-primary)] mb-3 group-hover:text-[var(--color-primary)] transition-colors">
+                  <h3 className="text-xl font-bold text-[#f0fdf9] mb-3 group-hover:text-[#6ee7b7] transition-colors">
                     {step.title}
                   </h3>
-                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                  <p className="text-sm text-[#c6e6de] leading-relaxed">
                     {step.description}
                   </p>
                 </motion.div>

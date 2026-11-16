@@ -60,7 +60,7 @@ export default function GuestChatPage() {
         {
           id: 'greeting',
           role: 'assistant',
-          content: "Hi there! 👋 I'm **Unity-AI**, your intelligent study assistant powered by Llama 3. I can help you with:\n\n- **General study questions** across all subjects\n- **Explaining complex concepts** in simple terms\n- **Quiz preparation** and problem solving\n\nFor personalized lecture-specific answers with exact timestamps, upload your lecture in the dashboard!\n\nWhat would you like to learn today?",
+          content: "Hi there! 👋 I'm **UnityAI**, your intelligent study assistant powered by Llama 3. I can help you with:\n\n- **General study questions** across all subjects\n- **Explaining complex concepts** in simple terms\n- **Quiz preparation** and problem solving\n\nFor personalized lecture-specific answers with exact timestamps, upload your lecture in the dashboard!\n\nWhat would you like to learn today?",
           createdAt: new Date().toISOString(),
         }
       ]);
